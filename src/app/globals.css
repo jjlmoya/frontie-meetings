@@ -1,0 +1,235 @@
+@import "tailwindcss";
+
+:root {
+  --background: #ffffff;
+  --foreground: #171717;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --background: #0a0a0a;
+    --foreground: #ededed;
+  }
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+/* ===== ANIMACIONES LOCAS DE FANTASIA ===== */
+
+/* BEACH - Ondas del mar */
+@keyframes wave-beach {
+  0%, 100% { 
+    transform: translateY(0px) scale(1) rotateX(0deg);
+    text-shadow: 0 0 30px #00FFFF, 0 0 60px #00FFFF;
+  }
+  25% { 
+    transform: translateY(-20px) scale(1.05) rotateX(5deg);
+    text-shadow: 0 0 50px #00FFFF, 0 0 100px #87CEEB;
+  }
+  50% { 
+    transform: translateY(-30px) scale(1.1) rotateX(-5deg);
+    text-shadow: 0 0 70px #00FFFF, 0 0 150px #1E90FF;
+  }
+  75% { 
+    transform: translateY(-15px) scale(1.05) rotateX(3deg);
+    text-shadow: 0 0 40px #00FFFF, 0 0 80px #00BFFF;
+  }
+}
+
+/* FUNKY CHAOS - Locura total */
+@keyframes funky-chaos {
+  0% { 
+    transform: rotate(0deg) scale(1) skewX(0deg);
+    text-shadow: 0 0 20px #FF1493;
+    filter: hue-rotate(0deg);
+  }
+  10% { 
+    transform: rotate(5deg) scale(1.2) skewX(-5deg);
+    text-shadow: 0 0 40px #FF69B4, 0 0 60px #FF1493;
+    filter: hue-rotate(36deg);
+  }
+  20% { 
+    transform: rotate(-3deg) scale(0.9) skewX(8deg);
+    text-shadow: 0 0 60px #8A2BE2, 0 0 80px #FF1493;
+    filter: hue-rotate(72deg);
+  }
+  30% { 
+    transform: rotate(8deg) scale(1.3) skewX(-10deg);
+    text-shadow: 0 0 80px #FF1493, 0 0 100px #8A2BE2;
+    filter: hue-rotate(108deg);
+  }
+  40% { 
+    transform: rotate(-6deg) scale(0.8) skewX(12deg);
+    filter: hue-rotate(144deg);
+  }
+  50% { 
+    transform: rotate(10deg) scale(1.4) skewX(-8deg);
+    filter: hue-rotate(180deg);
+  }
+  60% { 
+    transform: rotate(-4deg) scale(0.95) skewX(6deg);
+    filter: hue-rotate(216deg);
+  }
+  70% { 
+    transform: rotate(7deg) scale(1.1) skewX(-4deg);
+    filter: hue-rotate(252deg);
+  }
+  80% { 
+    transform: rotate(-2deg) scale(1.05) skewX(2deg);
+    filter: hue-rotate(288deg);
+  }
+  90% { 
+    transform: rotate(3deg) scale(0.98) skewX(-1deg);
+    filter: hue-rotate(324deg);
+  }
+  100% { 
+    transform: rotate(0deg) scale(1) skewX(0deg);
+    filter: hue-rotate(360deg);
+  }
+}
+
+/* FUNKY GLITCH - Efecto Matrix roto */
+@keyframes funky-glitch {
+  0%, 100% { 
+    transform: translate(0, 0) scale(1);
+    text-shadow: 0 0 30px #FFD700;
+    filter: contrast(1);
+  }
+  10% { 
+    transform: translate(-5px, 2px) scale(1.05);
+    text-shadow: -3px 0 #FF4500, 3px 0 #FFD700;
+    filter: contrast(1.5);
+  }
+  20% { 
+    transform: translate(-10px, -2px) scale(0.95);
+    text-shadow: -6px 0 #FF4500, 6px 0 #FFD700, 0 0 50px #FFD700;
+    filter: contrast(2);
+  }
+  30% { 
+    transform: translate(8px, 1px) scale(1.1);
+    text-shadow: -2px 0 #FF4500, 2px 0 #FFD700;
+  }
+  40% { 
+    transform: translate(-3px, -3px) scale(0.9);
+    text-shadow: -8px 0 #FF4500, 8px 0 #FFD700;
+  }
+  50% { 
+    transform: translate(12px, 0px) scale(1.2);
+    text-shadow: -4px 0 #FF4500, 4px 0 #FFD700, 0 0 100px #FFD700;
+  }
+  60% { 
+    transform: translate(-7px, 2px) scale(0.85);
+  }
+  70% { 
+    transform: translate(4px, -1px) scale(1.15);
+  }
+  80% { 
+    transform: translate(-2px, 3px) scale(0.92);
+  }
+  90% { 
+    transform: translate(1px, -1px) scale(1.03);
+  }
+}
+
+/* GROOVIE PSYCHEDELIC - Trippy vibes */
+@keyframes groovie-psychedelic {
+  0% { 
+    transform: rotate(0deg) scale(1);
+    filter: hue-rotate(0deg) blur(0px);
+  }
+  20% { 
+    transform: rotate(72deg) scale(1.3);
+    filter: hue-rotate(72deg) blur(1px);
+  }
+  40% { 
+    transform: rotate(144deg) scale(0.7);
+    filter: hue-rotate(144deg) blur(2px);
+  }
+  60% { 
+    transform: rotate(216deg) scale(1.5);
+    filter: hue-rotate(216deg) blur(1px);
+  }
+  80% { 
+    transform: rotate(288deg) scale(0.9);
+    filter: hue-rotate(288deg) blur(0.5px);
+  }
+  100% { 
+    transform: rotate(360deg) scale(1);
+    filter: hue-rotate(360deg) blur(0px);
+  }
+}
+
+/* METAL DESTRUCTION - Apocalipsis */
+@keyframes metal-destruction {
+  0%, 100% { 
+    transform: scale(1) rotate(0deg);
+    text-shadow: 
+      0 0 20px #FF0000,
+      0 0 40px #FF0000,
+      0 0 60px #FF0000,
+      0 0 80px #FF0000;
+    filter: brightness(1);
+  }
+  10% { 
+    transform: scale(1.2) rotate(-2deg);
+    text-shadow: 
+      5px 5px 0px #800000,
+      10px 10px 0px #400000,
+      15px 15px 0px #200000,
+      0 0 100px #FF0000;
+    filter: brightness(1.5);
+  }
+  20% { 
+    transform: scale(0.8) rotate(3deg);
+    text-shadow: 
+      -3px -3px 0px #800000,
+      -6px -6px 0px #400000,
+      0 0 80px #FF0000;
+    filter: brightness(2);
+  }
+  30% { 
+    transform: scale(1.4) rotate(-1deg);
+    text-shadow: 
+      0 0 120px #FF0000,
+      0 0 150px #FF4500;
+    filter: brightness(0.8);
+  }
+  40% { 
+    transform: scale(0.6) rotate(4deg);
+    filter: brightness(2.5);
+  }
+  50% { 
+    transform: scale(1.6) rotate(0deg);
+    text-shadow: 
+      0 0 200px #FF0000,
+      0 0 300px #FF0000;
+    filter: brightness(0.5);
+  }
+  60% { 
+    transform: scale(0.9) rotate(-3deg);
+    filter: brightness(3);
+  }
+  70% { 
+    transform: scale(1.1) rotate(2deg);
+    filter: brightness(0.7);
+  }
+  80% { 
+    transform: scale(0.95) rotate(-1deg);
+    filter: brightness(2);
+  }
+  90% { 
+    transform: scale(1.05) rotate(1deg);
+    filter: brightness(1.2);
+  }
+}

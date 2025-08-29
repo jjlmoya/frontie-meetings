@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Audio Debug Test</title>
+</head>
+<body>
+    <h1>Audio Debug Test</h1>
+    <button onclick="testAudio()">Test Metal Audio</button>
+    <button onclick="testBeach()">Test Beach Audio</button>
+    <button onclick="testFunky()">Test Funky Audio</button>
+    <button onclick="testGroovie()">Test Groovie Audio</button>
+    
+    <script>
+        async function testAudio() {
+            try {
+                const audio = new Audio('/assets/audio/metal.mp3');
+                audio.volume = 0.5;
+                audio.loop = true;
+                await audio.play();
+                console.log('Metal audio playing!');
+            } catch (error) {
+                console.error('Metal audio failed:', error);
+            }
+        }
+
+        async function testBeach() {
+            try {
+                const audio = new Audio('/assets/audio/beach.mp3');
+                audio.volume = 0.5;
+                audio.loop = true;
+                await audio.play();
+                console.log('Beach audio playing!');
+            } catch (error) {
+                console.error('Beach audio failed:', error);
+            }
+        }
+
+        async function testFunky() {
+            try {
+                const audio = new Audio('/assets/audio/funky.mp3');
+                audio.volume = 0.5;
+                audio.loop = true;
+                await audio.play();
+                console.log('Funky audio playing!');
+            } catch (error) {
+                console.error('Funky audio failed:', error);
+            }
+        }
+
+        async function testGroovie() {
+            try {
+                const audio = new Audio('/assets/audio/groovie.mp3');
+                audio.volume = 0.5;
+                audio.loop = true;
+                await audio.play();
+                console.log('Groovie audio playing!');
+            } catch (error) {
+                console.error('Groovie audio failed:', error);
+            }
+        }
+    </script>
+</body>
+</html>
