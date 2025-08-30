@@ -75,6 +75,7 @@ const blackOpsOne = Black_Ops_One({
 export const metadata: Metadata = {
   title: "FRONT-LINE - Meeting Starting Soon",
   description: "Dynamic meeting starting soon pages with synchronized audio and video - Divide & Conquer",
+  metadataBase: new URL('https://frontie-meetings.vercel.app'),
   icons: {
     icon: '/favicon.png',
     shortcut: '/favicon.png',
@@ -83,14 +84,26 @@ export const metadata: Metadata = {
   openGraph: {
     title: "FRONT-LINE - Meeting Starting Soon",
     description: "Dynamic meeting starting soon pages with synchronized audio and video - Divide & Conquer",
-    images: ['/favicon.png'],
+    url: 'https://frontie-meetings.vercel.app',
+    siteName: 'FRONT-LINE',
+    images: [
+      {
+        url: '/favicon.png',
+        width: 512,
+        height: 512,
+        alt: 'FRONT-LINE - Divide & Conquer',
+      }
+    ],
     type: 'website',
+    locale: 'en_US',
   },
   twitter: {
-    card: 'summary',
+    card: 'summary_large_image',
     title: "FRONT-LINE - Meeting Starting Soon",
     description: "Dynamic meeting starting soon pages with synchronized audio and video - Divide & Conquer",
     images: ['/favicon.png'],
+    creator: '@frontline',
+    site: '@frontline',
   },
 };
 
@@ -105,6 +118,11 @@ export default function RootLayout({
         <link rel="icon" type="image/png" href="/favicon.png?v=2" />
         <link rel="shortcut icon" type="image/png" href="/favicon.png?v=2" />
         <link rel="apple-touch-icon" href="/favicon.png?v=2" />
+        <meta property="og:image:width" content="512" />
+        <meta property="og:image:height" content="512" />
+        <meta property="og:image:type" content="image/png" />
+        <meta name="twitter:image" content="https://frontie-meetings.vercel.app/favicon.png" />
+        <meta name="twitter:image:alt" content="FRONT-LINE - Divide & Conquer" />
       </head>
       <body
         className={`${geistSans.variable} ${geistMono.variable} ${righteous.variable} ${creepster.variable} ${orbitron.variable} ${dancingScript.variable} ${bungee.variable} ${monoton.variable} ${audiowide.variable} ${blackOpsOne.variable} antialiased`}
