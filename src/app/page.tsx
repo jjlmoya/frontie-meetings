@@ -11,7 +11,7 @@ import { useAudioAnalyzer } from '@/hooks/useAudioAnalyzer';
 
 export default function FantasiaPage() {
   const { config, loading, error } = useMeetingConfig();
-  const { audioData, play, isReady, setVolume, currentVolume } = useAudioAnalyzer(config?.assets.audio || '', 0.2);
+  const { audioData, setVolume, currentVolume } = useAudioAnalyzer(config?.assets.audio || '', 0.2);
   const [configKey, setConfigKey] = useState(0);
   const [userInteracted, setUserInteracted] = useState(false);
 
@@ -30,7 +30,7 @@ export default function FantasiaPage() {
           console.log('Audio playing after interaction!');
           
           // Guardar referencia global para control de volumen
-          (window as any).globalAudio = audio;
+          (window as unknown as { globalAudio: HTMLAudioElement }).globalAudio = audio;
         } catch (error) {
           console.error('Failed to play audio after interaction:', error);
         }

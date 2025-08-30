@@ -30,19 +30,19 @@ export const MediaPlayer = ({ assets, style, onVideoError, onVideoLoad }: MediaP
     onVideoError?.();
   };
 
-  const handleVideoPlay = () => {
-    if (videoRef.current) {
-      videoRef.current.muted = true;
-      videoRef.current.play().catch(handleVideoError);
-    }
-  };
-
   useEffect(() => {
+    const handleVideoPlay = () => {
+      if (videoRef.current) {
+        videoRef.current.muted = true;
+        videoRef.current.play().catch(handleVideoError);
+      }
+    };
+
     if (videoLoaded && videoRef.current) {
       const timer = setTimeout(handleVideoPlay, 1000);
       return () => clearTimeout(timer);
     }
-  }, [videoLoaded]);
+  }, [videoLoaded, handleVideoError]);
 
   return (
     <div className="fixed inset-0 w-full h-full overflow-hidden">

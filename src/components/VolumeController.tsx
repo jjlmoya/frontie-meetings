@@ -34,8 +34,8 @@ export const VolumeController = ({ volume, onVolumeChange }: VolumeControllerPro
     onVolumeChange(newVolume);
     
     // Controlar el audio global si existe
-    if ((window as any).globalAudio) {
-      (window as any).globalAudio.volume = newVolume;
+    if ((window as unknown as { globalAudio?: HTMLAudioElement }).globalAudio) {
+      (window as unknown as { globalAudio: HTMLAudioElement }).globalAudio.volume = newVolume;
     }
     
     showController();

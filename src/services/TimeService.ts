@@ -59,7 +59,7 @@ export class TimeService implements ITimeService {
 
     const upcomingSlots = timeSlots
       .map(slot => {
-        let targetDate = new Date(now);
+        const targetDate = new Date(now);
         
         let daysToAdd = slot.dayOfWeek - currentDay;
         if (daysToAdd < 0 || 

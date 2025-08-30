@@ -27,7 +27,7 @@ export const useAudioAnalyzer = (audioUrl: string, initialVolume: number = 0.2) 
       }
 
       if (!audioContextRef.current) {
-        audioContextRef.current = new (window.AudioContext || (window as any).webkitAudioContext)();
+        audioContextRef.current = new (window.AudioContext || (window as unknown as { webkitAudioContext?: typeof AudioContext }).webkitAudioContext)();
       }
 
       if (!analyzerRef.current) {

@@ -22,7 +22,7 @@ export const PlayButton = ({ onPlay, audioUrl }: PlayButtonProps) => {
       console.log('Audio started successfully from button!');
       
       // Hacer que el audio sea accesible globalmente para el control de volumen
-      (window as any).globalAudio = audio;
+      (window as unknown as { globalAudio: HTMLAudioElement }).globalAudio = audio;
       
     } catch (error) {
       console.error('Failed to start audio:', error);

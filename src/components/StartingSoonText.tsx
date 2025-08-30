@@ -49,30 +49,6 @@ export const StartingSoonText = ({ style, audioData }: StartingSoonTextProps) =>
     };
   };
 
-  const renderAnimatedLetters = () => {
-    const text = 'STARTING SOON';
-    const letters = text.split('');
-    
-    return letters.map((letter, index) => {
-      const delay = index * 0.1;
-      const letterIntensity = Math.sin((Date.now() / 500) + delay) * 0.5 + 0.5;
-      const dynamicOpacity = 0.7 + (letterIntensity * animationIntensity * 0.3);
-      
-      return (
-        <span
-          key={index}
-          className="inline-block"
-          style={{
-            opacity: dynamicOpacity,
-            transform: `translateY(${Math.sin((Date.now() / 300) + delay) * 5 * animationIntensity}px)`,
-            transition: 'opacity 0.1s ease-out',
-          }}
-        >
-          {letter === ' ' ? '\u00A0' : letter}
-        </span>
-      );
-    });
-  };
 
   return (
     <div className="absolute inset-0 flex items-end justify-center pb-32 z-10 pointer-events-none">
