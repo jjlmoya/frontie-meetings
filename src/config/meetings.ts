@@ -17,8 +17,8 @@ export const MEETINGS_CONFIG: readonly MeetingConfig[] = [
       audio: '/assets/audio/beach.mp3',
     },
     style: {
-      fontFamily: 'var(--font-audiowide)',
-      fallbackFont: 'Arial Black, sans-serif',
+      fontFamily: 'var(--font-bungee)',
+      fallbackFont: 'Impact, sans-serif',
       primaryColor: '#00FFFF',
       backgroundColor: '#004080',
       textAnimation: 'wave-beach',
