@@ -73,12 +73,24 @@ const blackOpsOne = Black_Ops_One({
 });
 
 export const metadata: Metadata = {
-  title: "Meeting Starting Soon",
-  description: "Dynamic meeting starting soon pages with synchronized audio and video",
+  title: "FRONT-LINE - Meeting Starting Soon",
+  description: "Dynamic meeting starting soon pages with synchronized audio and video - Divide & Conquer",
   icons: {
     icon: '/favicon.png',
     shortcut: '/favicon.png',
     apple: '/favicon.png',
+  },
+  openGraph: {
+    title: "FRONT-LINE - Meeting Starting Soon",
+    description: "Dynamic meeting starting soon pages with synchronized audio and video - Divide & Conquer",
+    images: ['/favicon.png'],
+    type: 'website',
+  },
+  twitter: {
+    card: 'summary',
+    title: "FRONT-LINE - Meeting Starting Soon",
+    description: "Dynamic meeting starting soon pages with synchronized audio and video - Divide & Conquer",
+    images: ['/favicon.png'],
   },
 };
 
