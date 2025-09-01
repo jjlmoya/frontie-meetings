@@ -19,25 +19,25 @@ export const useAudioAnalyzer = (audioUrl: string, initialVolume: number = 0.2) 
 
   const initializeAudio = useCallback(async () => {
     try {
-      console.log('Initializing Web Audio API...');
+      // Initializing Web Audio API
       
       if (!audioContextRef.current) {
         audioContextRef.current = new (window.AudioContext || (window as unknown as { webkitAudioContext?: typeof AudioContext }).webkitAudioContext)();
-        console.log('Audio context created, state:', audioContextRef.current.state);
+        // Audio context created
       }
 
       if (!analyzerRef.current && audioContextRef.current) {
         analyzerRef.current = audioContextRef.current.createAnalyser();
         analyzerRef.current.fftSize = 256;
         analyzerRef.current.smoothingTimeConstant = 0.3; // Menos suavizado para más sensibilidad
-        console.log('Analyzer created with fftSize:', analyzerRef.current.fftSize);
+        // Audio analyzer created
       }
 
       if (!sourceRef.current && audioRef.current && audioContextRef.current && analyzerRef.current) {
         sourceRef.current = audioContextRef.current.createMediaElementSource(audioRef.current);
         sourceRef.current.connect(analyzerRef.current);
         analyzerRef.current.connect(audioContextRef.current.destination);
-        console.log('Audio source connected to analyzer');
+        // Audio source connected
       }
     } catch (error) {
       console.error('Error initializing audio:', error);
@@ -46,37 +46,44 @@ export const useAudioAnalyzer = (audioUrl: string, initialVolume: number = 0.2) 
 
   const startAnalysis = useCallback(() => {
     if (!analyzerRef.current) {
-      console.error('No analyzer available for audio analysis');
       return;
     }
 
-    console.log('Starting audio analysis...');
+    // Starting audio analysis
     const bufferLength = analyzerRef.current.frequencyBinCount;
     const dataArray = new Uint8Array(bufferLength);
+    let lastUpdateTime = 0;
+    const updateInterval = 1000 / 30; // 30fps max for audio data
 
-    const updateAudioData = () => {
+    const updateAudioData = (currentTime: number) => {
       if (!analyzerRef.current) return;
 
-      analyzerRef.current.getByteFrequencyData(dataArray);
-      
-      const volume = dataArray.reduce((sum, value) => sum + value, 0) / bufferLength / 255;
-      const arraySum = dataArray.reduce((sum, value) => sum + value, 0);
-      
-      // Debug cada 60 frames (~1 segundo)
-      if (Math.floor(Date.now() / 1000) % 2 === 0 && Math.floor(Date.now() / 100) % 10 === 0) {
-        console.log('Audio analysis - Volume:', volume.toFixed(3), 'Sum:', arraySum, 'First 5:', Array.from(dataArray.slice(0, 5)));
+      // Throttle updates to 30fps to prevent infinite loops
+      if (currentTime - lastUpdateTime >= updateInterval) {
+        analyzerRef.current.getByteFrequencyData(dataArray);
+        
+        const volume = dataArray.reduce((sum, value) => sum + value, 0) / bufferLength / 255;
+        
+        // Only update if there's a significant change
+        setAudioData(prev => {
+          const volumeChanged = Math.abs(prev.volume - volume) > 0.01;
+          if (volumeChanged) {
+            return {
+              frequencyData: new Uint8Array(dataArray),
+              volume,
+              isPlaying: audioRef.current?.paused === false,
+            };
+          }
+          return prev;
+        });
+        
+        lastUpdateTime = currentTime;
       }
-      
-      setAudioData({
-        frequencyData: new Uint8Array(dataArray),
-        volume,
-        isPlaying: audioRef.current?.paused === false,
-      });
 
       animationFrameRef.current = requestAnimationFrame(updateAudioData);
     };
 
-    updateAudioData();
+    animationFrameRef.current = requestAnimationFrame(updateAudioData);
   }, []);
 
   const fadeIn = useCallback((targetVolume: number, duration: number = 2000) => {
@@ -139,7 +146,7 @@ export const useAudioAnalyzer = (audioUrl: string, initialVolume: number = 0.2) 
 
   const play = useCallback(async () => {
     try {
-      console.log('Attempting to play audio:', audioUrl);
+      // Attempting audio playback
       
       // Crear audio fresh si no existe
       if (!audioRef.current && audioUrl) {
@@ -149,28 +156,28 @@ export const useAudioAnalyzer = (audioUrl: string, initialVolume: number = 0.2) 
         audioRef.current.crossOrigin = 'anonymous';
         audioRef.current.preload = 'auto';
         
-        console.log('Created new audio element');
+        // Audio element created
       }
       
       if (audioRef.current) {
         // Primero configurar Web Audio API
         await initializeAudio();
-        console.log('Audio initialized');
+        // Audio system initialized
         
         // Asegurarse de que el contexto esté activo
         if (audioContextRef.current?.state === 'suspended') {
           await audioContextRef.current.resume();
-          console.log('Audio context resumed');
+          // Audio context resumed
         }
         
         // Reproducir el audio
         audioRef.current.volume = currentVolume;
         await audioRef.current.play();
-        console.log('Audio playing successfully!');
+        // Audio playback started
         
         // Iniciar análisis
         startAnalysis();
-        console.log('Analysis started');
+        // Audio analysis active
       }
     } catch (error) {
       console.error('Error playing audio:', error);
@@ -178,7 +185,7 @@ export const useAudioAnalyzer = (audioUrl: string, initialVolume: number = 0.2) 
       if (audioRef.current) {
         try {
           await audioRef.current.play();
-          console.log('Audio playing without Web Audio API');
+          // Fallback audio playback active
         } catch (fallbackError) {
           console.error('Fallback audio play failed:', fallbackError);
         }

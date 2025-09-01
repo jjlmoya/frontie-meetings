@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useRef, useCallback } from 'react';
 import type { MediaAssets, ThemeConfig, AudioAnalyzerData } from '@/types';
-import { AudioVideoOverlay } from './AudioVideoOverlay';
+import { ParticleEffect } from './ParticleEffect';
 
 interface MediaPlayerProps {
   assets: MediaAssets;
@@ -95,8 +95,8 @@ export const MediaPlayer = ({
           }}
         />
         
-        {/* Audio-reactive video overlay */}
-        <AudioVideoOverlay 
+        {/* High-performance particle effects */}
+        <ParticleEffect 
           style={style}
           audioData={audioData}
           isEnabled={effectsEnabled && videoLoaded && !videoError}

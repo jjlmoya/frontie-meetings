@@ -25,12 +25,16 @@ export const AudioVideoOverlay = ({
 }: AudioVideoOverlayProps) => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const animationRef = useRef<number>(0);
+  const lastRenderTime = useRef<number>(0);
   const [frequencies, setFrequencies] = useState<AudioFrequencies>({
     bass: 0,
     mid: 0,
     treble: 0,
     volume: 0
   });
+  
+  // Performance optimization: Cache canvas context
+  const ctxRef = useRef<CanvasRenderingContext2D | null>(null);
 
   // Analyze frequency bands from audio data
   const analyzeFrequencies = (frequencyData: Uint8Array): AudioFrequencies => {
@@ -67,15 +71,9 @@ export const AudioVideoOverlay = ({
     if (!canvas) return;
 
     const resizeCanvas = () => {
-      const parent = canvas.parentElement;
-      if (parent) {
-        canvas.width = parent.clientWidth;
-        canvas.height = parent.clientHeight;
-      } else {
-        canvas.width = window.innerWidth;
-        canvas.height = window.innerHeight;
-      }
-      console.log('Canvas resized to:', canvas.width, 'x', canvas.height);
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+      // Canvas resized
     };
 
     // Resize immediately and on window resize
@@ -175,8 +173,13 @@ export const AudioVideoOverlay = ({
     }
   };
 
-  // Groovie theme kaleidoscope effects
+  // Groovie theme kaleidoscope effects  
   const drawGroovieEffects = (ctx: CanvasRenderingContext2D, canvas: HTMLCanvasElement) => {
+    // FORCE CANVAS SIZE CHECK
+    if (canvas.width < 500 || canvas.height < 500) {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+    }
     const time = Date.now() * 0.0015; // Un pelín más rápido
     const { bass, mid, treble, volume } = frequencies;
     
@@ -213,22 +216,18 @@ export const AudioVideoOverlay = ({
       ctx.restore();
     }
     
-    // Psychedelic rotating gradient backdrop
+    // Psychedelic rotating gradient backdrop - FULL SCREEN
     const rotation = time + effectiveVolume * intensity * Math.PI;
     
-    ctx.save();
-    ctx.translate(centerX, centerY);
-    ctx.rotate(rotation);
-    
-    const gradient = ctx.createRadialGradient(0, 0, 0, 0, 0, Math.max(canvas.width, canvas.height) / 2);
-    gradient.addColorStop(0, `rgba(255, 20, 147, ${effectiveBass * intensity * 0.25})`); // Un poquito más intenso
+    const gradient = ctx.createRadialGradient(centerX, centerY, 0, centerX, centerY, Math.max(canvas.width, canvas.height));
+    gradient.addColorStop(0, `rgba(255, 20, 147, ${effectiveBass * intensity * 0.25})`);
     gradient.addColorStop(0.3, `rgba(255, 105, 180, ${effectiveMid * intensity * 0.18})`);
     gradient.addColorStop(0.6, `rgba(138, 43, 226, ${effectiveTreble * intensity * 0.15})`);
-    gradient.addColorStop(1, `rgba(255, 255, 255, 0.04)`);
+    gradient.addColorStop(1, `rgba(138, 43, 226, 0)`);
     
     ctx.fillStyle = gradient;
-    ctx.fillRect(-canvas.width, -canvas.height, canvas.width * 2, canvas.height * 2);
-    ctx.restore();
+    // FORCE FULL SCREEN FILL
+    ctx.fillRect(0, 0, window.innerWidth, window.innerHeight);
     
     // Floating orbs/bubbles (un pelín más activos)
     for (let i = 0; i < 10; i++) { // Un par más de orbes
@@ -283,12 +282,37 @@ export const AudioVideoOverlay = ({
   };
 
   // Main render function
-  const render = useCallback(() => {
+  const render = useCallback((currentTime: number) => {
     const canvas = canvasRef.current;
     if (!canvas || !isEnabled) return;
     
-    const ctx = canvas.getContext('2d');
+    // Ensure canvas is full size
+    if (canvas.width !== window.innerWidth || canvas.height !== window.innerHeight) {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+    }
+    
+    // Frame rate limiting: target 60fps (16.67ms per frame)
+    if (currentTime - lastRenderTime.current < 16.67) {
+      animationRef.current = requestAnimationFrame(render);
+      return;
+    }
+    lastRenderTime.current = currentTime;
+    
+    // Use cached context
+    if (!ctxRef.current) {
+      ctxRef.current = canvas.getContext('2d', { 
+        alpha: true,
+        antialias: false,  // Disable antialiasing for performance
+        powerPreference: 'high-performance'
+      });
+    }
+    
+    const ctx = ctxRef.current;
     if (!ctx) return;
+
+    // Clear full canvas
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
 
     // Apply effects based on theme keywords
     const theme = style.textAnimation;
@@ -332,7 +356,7 @@ export const AudioVideoOverlay = ({
   return (
     <canvas
       ref={canvasRef}
-      className="absolute inset-0 pointer-events-none z-10 w-full h-full"
+      className="fixed inset-0 pointer-events-none z-10 w-full h-full"
       style={{
         mixBlendMode: 'screen',
         opacity: intensity,

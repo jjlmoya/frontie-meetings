@@ -49,13 +49,6 @@ export const EffectsController = ({
 
   return (
     <>
-      <button
-        onClick={showController}
-        className="fixed bottom-4 left-4 z-50 bg-black/30 text-white p-2 rounded-full backdrop-blur-sm hover:bg-black/50 transition-all duration-200"
-        title="Audio Effects"
-      >
-        🎨
-      </button>
 
       {isVisible && (
         <div className="fixed bottom-16 left-4 z-50 bg-black/70 text-white p-4 rounded-lg backdrop-blur-sm transition-all duration-200 min-w-[200px]">

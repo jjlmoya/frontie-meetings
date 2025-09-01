@@ -19,7 +19,7 @@ export const PlayButton = ({ onPlay, audioUrl }: PlayButtonProps) => {
       audio.volume = 0.2;
       audio.loop = true;
       await audio.play();
-      console.log('Audio started successfully from button!');
+      // Audio started from play button
       
       // Hacer que el audio sea accesible globalmente para el control de volumen
       (window as unknown as { globalAudio: HTMLAudioElement }).globalAudio = audio;

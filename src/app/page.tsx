@@ -7,12 +7,15 @@ import { VolumeController } from '@/components/VolumeController';
 import { WatermarkOverlay } from '@/components/WatermarkOverlay';
 import { InteractionPrompt } from '@/components/InteractionPrompt';
 import { EffectsController } from '@/components/EffectsController';
+import { PerformanceMonitor } from '@/components/PerformanceMonitor';
+import { WebGLEffects } from '@/components/WebGLEffects';
+import { LiveMessenger } from '@/components/LiveMessenger';
 import { useMeetingConfig } from '@/hooks/useMeetingConfig';
 import { useAudioAnalyzer } from '@/hooks/useAudioAnalyzer';
 
 export default function FantasiaPage() {
   const { config, loading, error } = useMeetingConfig();
-  const { audioData, setVolume, currentVolume, play } = useAudioAnalyzer(config?.assets.audio || '', 0.2);
+  const { audioData, setVolume, currentVolume, play } = useAudioAnalyzer(config?.assets.audio || '', 0.15);
   const [configKey, setConfigKey] = useState(0);
   const [userInteracted, setUserInteracted] = useState(false);
   const [effectsEnabled, setEffectsEnabled] = useState(true);
@@ -27,7 +30,7 @@ export default function FantasiaPage() {
         // Usar el hook de audio que tiene el analizador
         try {
           await play();
-          console.log('Audio hook play() called successfully!');
+          // Audio started successfully
         } catch (error) {
           console.error('Failed to play audio with hook:', error);
         }
@@ -83,6 +86,14 @@ export default function FantasiaPage() {
         effectsEnabled={effectsEnabled}
         effectsIntensity={effectsIntensity}
       />
+
+      {/* High-performance WebGL effects layer - ABOVE VIDEO */}
+      <WebGLEffects
+        style={config.style}
+        audioData={audioData}
+        isEnabled={effectsEnabled}
+        intensity={effectsIntensity}
+      />
       
       <StartingSoonText 
         style={config.style}
@@ -103,7 +114,14 @@ export default function FantasiaPage() {
         onIntensityChange={setEffectsIntensity}
       />
 
+      <PerformanceMonitor 
+        position="top-right"
+        isVisible={false}
+      />
+
       <InteractionPrompt show={!userInteracted && !!config} />
+
+      <LiveMessenger />
     </div>
   );
 }

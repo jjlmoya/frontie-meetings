@@ -35,7 +35,7 @@ export const WatermarkOverlay = ({ audioData }: WatermarkOverlayProps) => {
     const bassData = dataArray.slice(0, bassEnd);
     const bassValue = bassData.reduce((sum, val) => sum + val, 0) / bassData.length / 255;
     
-    console.log('Pure bass value:', bassValue.toFixed(3));
+    // Bass analysis complete
     
     // SOLO graves, no volumen general
     return bassValue;
@@ -145,19 +145,19 @@ export const WatermarkOverlay = ({ audioData }: WatermarkOverlayProps) => {
       {/* Animated DRUM logo */}
       <div 
         ref={logoRef}
-        className="fixed bottom-8 right-8 z-40 pointer-events-none"
+        className="fixed bottom-0 right-0 z-40 pointer-events-none"
         style={{
           transform: `scale(${logoScale})`,
           transition: 'transform 0.4s cubic-bezier(0.4, 0, 0.2, 1)', // Transición mucho más suave
           transformOrigin: 'center center'
         }}
       >
-        <div className="p-2">
+        <div className="p-3 bg-black/20 rounded-lg">
           <Image
             src="/favicon.png"
             alt="FRONT-LINE"
-            width={96}
-            height={96}
+            width={120}
+            height={120}
             className={`opacity-95 ${logoGlow}`}
             priority
           />
