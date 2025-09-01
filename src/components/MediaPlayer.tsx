@@ -1,16 +1,28 @@
 'use client';
 
-import { useState, useEffect, useRef } from 'react';
-import type { MediaAssets, ThemeConfig } from '@/types';
+import { useState, useEffect, useRef, useCallback } from 'react';
+import type { MediaAssets, ThemeConfig, AudioAnalyzerData } from '@/types';
+import { AudioVideoOverlay } from './AudioVideoOverlay';
 
 interface MediaPlayerProps {
   assets: MediaAssets;
   style: ThemeConfig;
+  audioData?: AudioAnalyzerData;
+  effectsEnabled?: boolean;
+  effectsIntensity?: number;
   onVideoError?: () => void;
   onVideoLoad?: () => void;
 }
 
-export const MediaPlayer = ({ assets, style, onVideoError, onVideoLoad }: MediaPlayerProps) => {
+export const MediaPlayer = ({ 
+  assets, 
+  style, 
+  audioData, 
+  effectsEnabled = true,
+  effectsIntensity = 0.8,
+  onVideoError, 
+  onVideoLoad 
+}: MediaPlayerProps) => {
   const [videoLoaded, setVideoLoaded] = useState(false);
   const [videoError, setVideoError] = useState(false);
   const videoRef = useRef<HTMLVideoElement>(null);
@@ -25,10 +37,10 @@ export const MediaPlayer = ({ assets, style, onVideoError, onVideoLoad }: MediaP
     onVideoLoad?.();
   };
 
-  const handleVideoError = () => {
+  const handleVideoError = useCallback(() => {
     setVideoError(true);
     onVideoError?.();
-  };
+  }, [onVideoError]);
 
   useEffect(() => {
     const handleVideoPlay = () => {
@@ -81,6 +93,14 @@ export const MediaPlayer = ({ assets, style, onVideoError, onVideoLoad }: MediaP
           style={{
             background: `linear-gradient(135deg, ${style.backgroundColor}40, ${style.primaryColor}20)`,
           }}
+        />
+        
+        {/* Audio-reactive video overlay */}
+        <AudioVideoOverlay 
+          style={style}
+          audioData={audioData}
+          isEnabled={effectsEnabled && videoLoaded && !videoError}
+          intensity={effectsIntensity}
         />
       </div>
     </div>

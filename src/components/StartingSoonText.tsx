@@ -13,7 +13,8 @@ export const StartingSoonText = ({ style, audioData }: StartingSoonTextProps) =>
 
   useEffect(() => {
     if (audioData) {
-      setAnimationIntensity(Math.max(0.3, Math.min(1, audioData.volume * 2)));
+      // Mucho más calmado - solo 30% de intensidad máxima
+      setAnimationIntensity(Math.max(0.4, Math.min(0.7, 0.4 + audioData.volume * 0.3)));
     }
   }, [audioData]);
 
@@ -37,15 +38,15 @@ export const StartingSoonText = ({ style, audioData }: StartingSoonTextProps) =>
   };
 
   const getDynamicStyles = () => {
-    const opacity = 0.9 + (animationIntensity * 0.1);
-    const animationDuration = Math.max(0.5, 2 - animationIntensity);
+    const opacity = 0.9 + (animationIntensity * 0.05); // Menos variación de opacidad
+    const animationDuration = Math.max(1.5, 3 - animationIntensity * 0.5); // Más lento y menos variable
     
     return {
       fontFamily: `${style.fontFamily}, ${style.fallbackFont}`,
       color: style.primaryColor,
       animation: `${style.textAnimation} ${animationDuration}s infinite`,
       opacity,
-      transition: 'all 0.1s ease-out',
+      transition: 'all 0.3s ease-out', // Transición más lenta
     };
   };
 
@@ -61,15 +62,15 @@ export const StartingSoonText = ({ style, audioData }: StartingSoonTextProps) =>
         </h1>
         
         <div className="mt-6 flex justify-center space-x-1">
-          {Array.from(audioData?.frequencyData.slice(0, 12) || []).map((value, index) => (
+          {Array.from(audioData?.frequencyData.slice(0, 8) || []).map((value, index) => (
             <div
               key={index}
-              className="w-1 bg-current rounded-full transition-all duration-100"
+              className="w-1 bg-current rounded-full transition-all duration-300" // Transición más lenta
               style={{
-                height: `${Math.max(4, (value / 255) * 24)}px`,
-                opacity: 0.6 + (value / 255) * 0.4,
+                height: `${Math.max(6, Math.min(16, (value / 255) * 12))}px`, // Altura más limitada
+                opacity: 0.7 + (value / 255) * 0.2, // Menos variación de opacidad
                 color: style.primaryColor,
-                filter: `drop-shadow(0 0 ${(value / 255) * 8}px ${style.primaryColor})`,
+                filter: `drop-shadow(0 0 ${Math.min(4, (value / 255) * 4)}px ${style.primaryColor})`, // Menos glow
               }}
             />
           ))}

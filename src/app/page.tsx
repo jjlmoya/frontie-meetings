@@ -6,33 +6,30 @@ import { StartingSoonText } from '@/components/StartingSoonText';
 import { VolumeController } from '@/components/VolumeController';
 import { WatermarkOverlay } from '@/components/WatermarkOverlay';
 import { InteractionPrompt } from '@/components/InteractionPrompt';
+import { EffectsController } from '@/components/EffectsController';
 import { useMeetingConfig } from '@/hooks/useMeetingConfig';
 import { useAudioAnalyzer } from '@/hooks/useAudioAnalyzer';
 
 export default function FantasiaPage() {
   const { config, loading, error } = useMeetingConfig();
-  const { audioData, setVolume, currentVolume } = useAudioAnalyzer(config?.assets.audio || '', 0.2);
+  const { audioData, setVolume, currentVolume, play } = useAudioAnalyzer(config?.assets.audio || '', 0.2);
   const [configKey, setConfigKey] = useState(0);
   const [userInteracted, setUserInteracted] = useState(false);
+  const [effectsEnabled, setEffectsEnabled] = useState(true);
+  const [effectsIntensity, setEffectsIntensity] = useState(0.8);
 
-  // Detectar cualquier interacción del usuario y reproducir directamente
+  // Detectar cualquier interacción del usuario y usar el hook correctamente
   useEffect(() => {
     const handleInteraction = async () => {
-      if (!userInteracted && config) {
+      if (!userInteracted && config && play) {
         setUserInteracted(true);
         
-        // Reproducir directamente aquí sin esperar al hook complejo
+        // Usar el hook de audio que tiene el analizador
         try {
-          const audio = new Audio(config.assets.audio);
-          audio.volume = 0.2;
-          audio.loop = true;
-          await audio.play();
-          console.log('Audio playing after interaction!');
-          
-          // Guardar referencia global para control de volumen
-          (window as unknown as { globalAudio: HTMLAudioElement }).globalAudio = audio;
+          await play();
+          console.log('Audio hook play() called successfully!');
         } catch (error) {
-          console.error('Failed to play audio after interaction:', error);
+          console.error('Failed to play audio with hook:', error);
         }
       }
     };
@@ -45,7 +42,7 @@ export default function FantasiaPage() {
       document.removeEventListener('click', handleInteraction);
       document.removeEventListener('keydown', handleInteraction);
     };
-  }, [config, userInteracted]);
+  }, [config, userInteracted, play]);
 
   // Refresh cuando cambie la query
   useEffect(() => {
@@ -82,6 +79,9 @@ export default function FantasiaPage() {
         key={configKey}
         assets={config.assets}
         style={config.style}
+        audioData={audioData}
+        effectsEnabled={effectsEnabled}
+        effectsIntensity={effectsIntensity}
       />
       
       <StartingSoonText 
@@ -94,7 +94,14 @@ export default function FantasiaPage() {
         onVolumeChange={setVolume}
       />
 
-      <WatermarkOverlay />
+      <WatermarkOverlay audioData={audioData} />
+
+      <EffectsController 
+        isEnabled={effectsEnabled}
+        intensity={effectsIntensity}
+        onToggle={setEffectsEnabled}
+        onIntensityChange={setEffectsIntensity}
+      />
 
       <InteractionPrompt show={!userInteracted && !!config} />
     </div>

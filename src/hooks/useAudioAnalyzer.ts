@@ -19,36 +19,38 @@ export const useAudioAnalyzer = (audioUrl: string, initialVolume: number = 0.2) 
 
   const initializeAudio = useCallback(async () => {
     try {
-      if (!audioRef.current) {
-        audioRef.current = new Audio(audioUrl);
-        audioRef.current.loop = true;
-        audioRef.current.crossOrigin = 'anonymous';
-        audioRef.current.volume = 0; // Empezar en silencio para fade-in
-      }
-
+      console.log('Initializing Web Audio API...');
+      
       if (!audioContextRef.current) {
         audioContextRef.current = new (window.AudioContext || (window as unknown as { webkitAudioContext?: typeof AudioContext }).webkitAudioContext)();
+        console.log('Audio context created, state:', audioContextRef.current.state);
       }
 
-      if (!analyzerRef.current) {
+      if (!analyzerRef.current && audioContextRef.current) {
         analyzerRef.current = audioContextRef.current.createAnalyser();
         analyzerRef.current.fftSize = 256;
-        analyzerRef.current.smoothingTimeConstant = 0.8;
+        analyzerRef.current.smoothingTimeConstant = 0.3; // Menos suavizado para más sensibilidad
+        console.log('Analyzer created with fftSize:', analyzerRef.current.fftSize);
       }
 
-      if (!sourceRef.current && audioRef.current && audioContextRef.current) {
+      if (!sourceRef.current && audioRef.current && audioContextRef.current && analyzerRef.current) {
         sourceRef.current = audioContextRef.current.createMediaElementSource(audioRef.current);
         sourceRef.current.connect(analyzerRef.current);
         analyzerRef.current.connect(audioContextRef.current.destination);
+        console.log('Audio source connected to analyzer');
       }
     } catch (error) {
       console.error('Error initializing audio:', error);
     }
-  }, [audioUrl]);
+  }, []);
 
   const startAnalysis = useCallback(() => {
-    if (!analyzerRef.current) return;
+    if (!analyzerRef.current) {
+      console.error('No analyzer available for audio analysis');
+      return;
+    }
 
+    console.log('Starting audio analysis...');
     const bufferLength = analyzerRef.current.frequencyBinCount;
     const dataArray = new Uint8Array(bufferLength);
 
@@ -58,6 +60,12 @@ export const useAudioAnalyzer = (audioUrl: string, initialVolume: number = 0.2) 
       analyzerRef.current.getByteFrequencyData(dataArray);
       
       const volume = dataArray.reduce((sum, value) => sum + value, 0) / bufferLength / 255;
+      const arraySum = dataArray.reduce((sum, value) => sum + value, 0);
+      
+      // Debug cada 60 frames (~1 segundo)
+      if (Math.floor(Date.now() / 1000) % 2 === 0 && Math.floor(Date.now() / 100) % 10 === 0) {
+        console.log('Audio analysis - Volume:', volume.toFixed(3), 'Sum:', arraySum, 'First 5:', Array.from(dataArray.slice(0, 5)));
+      }
       
       setAudioData({
         frequencyData: new Uint8Array(dataArray),
@@ -131,47 +139,52 @@ export const useAudioAnalyzer = (audioUrl: string, initialVolume: number = 0.2) 
 
   const play = useCallback(async () => {
     try {
+      console.log('Attempting to play audio:', audioUrl);
+      
       // Crear audio fresh si no existe
       if (!audioRef.current && audioUrl) {
         audioRef.current = new Audio(audioUrl);
         audioRef.current.loop = true;
-        audioRef.current.volume = 0;
-        
-        // Configurar para autoplay
-        audioRef.current.autoplay = true;
+        audioRef.current.volume = currentVolume;
+        audioRef.current.crossOrigin = 'anonymous';
         audioRef.current.preload = 'auto';
+        
+        console.log('Created new audio element');
       }
       
       if (audioRef.current) {
-        try {
-          // Intentar reproducir directamente primero
-          audioRef.current.volume = 0;
-          await audioRef.current.play();
-          console.log('Audio autoplay successful!');
-          
-          // Luego configurar Web Audio API para análisis
-          await initializeAudio();
-          
-          if (audioContextRef.current?.state === 'suspended') {
-            await audioContextRef.current.resume();
-          }
-          
-          startAnalysis();
-          fadeIn(currentVolume);
-        } catch (playError) {
-          console.warn('Autoplay blocked, trying alternative:', playError);
-          // Fallback: reproducir con volumen inmediatamente
-          if (audioRef.current) {
-            audioRef.current.volume = currentVolume;
-            await audioRef.current.play();
-            console.log('Audio playing with direct volume');
-          }
+        // Primero configurar Web Audio API
+        await initializeAudio();
+        console.log('Audio initialized');
+        
+        // Asegurarse de que el contexto esté activo
+        if (audioContextRef.current?.state === 'suspended') {
+          await audioContextRef.current.resume();
+          console.log('Audio context resumed');
         }
+        
+        // Reproducir el audio
+        audioRef.current.volume = currentVolume;
+        await audioRef.current.play();
+        console.log('Audio playing successfully!');
+        
+        // Iniciar análisis
+        startAnalysis();
+        console.log('Analysis started');
       }
     } catch (error) {
       console.error('Error playing audio:', error);
+      // Intentar reproducir sin Web Audio API como fallback
+      if (audioRef.current) {
+        try {
+          await audioRef.current.play();
+          console.log('Audio playing without Web Audio API');
+        } catch (fallbackError) {
+          console.error('Fallback audio play failed:', fallbackError);
+        }
+      }
     }
-  }, [initializeAudio, startAnalysis, fadeIn, currentVolume, audioUrl]);
+  }, [initializeAudio, startAnalysis, currentVolume, audioUrl]);
 
   const pause = useCallback(() => {
     fadeOut();
