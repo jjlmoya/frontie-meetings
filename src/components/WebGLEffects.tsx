@@ -140,6 +140,35 @@ export const WebGLEffects = ({
       return color * coverage * (0.2 + u_volume * 0.8) * u_intensity;
     }
     
+    // Reggaeton effect - FULL SCREEN FORCE
+    vec3 reggaetonEffect(vec2 uv, float time) {
+      vec2 center = vec2(0.5);
+      float dist = distance(uv, center);
+      
+      // Bouncing rhythm patterns - FULL COVERAGE
+      float bounce = sin(time * 4.0 + u_bass * 15.0) * 0.3 + 0.7;
+      float pulse = cos(time * 6.0 + u_mid * 10.0) * 0.2 + 0.8;
+      
+      // Tropical wave patterns - FULL SCREEN
+      vec2 wave = uv + vec2(sin(uv.y * 6.0 + time * 3.0 + u_treble * 8.0) * 0.1, cos(uv.x * 4.0 + time * 2.0) * 0.1);
+      float pattern = fbm(wave * 3.0 + time * 0.8);
+      
+      // Reggaeton colors: orange, yellow, red
+      vec3 orange = vec3(1.0, 0.42, 0.21); // #FF6B35
+      vec3 yellow = vec3(1.0, 0.82, 0.25); // #FFD23F  
+      vec3 red = vec3(0.91, 0.3, 0.24);    // #E74C3C
+      
+      vec3 color = mix(orange, yellow, pattern * bounce);
+      color = mix(color, red, u_bass * pulse * 0.6);
+      
+      // Add rhythmic intensity - FORCE COVERAGE
+      float rhythmIntensity = (sin(time * 8.0 + u_volume * 12.0) * 0.2 + 0.8) * bounce;
+      color *= rhythmIntensity;
+      
+      // FORCE FULL SCREEN COVERAGE
+      return color * (0.4 + u_volume * 0.8) * u_intensity * 1.2;
+    }
+    
     void main() {
       vec2 uv = v_uv;
       vec3 color = vec3(0.0);
@@ -153,6 +182,9 @@ export const WebGLEffects = ({
       } else if (u_theme == 2) {
         // Metal theme
         color = metalEffect(uv, u_time);
+      } else if (u_theme == 3) {
+        // Reggaeton theme
+        color = reggaetonEffect(uv, u_time);
       } else {
         // Default groovie
         color = groovieEffect(uv, u_time);
@@ -249,6 +281,7 @@ export const WebGLEffects = ({
     if (theme.includes('beach') || theme.includes('wave')) return 0;
     if (theme.includes('groovie') || theme.includes('psychedelic')) return 1;
     if (theme.includes('metal') || theme.includes('destruction')) return 2;
+    if (theme.includes('reggaeton') || theme.includes('bounce')) return 3;
     return 1; // Default to groovie
   };
 

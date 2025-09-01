@@ -109,6 +109,23 @@ export const MEETINGS_CONFIG: readonly MeetingConfig[] = [
       textAnimation: 'metal-destruction',
     },
   },
+  {
+    id: 'reggaeton',
+    name: 'Reggaeton Fiesta',
+    type: 'creative',
+    schedule: [],
+    assets: {
+      video: '/assets/videos/reggaeton.mp4',
+      audio: '/assets/audio/reggaeton.mp3',
+    },
+    style: {
+      fontFamily: 'var(--font-righteous)',
+      fallbackFont: 'Arial Black, sans-serif',
+      primaryColor: '#FF6B35',
+      backgroundColor: '#1A1A2E',
+      textAnimation: 'reggaeton-bounce',
+    },
+  },
 ] as const;
 
 // Configs que NO son de tipo daily (para catch-up random)

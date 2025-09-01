@@ -52,12 +52,15 @@ export const LiveMessenger = () => {
     setDisplayedMessage(message);
     setIsVisible(true);
     
-    // NO limpiar el input aquí, mantenerlo para reenvíos
+    // Limpiar el input después de mostrar el mensaje
+    if (inputRef.current) {
+      inputRef.current.value = '';
+    }
 
-    // Auto-hide después de 6 segundos
+    // Auto-hide después de 2.5 segundos
     timeoutRef.current = setTimeout(() => {
       setIsVisible(false);
-    }, 6000);
+    }, 2500);
   };
 
   const handleInputChange = () => {

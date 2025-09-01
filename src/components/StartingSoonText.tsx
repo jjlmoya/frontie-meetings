@@ -32,6 +32,8 @@ export const StartingSoonText = ({ style, audioData }: StartingSoonTextProps) =>
         return `${baseClasses}`;
       case 'metal-destruction':
         return `${baseClasses}`;
+      case 'reggaeton-bounce':
+        return `${baseClasses}`;
       default:
         return `${baseClasses}`;
     }

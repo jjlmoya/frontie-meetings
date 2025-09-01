@@ -16,7 +16,7 @@ export type ThemeConfig = {
   readonly fallbackFont: string;
   readonly primaryColor: string;
   readonly backgroundColor: string;
-  readonly textAnimation: 'wave-beach' | 'funky-chaos' | 'funky-glitch' | 'groovie-psychedelic' | 'metal-destruction';
+  readonly textAnimation: 'wave-beach' | 'funky-chaos' | 'funky-glitch' | 'groovie-psychedelic' | 'metal-destruction' | 'reggaeton-bounce';
 };
 
 export type MeetingConfig = {
