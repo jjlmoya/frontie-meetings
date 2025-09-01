@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useRef, useState, useCallback } from 'react';
-import { ParticlePool } from '@/utils/ParticlePool';
+import { ParticlePool, type PooledParticle } from '@/utils/ParticlePool';
 import type { ThemeConfig, AudioAnalyzerData } from '@/types';
 
 interface ParticleEffectProps {
@@ -68,7 +68,7 @@ export const ParticleEffect = ({
   }, [style.textAnimation]);
 
   // Optimized drawing function
-  const drawPooledParticle = useCallback((ctx: CanvasRenderingContext2D, particle: any) => {
+  const drawPooledParticle = useCallback((ctx: CanvasRenderingContext2D, particle: PooledParticle) => {
     if (!particle.isActive || particle.alpha <= 0) return;
     
     ctx.save();

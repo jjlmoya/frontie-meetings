@@ -261,13 +261,14 @@ export const WebGLEffects = ({
          1,  1
       ]);
 
-      const buffer = gl.createBuffer();
-      gl.bindBuffer(gl.ARRAY_BUFFER, buffer);
-      gl.bufferData(gl.ARRAY_BUFFER, vertices, gl.STATIC_DRAW);
+      const webgl = gl as WebGLRenderingContext;
+      const buffer = webgl.createBuffer();
+      webgl.bindBuffer(webgl.ARRAY_BUFFER, buffer);
+      webgl.bufferData(webgl.ARRAY_BUFFER, vertices, webgl.STATIC_DRAW);
 
-      const positionAttribute = gl.getAttribLocation(programRef.current, 'a_position');
-      gl.enableVertexAttribArray(positionAttribute);
-      gl.vertexAttribPointer(positionAttribute, 2, gl.FLOAT, false, 0, 0);
+      const positionAttribute = webgl.getAttribLocation(programRef.current, 'a_position');
+      webgl.enableVertexAttribArray(positionAttribute);
+      webgl.vertexAttribPointer(positionAttribute, 2, webgl.FLOAT, false, 0, 0);
 
       return true;
     } catch (error) {

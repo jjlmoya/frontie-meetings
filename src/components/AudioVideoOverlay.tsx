@@ -305,7 +305,7 @@ export const AudioVideoOverlay = ({
         alpha: true,
         antialias: false,  // Disable antialiasing for performance
         powerPreference: 'high-performance'
-      });
+      }) as CanvasRenderingContext2D | null;
     }
     
     const ctx = ctxRef.current;

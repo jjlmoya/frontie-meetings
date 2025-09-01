@@ -61,7 +61,7 @@ export const PerformanceMonitor = ({
   // Memory usage tracking - memoized to prevent infinite updates
   const trackMemoryUsage = useCallback(() => {
     if ('memory' in performance) {
-      const memory = (performance as any).memory;
+      const memory = (performance as unknown as { memory: { usedJSHeapSize: number } }).memory;
       const memoryUsage = Math.round(memory.usedJSHeapSize / 1024 / 1024); // MB
       
       setStats(prev => {
@@ -106,7 +106,7 @@ export const PerformanceMonitor = ({
   // Particle count tracking (external) - memoized
   useEffect(() => {
     const updateParticleCount = () => {
-      const particleCount = (window as any).globalParticleCount || 0;
+      const particleCount = (window as unknown as { globalParticleCount?: number }).globalParticleCount || 0;
       setStats(prev => {
         if (prev.particleCount !== particleCount) {
           return { ...prev, particleCount };
@@ -185,20 +185,21 @@ export const PerformanceMonitor = ({
 export const PerformanceUtils = {
   // Mark render start
   startRender: () => {
-    (window as any).renderStartTime = performance.now();
+    (window as unknown as { renderStartTime: number }).renderStartTime = performance.now();
   },
 
   // Mark render end
   endRender: () => {
-    if ((window as any).renderStartTime) {
-      const renderTime = performance.now() - (window as any).renderStartTime;
-      (window as any).lastRenderTime = renderTime;
+    const windowWithRender = window as unknown as { renderStartTime?: number; lastRenderTime: number };
+    if (windowWithRender.renderStartTime) {
+      const renderTime = performance.now() - windowWithRender.renderStartTime;
+      windowWithRender.lastRenderTime = renderTime;
     }
   },
 
   // Update particle count
   updateParticleCount: (count: number) => {
-    (window as any).globalParticleCount = count;
+    (window as unknown as { globalParticleCount: number }).globalParticleCount = count;
   },
 
   // Performance optimization recommendations
