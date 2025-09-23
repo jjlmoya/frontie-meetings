@@ -24,6 +24,23 @@ export const MEETINGS_CONFIG: readonly MeetingConfig[] = [
       textAnimation: 'wave-beach',
     },
   },
+    {
+    id: 'synth',
+    name: 'Synth Vibes ',
+    type: 'catch-up',
+    schedule: [],
+    assets: {
+      video: '/assets/videos/synths.mp4',
+      audio: '/assets/audio/synths.mp3',
+    },
+    style: {
+      fontFamily: 'var(--font-bungee)',
+      fallbackFont: 'Impact, sans-serif',
+      primaryColor: '#cccccc',
+      backgroundColor: '#004080',
+      textAnimation: 'metal-destruction',
+    },
+  },
   {
     id: 'catch-up',
     name: 'Team Catch-up',
