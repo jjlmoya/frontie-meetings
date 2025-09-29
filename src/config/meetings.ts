@@ -41,6 +41,23 @@ export const MEETINGS_CONFIG: readonly MeetingConfig[] = [
       textAnimation: 'metal-destruction',
     },
   },
+    {
+    id: 'autumn',
+    name: 'Autumn Vibes ',
+    type: 'catch-up',
+    schedule: [],
+    assets: {
+      video: '/assets/videos/autumn.mp4',
+      audio: '/assets/audio/autumn.mp3',
+    },
+    style: {
+      fontFamily: 'var(--font-bungee)',
+      fallbackFont: 'Impact, sans-serif',
+      primaryColor: '#3f1f01ff',
+      backgroundColor: '#dfb017ff',
+      textAnimation: 'wave-beach',
+    },
+  },
   {
     id: 'catch-up',
     name: 'Team Catch-up',
