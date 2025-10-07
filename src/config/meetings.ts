@@ -75,6 +75,23 @@ export const MEETINGS_CONFIG: readonly MeetingConfig[] = [
       textAnimation: 'funky-glitch',
     },
   },
+      {
+    id: 'flamenco',
+    name: 'Flamenco Vibes ',
+    type: 'catch-up',
+    schedule: [],
+    assets: {
+      video: '/assets/videos/reggae.mp4',
+      audio: '/assets/audio/reggae.mp3',
+    },
+    style: {
+      fontFamily: 'var(--font-bungee)',
+      fallbackFont: 'Impact, sans-serif',
+      primaryColor: '#264404ff',
+      backgroundColor: '#0cff18ff',
+      textAnimation: 'funky-glitch',
+    },
+  },
   {
     id: 'catch-up',
     name: 'Team Catch-up',
