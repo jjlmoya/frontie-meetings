@@ -76,7 +76,7 @@ export const MEETINGS_CONFIG: readonly MeetingConfig[] = [
     },
   },
       {
-    id: 'flamenco',
+    id: 'reggae',
     name: 'Flamenco Vibes ',
     type: 'catch-up',
     schedule: [],
