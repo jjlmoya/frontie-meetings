@@ -75,7 +75,7 @@ export const MEETINGS_CONFIG: readonly MeetingConfig[] = [
       textAnimation: 'funky-glitch',
     },
   },
-      {
+  {
     id: 'reggae',
     name: 'Reggae Vibes ',
     type: 'catch-up',
@@ -90,6 +90,23 @@ export const MEETINGS_CONFIG: readonly MeetingConfig[] = [
       primaryColor: '#264404ff',
       backgroundColor: '#0cff18ff',
       textAnimation: 'funky-glitch',
+    },
+  },
+    {
+    id: 'coco',
+    name: 'Coco Vibes ',
+    type: 'catch-up',
+    schedule: [],
+    assets: {
+      video: '/assets/videos/coco.mp4',
+      audio: '/assets/audio/coco.mp3',
+    },
+    style: {
+      fontFamily: 'var(--font-bungee)',
+      fallbackFont: 'Impact, sans-serif',
+      primaryColor: '#fdffeeff',
+      backgroundColor: '#00ff80ff',
+      textAnimation: 'wave-beach',
     },
   },
   {

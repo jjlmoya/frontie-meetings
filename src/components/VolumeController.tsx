@@ -60,7 +60,7 @@ export const VolumeController = ({ volume, onVolumeChange }: VolumeControllerPro
               type="range"
               min="0"
               max="1"
-              step="0.05"
+              step="0.02"
               value={volume}
               onChange={(e) => handleVolumeChange(parseFloat(e.target.value))}
               className="flex-1 h-1 bg-white/20 rounded-lg appearance-none cursor-pointer volume-slider"

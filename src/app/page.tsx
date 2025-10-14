@@ -15,7 +15,7 @@ import { useAudioAnalyzer } from '@/hooks/useAudioAnalyzer';
 
 export default function FantasiaPage() {
   const { config, loading, error } = useMeetingConfig();
-  const { audioData, setVolume, currentVolume, play } = useAudioAnalyzer(config?.assets.audio || '', 0.15);
+  const { audioData, setVolume, currentVolume, play } = useAudioAnalyzer(config?.assets.audio || '', 0.05);
   const [configKey, setConfigKey] = useState(0);
   const [userInteracted, setUserInteracted] = useState(false);
   const [effectsEnabled, setEffectsEnabled] = useState(true);
