@@ -110,6 +110,23 @@ export const MEETINGS_CONFIG: readonly MeetingConfig[] = [
     },
   },
   {
+    id: 'australian',
+    name: 'Australian Vibes',
+    type: 'catch-up',
+    schedule: [],
+    assets: {
+      video: '/assets/videos/australian.mp4',
+      audio: '/assets/audio/australian.mp3',
+    },
+    style: {
+      fontFamily: 'var(--font-bungee)',
+      fallbackFont: 'Impact, sans-serif',
+      primaryColor: '#FF8C00',
+      backgroundColor: '#8B4513',
+      textAnimation: 'wave-beach',
+    },
+  },
+  {
     id: 'catch-up',
     name: 'Team Catch-up',
     type: 'catch-up',
