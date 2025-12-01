@@ -24,7 +24,7 @@ export const MEETINGS_CONFIG: readonly MeetingConfig[] = [
       textAnimation: 'wave-beach',
     },
   },
-    {
+  {
     id: 'synth',
     name: 'Synth Vibes ',
     type: 'catch-up',
@@ -41,7 +41,7 @@ export const MEETINGS_CONFIG: readonly MeetingConfig[] = [
       textAnimation: 'metal-destruction',
     },
   },
-    {
+  {
     id: 'autumn',
     name: 'Autumn Vibes ',
     type: 'catch-up',
@@ -58,7 +58,7 @@ export const MEETINGS_CONFIG: readonly MeetingConfig[] = [
       textAnimation: 'wave-beach',
     },
   },
-    {
+  {
     id: 'flamenco',
     name: 'Flamenco Vibes ',
     type: 'catch-up',
@@ -92,7 +92,7 @@ export const MEETINGS_CONFIG: readonly MeetingConfig[] = [
       textAnimation: 'funky-glitch',
     },
   },
-    {
+  {
     id: 'coco',
     name: 'Coco Vibes ',
     type: 'catch-up',
@@ -226,6 +226,23 @@ export const MEETINGS_CONFIG: readonly MeetingConfig[] = [
       primaryColor: '#FF6B35',
       backgroundColor: '#1A1A2E',
       textAnimation: 'reggaeton-bounce',
+    },
+  },
+  {
+    id: 'xmas',
+    name: 'Xmas Meeting',
+    type: 'catch-up',
+    schedule: [],
+    assets: {
+      video: '/assets/videos/xmas.mp4',
+      audio: '/assets/audio/xmas.mp3',
+    },
+    style: {
+      fontFamily: 'var(--font-bungee)',
+      fallbackFont: 'Impact, sans-serif',
+      primaryColor: '#D42426',
+      backgroundColor: '#165B33',
+      textAnimation: 'wave-beach',
     },
   },
 ] as const;
