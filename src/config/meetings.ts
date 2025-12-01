@@ -234,7 +234,7 @@ export const MEETINGS_CONFIG: readonly MeetingConfig[] = [
     type: 'catch-up',
     schedule: [],
     assets: {
-      video: '/assets/videos/xmas.mp4',
+      video: '/assets/videos/autumn.mp4',
       audio: '/assets/audio/xmas.mp3',
     },
     style: {
