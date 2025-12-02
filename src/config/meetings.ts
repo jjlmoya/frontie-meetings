@@ -245,6 +245,23 @@ export const MEETINGS_CONFIG: readonly MeetingConfig[] = [
       textAnimation: 'wave-beach',
     },
   },
+  {
+    id: 'xmas-2',
+    name: 'Xmas Meeting',
+    type: 'catch-up',
+    schedule: [],
+    assets: {
+      video: '/assets/videos/xmas.mp4',
+      audio: '/assets/audio/xmas-2.mp3',
+    },
+    style: {
+      fontFamily: 'var(--font-bungee)',
+      fallbackFont: 'Impact, sans-serif',
+      primaryColor: '#D42426',
+      backgroundColor: '#165B33',
+      textAnimation: 'wave-beach',
+    },
+  },
 ] as const;
 
 // Configs que NO son de tipo daily (para catch-up random)
