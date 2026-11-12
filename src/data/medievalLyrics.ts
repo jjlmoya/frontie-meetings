@@ -59,14 +59,7 @@ export const MEDIEVAL_LYRIC_SECTIONS: LyricSection[] = [
     ],
   },
   { id: 'interlude-3', title: 'Instrumental', start: 124.6, end: 133.6, stage: 'interlude', lines: [] },
-  {
-    id: 'outro', title: 'Outro · Still waiting', start: 133.6, end: 142.032, stage: 'outro', lines: [
-      { text: 'Waiting... waiting for the Meet to start...', start: 133.6 },
-      { text: 'Frontie judges every commit with a cold and feline heart.', start: 135.6 },
-      { text: 'Huzzah for Front-line! Huzzah for the beast!', start: 137.2 },
-      { text: 'The meeting hasn’t started, but the legend has increased.', start: 139 },
-    ],
-  },
+  { id: 'outro-finale', title: 'Final chorus', start: 133.6, end: 142.032, stage: 'outro', lines: [] },
 ];
 
 export const MEDIEVAL_DURATION = 142.032;

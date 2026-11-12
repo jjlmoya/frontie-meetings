@@ -44,6 +44,42 @@ body {
   height: 100%;
 }
 .medieval-background { object-fit: cover; object-position: center; z-index: -3; }
+.medieval-scene-layers {
+  position: absolute;
+  inset: 0;
+  z-index: -3;
+  overflow: hidden;
+  pointer-events: none;
+}
+.medieval-scene-layer {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+}
+.medieval-life-bird,
+.medieval-life-dragon,
+.medieval-life-rat,
+.medieval-life-waldo,
+.medieval-life-flag {
+  position: absolute;
+  display: block;
+  height: auto;
+  object-fit: contain;
+  pointer-events: none;
+  will-change: transform, opacity, left;
+}
+.medieval-life-flag { transform-origin: 50% 3%; filter: drop-shadow(2px 5px 3px rgba(26, 12, 10, .3)); }
+.medieval-life-waldo {
+  /* Align to the same 1672:939 cover image as the stone gap at every viewport size. */
+  left: calc(50vw - max(28.42vw, 50.61vh));
+  bottom: calc(50vh - max(25vh, 14.04vw));
+  width: max(3.4vw, 6.05vh);
+  transform-origin: 50% 95%;
+}
+.medieval-life-rat { filter: drop-shadow(1px 4px 2px rgba(25, 15, 11, .35)); }
 .medieval-vignette {
   z-index: -2;
   background: linear-gradient(180deg, rgba(18, 10, 15, .5), transparent 24%, transparent 59%, rgba(20, 10, 8, .45)), linear-gradient(90deg, rgba(22, 10, 12, .2), transparent 54%, rgba(22, 10, 12, .28));
@@ -76,7 +112,7 @@ body {
 
 .medieval-cat-rig {
   position: absolute;
-  bottom: 5%;
+  bottom: -0.5%;
   width: min(47vw, 43.8vh, 720px);
   aspect-ratio: 0.562;
   height: auto;
@@ -98,7 +134,7 @@ body {
 .cat-head { left: 23%; top: 13%; width: 55%; height: 42%; transform-origin: 50% 93%; z-index: 8; }
 .cat-head.is-speaking { filter: drop-shadow(0 0 8px rgba(255, 193, 76, .18)); }
 .cat-sound-burst { position: absolute; z-index: 7; top: 33%; right: 12%; font-size: clamp(1.5rem, 3vw, 2.8rem); color: #ffe18a; text-shadow: 0 0 15px #ffac30; transition: opacity 70ms linear, transform 100ms ease-out; }
-.medieval-cat-shadow { position: absolute; z-index: 2; left: 50%; bottom: 5.3%; width: min(23vw, 350px); height: clamp(20px, 2.7vw, 39px); border-radius: 50%; background: radial-gradient(ellipse, rgba(30, 13, 9, .68), rgba(30, 13, 9, .3) 52%, transparent 76%); filter: blur(5px); will-change: transform, opacity; }
+.medieval-cat-shadow { position: absolute; z-index: 2; left: 50%; bottom: 6.5%; width: min(23vw, 350px); height: clamp(20px, 2.7vw, 39px); border-radius: 50%; background: radial-gradient(ellipse, rgba(30, 13, 9, .68), rgba(30, 13, 9, .3) 52%, transparent 76%); filter: blur(5px); will-change: transform, opacity; }
 
 .medieval-prop {
   position: absolute;
@@ -164,18 +200,18 @@ body {
 .lyrics-full-list p { margin: .4rem 0; font-size: clamp(.8rem, 1vw, 1rem); line-height: 1.22; opacity: .62; }
 .lyrics-full-list p.is-current { color: #81271d; opacity: 1; font-weight: 800; }
 
-.medieval-player { position: absolute; z-index: 10; bottom: 2.2%; left: 50%; display: flex; align-items: center; gap: .85rem; width: min(72vw, 1050px); min-height: 54px; padding: .55rem .85rem; transform: translateX(-50%); color: #fff4da; background: rgba(29, 17, 17, .86); border: 1px solid rgba(250, 207, 125, .45); box-shadow: 0 8px 22px rgba(0,0,0,.3); backdrop-filter: blur(12px); }
-.medieval-play-button { display: grid; place-items: center; width: 38px; height: 38px; flex: 0 0 38px; border: 1px solid #e3bb69; border-radius: 50%; color: #481d18; background: linear-gradient(135deg,#ffe4a0,#c78a3c); cursor: pointer; font-size: 1rem; }
-.medieval-play-button svg { display: block; width: 20px; height: 20px; fill: currentColor; }
+.medieval-player { position: absolute; z-index: 10; bottom: 0; left: 50%; display: flex; align-items: center; gap: .55rem; width: min(54vw, 760px); min-height: 42px; padding: .3rem .55rem; transform: translateX(-50%); color: #fff4da; background: rgba(29, 17, 17, .86); border: 1px solid rgba(250, 207, 125, .45); box-shadow: 0 8px 22px rgba(0,0,0,.3); backdrop-filter: blur(12px); }
+.medieval-play-button { display: grid; place-items: center; width: 32px; height: 32px; flex: 0 0 32px; border: 1px solid #e3bb69; border-radius: 50%; color: #481d18; background: linear-gradient(135deg,#ffe4a0,#c78a3c); cursor: pointer; font-size: .9rem; }
+.medieval-play-button svg { display: block; width: 17px; height: 17px; fill: currentColor; }
 .medieval-play-button.needs-start { animation: medieval-start-pulse 1.15s ease-in-out infinite alternate; }
 @keyframes medieval-start-pulse { to { box-shadow: 0 0 0 7px rgba(255,218,122,.21), 0 0 24px rgba(255,218,122,.8); } }
-.medieval-track-meta { display: flex; flex-direction: column; min-width: 175px; gap: .12rem; }
-.medieval-track-meta strong { font: 700 .77rem/1.15 ui-sans-serif, system-ui, sans-serif; letter-spacing: .025em; }
-.medieval-track-meta span { color: #dbc9a7; font: .63rem/1.1 ui-monospace, monospace; }
+.medieval-track-meta { display: flex; flex-direction: column; min-width: 130px; gap: .08rem; }
+.medieval-track-meta strong { font: 700 .68rem/1.1 ui-sans-serif, system-ui, sans-serif; letter-spacing: .025em; }
+.medieval-track-meta span { color: #dbc9a7; font: .58rem/1.1 ui-monospace, monospace; }
 .medieval-seek { flex: 1; height: 5px; appearance: none; border-radius: 999px; outline: none; background: linear-gradient(90deg,#f1c66d var(--seek-progress),rgba(255,255,255,.2) var(--seek-progress)); cursor: pointer; }
 .medieval-seek::-webkit-slider-thumb { appearance: none; width: 12px; height: 12px; border-radius: 50%; background: #fff0bc; border: 2px solid #9c4a2c; }
 .medieval-volume { display: flex; align-items: center; gap: .4rem; color: #f0cf8e; }
-.medieval-volume input { width: 65px; accent-color: #e1af53; }
+.medieval-volume input { width: 48px; accent-color: #e1af53; }
 .medieval-error,.medieval-cue-note { position: absolute; z-index: 12; right: 1rem; bottom: 6rem; padding: .5rem .75rem; color: #fff; background: rgba(64,19,18,.9); font: .75rem ui-sans-serif, system-ui, sans-serif; }
 .medieval-cue-note { color: #ffe7b7; }
 .medieval-autoplay-note { position: absolute; z-index: 12; top: 5.5rem; left: 50%; transform: translateX(-50%); padding: .6rem .9rem; color: #fff4da; background: rgba(64,19,18,.9); border: 1px solid rgba(250,207,125,.45); font: 700 .78rem ui-sans-serif, system-ui, sans-serif; }
@@ -190,7 +226,7 @@ body {
 @media (max-width: 760px) {
   .medieval-header { inset: 1rem 1rem auto; gap: .45rem; }
   .medieval-header-right b { display: none; }
-  .medieval-cat-rig { left: 50% !important; width: min(83vw, 37vh); aspect-ratio: .58; height: auto; bottom: 8%; }
+  .medieval-cat-rig { left: 50% !important; width: min(83vw, 37vh); aspect-ratio: .58; height: auto; bottom: 2%; }
   .medieval-title-card { top: 19%; width: 70vw; min-height: 140px; }
   .medieval-scroll,.medieval-crates,.medieval-bridge-prop,.medieval-waiting { top: 32%; right: 3%; left: auto; width: 34vw; min-height: 120px; padding: .6rem; }
   .medieval-chorus-banner { top: 18%; font-size: 1.1rem; padding: .65rem .8rem; }
@@ -198,7 +234,7 @@ body {
   .medieval-lyric-line { font-size: clamp(1.15rem, 4.2vw, 1.8rem); }
   .medieval-lyrics .lyrics-current p { font-size: .94rem; }
   .medieval-lyrics .lyrics-current small { display: none; }
-  .medieval-player { width: 94vw; bottom: 1.2%; gap: .55rem; padding: .45rem .55rem; }
+  .medieval-player { width: 94vw; bottom: 0; gap: .55rem; padding: .45rem .55rem; }
   .medieval-track-meta { min-width: 90px; }
   .medieval-track-meta strong { max-width: 90px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: .64rem; }
   .medieval-volume input { width: 45px; }
