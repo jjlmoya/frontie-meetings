@@ -15,7 +15,7 @@
     "react-dom": "19.1.0"
   },
   "engines": {
-    "node": "20.x"
+    "node": "26.x"
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3",
