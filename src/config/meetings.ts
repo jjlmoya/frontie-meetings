@@ -2,6 +2,23 @@ import type { MeetingConfig } from '@/types';
 
 export const MEETINGS_CONFIG: readonly MeetingConfig[] = [
   {
+    id: 'medieval',
+    name: 'Frontie the Feline King',
+    type: 'creative',
+    schedule: [],
+    assets: {
+      video: '/assets/medieval/video/preview-medieval.gif',
+      audio: '/assets/medieval/audio/frontie-the-feline-king.mp3',
+    },
+    style: {
+      fontFamily: 'var(--font-righteous)',
+      fallbackFont: 'Georgia, serif',
+      primaryColor: '#F3CF7A',
+      backgroundColor: '#241314',
+      textAnimation: 'funky-chaos',
+    },
+  },
+  {
     id: 'beach',
     name: 'Beach Vibes Daily',
     type: 'daily',

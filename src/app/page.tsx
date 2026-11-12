@@ -12,6 +12,7 @@ import { WebGLEffects } from '@/components/WebGLEffects';
 import { LiveMessenger } from '@/components/LiveMessenger';
 import { useMeetingConfig } from '@/hooks/useMeetingConfig';
 import { useAudioAnalyzer } from '@/hooks/useAudioAnalyzer';
+import { MedievalExperience } from '@/components/MedievalExperience';
 
 export default function FantasiaPage() {
   const { config, loading, error } = useMeetingConfig();
@@ -24,7 +25,7 @@ export default function FantasiaPage() {
   // Detectar cualquier interacción del usuario y usar el hook correctamente
   useEffect(() => {
     const handleInteraction = async () => {
-      if (!userInteracted && config && play) {
+      if (!userInteracted && config && play && config.id !== 'medieval') {
         setUserInteracted(true);
         
         // Usar el hook de audio que tiene el analizador
@@ -74,6 +75,10 @@ export default function FantasiaPage() {
         <div className="text-white text-xl">No meeting configured</div>
       </div>
     );
+  }
+
+  if (config.id === 'medieval') {
+    return <MedievalExperience />;
   }
 
   return (
