@@ -87,10 +87,30 @@ function StageLife({ time }: { time: number }) {
   const rat = eventAt(time, ambientEvents.rat, 5.4, .3, .6);
   const waldo = eventAt(time, ambientEvents.waldo, 5.8, .7, .8);
   const flag = eventAt(time, ambientEvents.flag, 7.6, .8, 1.2);
+  const comet = eventAt(time, [27.6, 48.2, 89.7, 121.5], 4.8, .35, .7);
+  const enchantedBook = eventAt(time, [36.6, 69.4, 105.8, 127.1], 7.2, .6, .8);
   const waldoBodyRise = waldo ? smooth((waldo.elapsed - 1) / 1.4) * smooth((5.1 - waldo.elapsed) / .7) : 0;
   const waldoHandsVisible = waldo ? smooth((waldo.elapsed - .35) / .35) * smooth((5.7 - waldo.elapsed) / .45) : 0;
 
   return <>
+    <img className="medieval-life-charm medieval-life-moon-charm" src={`${DETAILS}moon-charm.png`} alt="" />
+    <img className="medieval-life-charm medieval-life-star-charm" src={`${DETAILS}star-charm.png`} alt="" style={{ transform: `rotate(${Math.sin(time * 1.7) * 12}deg) scale(${.94 + Math.sin(time * 2.1) * .06})` }} />
+    <img className="medieval-life-lantern medieval-life-lantern-left" src={`${DETAILS}magic-lantern.png`} alt="" style={{ transform: `rotate(${Math.sin(time * 1.3) * 5}deg)` }} />
+    <img className="medieval-life-lantern medieval-life-lantern-right" src={`${DETAILS}magic-lantern.png`} alt="" style={{ transform: `rotate(${Math.sin(time * 1.3 + 1.7) * 5}deg)` }} />
+    {enchantedBook && <img className="medieval-life-book" src={`${DETAILS}flying-book.png`} alt="" style={{
+      left: `${-12 + enchantedBook.progress * 125}%`, top: `${22 + Math.sin(time * 1.5) * 5}%`,
+      opacity: enchantedBook.visibility, transform: `rotate(${Math.sin(time * 2.6) * 8}deg) scale(${.88 + enchantedBook.visibility * .12})`,
+    }} />}
+    {[['blue-firefly', 1], ['violet-firefly', 2]].map(([name, phase]) => <img key={name} className="medieval-life-firefly" src={`${DETAILS}${name}.png`} alt="" style={{
+      width: '3.8%', left: `${42 + Number(phase) * 9 + Math.sin(time * .7 + Number(phase)) * 2}%`,
+      bottom: `${22 + Math.sin(time * 1.4 + Number(phase)) * 3}%`,
+      opacity: .28 + (Math.sin(time * 3.4 + Number(phase)) + 1) * .34,
+      transform: `translateY(${Math.sin(time * 2.2 + Number(phase)) * 8}px) scale(${.85 + (Math.sin(time * 3 + Number(phase)) + 1) * .12})`,
+    }} />)}
+    {comet && <img className="medieval-life-comet" src={`${DETAILS}${comet.elapsed < 2.4 ? 'spark-trail-a.png' : 'spark-trail-b.png'}`} alt="" style={{
+      left: `${-14 + comet.progress * 128}%`, top: `${18 + Math.sin(time * 2) * 8}%`,
+      opacity: comet.visibility, transform: `rotate(${Math.sin(time * 3) * 12}deg) scale(${.8 + comet.visibility * .35})`,
+    }} />}
     {birds && [1, 2, 3].map((n) => <img key={n} className="medieval-life-bird" src={`${DETAILS}bird-${n}.png`} alt="" style={{
       zIndex: 5, width: `${4.3 + n * .65}%`, top: `${13 + n * 3}%`,
       left: `${-12 + birds.progress * 130 - n * 7}%`, opacity: birds.visibility * .9,

@@ -63,7 +63,12 @@ body {
 .medieval-life-dragon,
 .medieval-life-rat,
 .medieval-life-waldo,
-.medieval-life-flag {
+.medieval-life-flag,
+.medieval-life-charm,
+.medieval-life-firefly,
+.medieval-life-comet,
+.medieval-life-lantern,
+.medieval-life-book {
   position: absolute;
   display: block;
   height: auto;
@@ -71,6 +76,15 @@ body {
   pointer-events: none;
   will-change: transform, opacity, left;
 }
+.medieval-life-charm { z-index: 5; position: absolute; width: 4.4%; height: auto; filter: drop-shadow(0 0 9px rgba(255,215,114,.6)); animation: charm-float 3.8s ease-in-out infinite alternate; }
+.medieval-life-moon-charm { left: 36%; top: 31%; }
+.medieval-life-star-charm { right: 31%; top: 37%; width: 3.4%; }
+.medieval-life-firefly { z-index: 6; filter: drop-shadow(0 0 6px #65edff) drop-shadow(0 0 13px #ba5cff); }
+.medieval-life-comet { z-index: 6; width: 14%; height: auto; filter: drop-shadow(0 0 8px #ffd86c); }
+.medieval-life-lantern { z-index: 5; width: 4.5%; height: auto; transform-origin: 50% 0; filter: drop-shadow(0 0 11px rgba(255,190,76,.65)); }
+.medieval-life-lantern-left { left: 13%; top: 42%; }
+.medieval-life-lantern-right { right: 13%; top: 42%; }
+.medieval-life-book { z-index: 6; width: 11%; height: auto; filter: drop-shadow(0 0 9px #ffda75); }
 .medieval-life-flag { transform-origin: 50% 3%; filter: drop-shadow(2px 5px 3px rgba(26, 12, 10, .3)); }
 .medieval-life-waldo {
   /* Align to the same 1672:939 cover image as the stone gap at every viewport size. */
@@ -189,11 +203,15 @@ body {
 .lyric-magic {
   position: relative;
   display: inline-block;
-  padding: 0 .07em;
-  color: #fff18a;
-  -webkit-text-fill-color: #fff8c7;
-  -webkit-text-stroke: .65px #382050;
-  text-shadow: 0 2px 0 #24112e, 0 0 5px #fff, 0 0 12px #ff50db, 0 0 22px #8e6bff;
+  padding: 0 .13em .04em;
+  border: 1px solid #ffeaa3;
+  border-radius: .3em .55em .35em .48em;
+  color: #fff;
+  -webkit-text-fill-color: #fff;
+  -webkit-text-stroke: .25px #23102f;
+  background: linear-gradient(110deg, #b923a2, #6336d2 52%, #087caa);
+  box-shadow: 0 2px 0 #24112e, 0 0 9px #ff50db, 0 0 18px #8e6bff, inset 0 0 9px rgba(255,255,255,.4);
+  text-shadow: 0 2px 2px #21112d, 0 0 5px #fff;
   animation: lyric-magic-wild 1.35s ease-in-out infinite;
   animation-delay: var(--magic-delay, 0ms);
   transform-origin: 50% 80%;
@@ -248,8 +266,9 @@ body {
 @keyframes medieval-flame { to { transform: rotate(8deg) scaleX(.75); } }
 @keyframes medieval-spark { from { opacity: 0; transform: scale(.25) rotate(-45deg); } to { opacity: 1; transform: scale(1) rotate(0); } }
 @keyframes medieval-lyric-enter { from { opacity: .25; transform: translateY(4px); } to { opacity: 1; transform: translateY(0); } }
-@keyframes lyric-magic-wild { 0%,100% { transform: translateY(0) rotate(-1deg) scale(1); -webkit-text-fill-color: #fff8c7; text-shadow: 0 2px 0 #24112e, 0 0 5px #fff, 0 0 12px #ff50db, 0 0 22px #8e6bff; } 35% { transform: translateY(-.16em) rotate(2deg) scale(1.12); -webkit-text-fill-color: #a9fff4; text-shadow: 0 2px 0 #251f58, 0 0 7px #fff, 0 0 16px #51edff, 0 0 28px #a679ff; } 70% { transform: translateY(.03em) rotate(-2deg) scale(1.04); -webkit-text-fill-color: #ffb7ed; text-shadow: 0 2px 0 #54204d, 0 0 7px #fff1ac, 0 0 17px #ff51cf, 0 0 26px #ffab4e; } }
+@keyframes lyric-magic-wild { 0%,100% { transform: translateY(0) rotate(-1deg) scale(1); box-shadow: 0 2px 0 #24112e, 0 0 9px #ff50db, 0 0 18px #8e6bff, inset 0 0 9px rgba(255,255,255,.4); } 35% { transform: translateY(-.16em) rotate(2deg) scale(1.12); box-shadow: 0 3px 0 #251f58, 0 0 12px #fff, 0 0 24px #51edff, 0 0 35px #a679ff, inset 0 0 13px rgba(255,255,255,.7); } 70% { transform: translateY(.03em) rotate(-2deg) scale(1.04); box-shadow: 0 2px 0 #54204d, 0 0 10px #fff1ac, 0 0 22px #ff51cf, 0 0 32px #ffab4e, inset 0 0 10px rgba(255,255,255,.55); } }
 @keyframes lyric-magic-spark { from { opacity: .35; transform: translateY(.15em) scale(.45) rotate(-35deg); } to { opacity: 1; transform: translateY(-.35em) scale(1.35) rotate(35deg); } }
+@keyframes charm-float { from { translate: 0 0; rotate: -8deg; } to { translate: 0 -10px; rotate: 8deg; } }
 
 @media (max-width: 760px) {
   .medieval-header { inset: 1rem 1rem auto; gap: .45rem; }
