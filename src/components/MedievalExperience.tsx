@@ -17,6 +17,8 @@ type MotionFrame = {
   woodwinds: number;
   speaking: boolean;
 };
+type SurpriseName = 'dragon' | 'moth' | 'scroll' | 'streamer' | 'book' | 'owl';
+type SurpriseSchedule = Record<SurpriseName, number[]>;
 
 const AUDIO_URL = '/assets/medieval/audio/frontie-the-feline-king.mp3';
 const CUES_URL = '/assets/medieval/animation-cues.json';
@@ -45,11 +47,31 @@ const EMPTY_FRAME: MotionFrame = {
 
 const ambientEvents = {
   birds: [23.4, 66.1, 101.8, 126.4],
-  dragon: [42.7, 112.3],
   rat: [14.2, 52.8, 83.6, 119.7],
   waldo: [31.3, 76.9, 109.4],
   flag: [18.5, 59.7, 95.1, 130.2],
 };
+const SURPRISE_DURATIONS: Record<SurpriseName, number> = {
+  dragon: 9.4, moth: 8.2, scroll: 5.8, streamer: 5.4, book: 7.2, owl: 7.5,
+};
+function createSurpriseSchedule(): SurpriseSchedule {
+  const appearances: SurpriseName[] = [
+    'dragon', 'dragon', 'moth', 'moth', 'moth', 'scroll', 'scroll',
+    'streamer', 'streamer', 'book', 'book', 'owl',
+  ];
+  for (let index = appearances.length - 1; index > 0; index -= 1) {
+    const other = Math.floor(Math.random() * (index + 1));
+    [appearances[index], appearances[other]] = [appearances[other], appearances[index]];
+  }
+  const schedule: SurpriseSchedule = { dragon: [], moth: [], scroll: [], streamer: [], book: [], owl: [] };
+  let cursor = 12.5;
+  for (const name of appearances) {
+    cursor += 1.8 + Math.random() * 1.2;
+    schedule[name].push(Number(cursor.toFixed(1)));
+    cursor += SURPRISE_DURATIONS[name];
+  }
+  return schedule;
+}
 
 const smooth = (value: number) => {
   const x = Math.max(0, Math.min(1, value));
@@ -64,9 +86,11 @@ function eventAt(time: number, starts: number[], duration: number, enter = .7, e
 }
 
 function renderMagicalLyric(text: string) {
+  let toneIndex = 0;
   return text.split(LYRIC_MAGIC_PATTERN).map((part, index) => {
     if (!part || !LYRIC_MAGIC.some((word) => word.toLowerCase() === part.toLowerCase())) return part;
-    return <span className="lyric-magic" key={`${part}-${index}`} style={{ animationDelay: `${Math.min(index * 55, 330)}ms` }}>{part}</span>;
+    const tone = toneIndex++ % 4;
+    return <span className={`lyric-magic lyric-tone-${tone}`} key={`${part}-${index}`} style={{ animationDelay: `${Math.min(index * 55, 330)}ms` }}>{part}</span>;
   });
 }
 
@@ -81,14 +105,18 @@ function layerMotion(layer: string, time: number): CSSProperties {
   return {};
 }
 
-function StageLife({ time }: { time: number }) {
+function StageLife({ time, surprises }: { time: number; surprises: SurpriseSchedule }) {
   const birds = eventAt(time, ambientEvents.birds, 7.7, .8, 1);
-  const dragon = eventAt(time, ambientEvents.dragon, 9.4, 1.2, 1.3);
+  const dragon = eventAt(time, surprises.dragon, SURPRISE_DURATIONS.dragon, 1.2, 1.3);
   const rat = eventAt(time, ambientEvents.rat, 5.4, .3, .6);
   const waldo = eventAt(time, ambientEvents.waldo, 5.8, .7, .8);
   const flag = eventAt(time, ambientEvents.flag, 7.6, .8, 1.2);
+  const moth = eventAt(time, surprises.moth, SURPRISE_DURATIONS.moth, 1, 1.2);
+  const scroll = eventAt(time, surprises.scroll, SURPRISE_DURATIONS.scroll, .6, .8);
+  const streamer = eventAt(time, surprises.streamer, SURPRISE_DURATIONS.streamer, .5, .8);
+  const owl = eventAt(time, surprises.owl, SURPRISE_DURATIONS.owl, .8, 1);
   const comet = eventAt(time, [27.6, 48.2, 89.7, 121.5], 4.8, .35, .7);
-  const enchantedBook = eventAt(time, [36.6, 69.4, 105.8, 127.1], 7.2, .6, .8);
+  const enchantedBook = eventAt(time, surprises.book, SURPRISE_DURATIONS.book, .6, .8);
   const waldoBodyRise = waldo ? smooth((waldo.elapsed - 1) / 1.4) * smooth((5.1 - waldo.elapsed) / .7) : 0;
   const waldoHandsVisible = waldo ? smooth((waldo.elapsed - .35) / .35) * smooth((5.7 - waldo.elapsed) / .45) : 0;
 
@@ -97,15 +125,36 @@ function StageLife({ time }: { time: number }) {
     <img className="medieval-life-charm medieval-life-star-charm" src={`${DETAILS}star-charm.png`} alt="" style={{ transform: `rotate(${Math.sin(time * 1.7) * 12}deg) scale(${.94 + Math.sin(time * 2.1) * .06})` }} />
     <img className="medieval-life-lantern medieval-life-lantern-left" src={`${DETAILS}magic-lantern.png`} alt="" style={{ transform: `rotate(${Math.sin(time * 1.3) * 5}deg)` }} />
     <img className="medieval-life-lantern medieval-life-lantern-right" src={`${DETAILS}magic-lantern.png`} alt="" style={{ transform: `rotate(${Math.sin(time * 1.3 + 1.7) * 5}deg)` }} />
+    <img className="medieval-life-ground-prop medieval-life-mushrooms medieval-life-mushrooms-left" src={`${DETAILS}fantasy-mushrooms.png`} alt="" />
+    <img className="medieval-life-ground-prop medieval-life-mushrooms medieval-life-mushrooms-right" src={`${DETAILS}fantasy-mushrooms.png`} alt="" />
     {enchantedBook && <img className="medieval-life-book" src={`${DETAILS}flying-book.png`} alt="" style={{
       left: `${-12 + enchantedBook.progress * 125}%`, top: `${22 + Math.sin(time * 1.5) * 5}%`,
       opacity: enchantedBook.visibility, transform: `rotate(${Math.sin(time * 2.6) * 8}deg) scale(${.88 + enchantedBook.visibility * .12})`,
     }} />}
-    {[['blue-firefly', 1], ['violet-firefly', 2]].map(([name, phase]) => <img key={name} className="medieval-life-firefly" src={`${DETAILS}${name}.png`} alt="" style={{
-      width: '3.8%', left: `${42 + Number(phase) * 9 + Math.sin(time * .7 + Number(phase)) * 2}%`,
-      bottom: `${22 + Math.sin(time * 1.4 + Number(phase)) * 3}%`,
-      opacity: .28 + (Math.sin(time * 3.4 + Number(phase)) + 1) * .34,
-      transform: `translateY(${Math.sin(time * 2.2 + Number(phase)) * 8}px) scale(${.85 + (Math.sin(time * 3 + Number(phase)) + 1) * .12})`,
+    {scroll && <img className="medieval-life-scroll" src={`${DETAILS}spell-scroll.png`} alt="" style={{
+      left: `${-15 + scroll.progress * 130}%`, top: `${35 + Math.sin(time * 1.8) * 5}%`,
+      opacity: scroll.visibility, transform: `rotate(${Math.sin(time * 2.1) * 9}deg) scale(${.84 + scroll.visibility * .16})`,
+    }} />}
+    {moth && <img className="medieval-life-moth" src={`${DETAILS}paper-moth.png`} alt="" style={{
+      left: `${105 - moth.progress * 122}%`, top: `${31 + Math.sin(time * 4.2) * 7}%`,
+      opacity: moth.visibility, transform: `rotate(${Math.sin(time * 5.3) * 11}deg) scale(${.82 + Math.sin(time * 7) * .08 + moth.visibility * .1})`,
+    }} />}
+    {streamer && <img className="medieval-life-streamer" src={`${DETAILS}wind-streamer.png`} alt="" style={{
+      left: `${-12 + streamer.progress * 126}%`, top: `${32 + Math.sin(time * 2.4) * 3.5}%`,
+      opacity: streamer.visibility, transform: `rotate(${Math.sin(time * 3.1) * 14}deg) scale(${.82 + streamer.visibility * .18})`,
+    }} />}
+    {owl && <img className="medieval-life-owl" src={`${DETAILS}paper-owl.png`} alt="" style={{
+      left: `${108 - owl.progress * 126}%`, top: `${24 + Math.sin(time * 2.8) * 5}%`,
+      opacity: owl.visibility, transform: `rotate(${Math.sin(time * 3.4) * 5}deg) scale(${.85 + owl.visibility * .15})`,
+    }} />}
+    {[
+      { asset: 'blue-firefly', left: 12, phase: .2 }, { asset: 'violet-firefly', left: 26, phase: 1.7 },
+      { asset: 'violet-firefly', left: 74, phase: 2.8 }, { asset: 'blue-firefly', left: 88, phase: 4.1 },
+    ].map(({ asset, left, phase }, index) => <img key={`${asset}-${index}`} className="medieval-life-firefly" src={`${DETAILS}${asset}.png`} alt="" style={{
+      zIndex: 10, width: '4.1%', left: `${left + Math.sin(time * .7 + phase) * 1.8}%`,
+      top: `${49 + Math.sin(time * 1.4 + phase) * 4}%`,
+      opacity: .3 + (Math.sin(time * 3.4 + phase) + 1) * .32,
+      transform: `translateY(${Math.sin(time * 2.2 + phase) * 8}px) scale(${.85 + (Math.sin(time * 3 + phase) + 1) * .12})`,
     }} />)}
     {comet && <img className="medieval-life-comet" src={`${DETAILS}${comet.elapsed < 2.4 ? 'spark-trail-a.png' : 'spark-trail-b.png'}`} alt="" style={{
       left: `${-14 + comet.progress * 128}%`, top: `${18 + Math.sin(time * 2) * 8}%`,
@@ -151,14 +200,15 @@ function getAct(time: number) {
 
 function SceneDetails({ time, energy }: { time: number; energy: number }) {
   return <div className="medieval-scene-details" aria-hidden="true">
-    {['♪', '♫', '♬', '✦', '♪'].map((note, index) => {
+    {[0, 1].map((index) => {
       const phase = time * (1.3 + index * 0.22) + index * 1.7;
       const lift = Math.sin(phase) * (10 + energy * 28);
       const sway = Math.cos(phase * .7) * (6 + energy * 22);
-      return <span key={index} className={`medieval-floating-note note-${index}`} style={{ transform: `translate(${sway}px, ${lift}px) rotate(${Math.sin(phase) * (8 + energy * 18)}deg) scale(${.7 + energy * .65})`, opacity: .32 + energy * .65 }}>{note}</span>;
+      return <img key={index} className={`medieval-floating-note note-${index}`} src={`${DETAILS}music-notes.png`} alt="" style={{ transform: `translate(${sway}px, ${lift}px) rotate(${Math.sin(phase) * (8 + energy * 18)}deg) scale(${.76 + energy * .32})`, opacity: .36 + energy * .54 }} />;
     })}
-    <span className="medieval-stage-mug">🍺</span>
-    <span className="medieval-stage-cheese">◒</span>
+    <img className="medieval-stage-mug" src={`${DETAILS}ale-tankard.png`} alt="" style={{ transform: `rotate(${-10 + Math.sin(time * 1.15) * 3}deg) translateY(${Math.sin(time * 2.4) * 2}px)` }} />
+    <img className="medieval-stage-cheese" src={`${DETAILS}cheese-wedge.png`} alt="" />
+    <img className="medieval-stage-potion" src={`${DETAILS}potion-vial.png`} alt="" style={{ transform: `rotate(${Math.sin(time * .8) * 4}deg)` }} />
   </div>;
 }
 
@@ -173,6 +223,11 @@ export function MedievalExperience() {
   const [volume, setVolume] = useState(0.42);
   const [loadError, setLoadError] = useState(false);
   const [autoplayBlocked, setAutoplayBlocked] = useState(false);
+  const [surpriseSchedule, setSurpriseSchedule] = useState<SurpriseSchedule>({ dragon: [], moth: [], scroll: [], streamer: [], book: [], owl: [] });
+
+  useEffect(() => {
+    setSurpriseSchedule(createSurpriseSchedule());
+  }, []);
 
   useEffect(() => {
     let active = true;
@@ -296,7 +351,7 @@ export function MedievalExperience() {
       />
       <div className="medieval-scene-layers" aria-hidden="true">
         {SCENE_LAYERS.map((layer, index) => <img key={layer} className="medieval-scene-layer" style={{ zIndex: index, ...layerMotion(layer, frame.time) }} src={`${ART}scene/${layer}`} alt="" />)}
-        <StageLife time={frame.time} />
+        <StageLife time={frame.time} surprises={surpriseSchedule} />
       </div>
       <div className="medieval-vignette" />
       <div className="medieval-back-glow" style={{ opacity: 0.1 + frame.bass * 0.18 + flare * 0.16 }} />
@@ -327,17 +382,25 @@ export function MedievalExperience() {
           alt=""
           style={{ transform: `rotate(${headNod}deg)` }}
         />
-        <span className="cat-sound-burst" style={{ opacity: frame.speaking && isPlaying ? 0.9 : 0, transform: `scale(${0.8 + frame.backing * 0.55})` }}>♪</span>
+        <img className="cat-sound-burst" src={`${DETAILS}music-notes.png`} alt="" style={{ opacity: frame.speaking && isPlaying ? 0.9 : 0, transform: `scale(${0.8 + frame.backing * 0.55})` }} />
       </div>
 
       <div className="medieval-side-stage" aria-hidden="true">
         <div className="medieval-candle-eq">
-          {[frame.bass, frame.drums, frame.percussion, frame.guitar, frame.brass, frame.woodwinds, frame.backing].map((level, index) =>
-            <div key={index} className="stage-candle" style={{ height: `${26 + (index % 3) * 8 + level * 56}px` }}><i /></div>
-          )}
+          {[frame.bass, frame.drums, frame.percussion, frame.guitar, frame.brass, frame.woodwinds, frame.backing].map((level, index) => {
+            const candleScale = (26 + (index % 3) * 8 + level * 56) / 68;
+            const candleColor = ['ivory', 'ruby', 'teal', 'violet', 'ivory', 'ruby', 'teal'][index];
+            return <div key={index} className="stage-candle" style={{ transform: `scaleY(${candleScale})` }}>
+              <img className="stage-candle-body" src={`${DETAILS}candle-${candleColor}.png`} alt="" />
+              <img className="stage-candle-flame" src={`${DETAILS}candle-flame.png`} alt="" style={{
+                transform: `translateX(-50%) scaleY(${1 / candleScale}) rotate(${Math.sin(frame.time * 8 + index) * 8}deg) scaleX(${.88 + (Math.sin(frame.time * 13 + index) + 1) * .08})`,
+                opacity: .72 + level * .28,
+              }} />
+            </div>;
+          })}
         </div>
-        {flare > 0.35 && <span className="brass-spark brass-spark-one">✦</span>}
-        {flare > 0.55 && <span className="brass-spark brass-spark-two">✧</span>}
+        {flare > 0.35 && <img className="brass-spark brass-spark-one" src={`${DETAILS}star-charm.png`} alt="" />}
+        {flare > 0.55 && <img className="brass-spark brass-spark-two" src={`${DETAILS}star-charm.png`} alt="" />}
       </div>
 
       {activeLineText && <section className="medieval-lyrics" aria-live="polite" aria-label="Letra de la canción">

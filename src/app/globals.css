@@ -68,7 +68,12 @@ body {
 .medieval-life-firefly,
 .medieval-life-comet,
 .medieval-life-lantern,
-.medieval-life-book {
+.medieval-life-book,
+.medieval-life-moth,
+.medieval-life-scroll,
+.medieval-life-streamer,
+.medieval-life-owl,
+.medieval-life-ground-prop {
   position: absolute;
   display: block;
   height: auto;
@@ -85,6 +90,14 @@ body {
 .medieval-life-lantern-left { left: 13%; top: 42%; }
 .medieval-life-lantern-right { right: 13%; top: 42%; }
 .medieval-life-book { z-index: 6; width: 11%; height: auto; filter: drop-shadow(0 0 9px #ffda75); }
+.medieval-life-scroll { z-index: 6; position: absolute; width: 8.5%; height: auto; filter: drop-shadow(0 0 8px #ffda75) drop-shadow(0 0 14px rgba(88,220,255,.6)); }
+.medieval-life-moth { z-index: 7; position: absolute; width: 6.4%; height: auto; filter: drop-shadow(0 0 7px #67f4ee) drop-shadow(0 0 15px rgba(200,95,255,.7)); }
+.medieval-life-streamer { z-index: 6; position: absolute; width: 7.8%; height: auto; filter: drop-shadow(0 0 7px rgba(69,239,227,.65)) drop-shadow(0 0 14px rgba(255,120,165,.5)); }
+.medieval-life-owl { z-index: 7; position: absolute; width: 8.2%; height: auto; filter: drop-shadow(0 0 8px rgba(255,218,133,.72)) drop-shadow(0 0 16px rgba(93,210,244,.48)); }
+.medieval-life-ground-prop { position: absolute; height: auto; filter: drop-shadow(0 5px 4px rgba(26,15,13,.4)); }
+.medieval-life-mushrooms { z-index: 10; width: 5.5%; top: 62.5%; }
+.medieval-life-mushrooms-left { left: 15.8%; }
+.medieval-life-mushrooms-right { right: 14.8%; transform: scaleX(-1); }
 .medieval-life-flag { transform-origin: 50% 3%; filter: drop-shadow(2px 5px 3px rgba(26, 12, 10, .3)); }
 .medieval-life-waldo {
   /* Align to the same 1672:939 cover image as the stone gap at every viewport size. */
@@ -147,7 +160,7 @@ body {
 .cat-arm-fret { left: 52%; top: 38%; width: 33%; height: 34%; transform-origin: 17% 82%; z-index: 4; }
 .cat-head { left: 23%; top: 13%; width: 55%; height: 42%; transform-origin: 50% 93%; z-index: 8; }
 .cat-head.is-speaking { filter: drop-shadow(0 0 8px rgba(255, 193, 76, .18)); }
-.cat-sound-burst { position: absolute; z-index: 7; top: 33%; right: 12%; font-size: clamp(1.5rem, 3vw, 2.8rem); color: #ffe18a; text-shadow: 0 0 15px #ffac30; transition: opacity 70ms linear, transform 100ms ease-out; }
+.cat-sound-burst { position: absolute; z-index: 7; top: 31%; right: 9%; width: 16%; height: auto; filter: drop-shadow(0 0 9px #ffda72) drop-shadow(0 0 17px #a458f0); transition: opacity 70ms linear, transform 100ms ease-out; }
 .medieval-cat-shadow { position: absolute; z-index: 2; left: 50%; bottom: 6.5%; width: min(23vw, 350px); height: clamp(20px, 2.7vw, 39px); border-radius: 50%; background: radial-gradient(ellipse, rgba(30, 13, 9, .68), rgba(30, 13, 9, .3) 52%, transparent 76%); filter: blur(5px); will-change: transform, opacity; }
 
 .medieval-prop {
@@ -189,14 +202,15 @@ body {
 .medieval-music-notes span { display: inline-block; transform: translateY(-1.2em); font-size: .62em; }
 
 .medieval-side-stage { position: absolute; inset: auto 0 9%; z-index: 2; pointer-events: none; }
-.medieval-candle-eq { position: absolute; right: 5.5%; bottom: 0; display: flex; align-items: flex-end; gap: 5px; }
-.stage-candle { position: relative; bottom: 0; width: 10px; height: 66px; border-radius: 4px 4px 2px 2px; background: linear-gradient(90deg,#c48d54,#ffe3a5,#a75f34); transform-origin: bottom; opacity: .9; box-shadow: 0 0 25px rgba(255,167,50,.3); transition: height 90ms ease-out; }
+.medieval-candle-eq { position: absolute; right: 5.5%; bottom: 0; display: flex; align-items: flex-end; gap: 4px; }
+.stage-candle { position: relative; bottom: 0; flex: 0 0 clamp(12px, 1vw, 15px); width: clamp(12px, 1vw, 15px); height: 68px; transform-origin: bottom; opacity: .98; transition: transform 90ms ease-out; }
+.stage-candle-body { position: absolute; inset: 0; display: block; width: 100%; height: 100%; object-fit: fill; filter: drop-shadow(0 3px 2px rgba(28,14,13,.3)); }
+.stage-candle-flame { position: absolute; z-index: 2; top: -15px; left: 50%; width: clamp(12px, 1.05vw, 17px); height: auto; transform-origin: 50% 100%; filter: drop-shadow(0 0 5px #ffe985) drop-shadow(0 0 11px rgba(255,176,57,.8)); }
 .stage-candle-one { left: 3.5%; }
 .stage-candle-two { right: 3%; height: 82px; }
-.stage-candle i { position: absolute; top: -19px; left: 1px; width: 8px; height: 20px; border-radius: 60% 40% 55% 45%; background: #ffe985; box-shadow: 0 0 19px 8px rgba(255,191,72,.45); animation: medieval-flame .18s ease-in-out infinite alternate; }
-.brass-spark { position: absolute; color: #ffe07b; font-size: 2rem; text-shadow: 0 0 16px #ffb836; animation: medieval-spark .5s ease-out both; }
+.brass-spark { position: absolute; width: 4.5%; height: auto; filter: drop-shadow(0 0 8px #ffb836); animation: medieval-spark .5s ease-out both; }
 .brass-spark-one { left: 22%; bottom: 8rem; }
-.brass-spark-two { right: 25%; bottom: 12rem; }
+.brass-spark-two { right: 25%; bottom: 12rem; width: 3.7%; }
 
 .medieval-lyrics { position: absolute; z-index: 9; left: 5vw; top: 8%; width: min(74vw, 870px); pointer-events: none; color: #fff5d7; }
 .medieval-lyric-line { margin: 0; font: 700 clamp(1.35rem, 2.6vw, 2.7rem)/1.18 Georgia, serif; letter-spacing: .01em; text-shadow: 0 3px 2px #28120e, 0 5px 13px #170a0b, 2px 0 9px #170a0b; animation: medieval-lyric-enter .16s ease-out both; }
@@ -210,31 +224,35 @@ body {
   -webkit-text-fill-color: #fff;
   -webkit-text-stroke: .25px #23102f;
   background: linear-gradient(110deg, #b923a2, #6336d2 52%, #087caa);
-  box-shadow: 0 2px 0 #24112e, 0 0 9px #ff50db, 0 0 18px #8e6bff, inset 0 0 9px rgba(255,255,255,.4);
+  box-shadow: 0 2px 0 #24112e, 0 0 9px var(--magic-glow, #ff50db), 0 0 18px var(--magic-aura, #8e6bff), inset 0 0 9px rgba(255,255,255,.4);
   text-shadow: 0 2px 2px #21112d, 0 0 5px #fff;
   animation: lyric-magic-wild 1.35s ease-in-out infinite;
   animation-delay: var(--magic-delay, 0ms);
   transform-origin: 50% 80%;
 }
+.lyric-tone-0 { --magic-glow: #ff50db; --magic-aura: #8e6bff; background: linear-gradient(112deg, #a52391, #5435c1 54%, #096d91); }
+.lyric-tone-1 { --magic-glow: #ff805e; --magic-aura: #ff3b78; background: linear-gradient(112deg, #7e1e44, #a52638 52%, #6b2579); }
+.lyric-tone-2 { --magic-glow: #40f2d2; --magic-aura: #387bff; background: linear-gradient(112deg, #075d65, #188088 52%, #3b4394); }
+.lyric-tone-3 { --magic-glow: #ffd05c; --magic-aura: #ed5a8d; background: linear-gradient(112deg, #85500b, #a43a27 50%, #5c286e); }
 .lyric-magic::after {
-  content: '✦';
+  content: '';
   position: absolute;
   top: -.72em;
   right: -.24em;
-  color: #a9fff4;
-  font: .62em/1 Georgia, serif;
-  -webkit-text-fill-color: #a9fff4;
-  -webkit-text-stroke: 0;
-  text-shadow: 0 0 .35em #fff, 0 0 .75em #70efff, 0 0 1.3em #ff45db;
+  width: .68em;
+  height: .68em;
+  background: url('/assets/medieval/details/star-charm.png') center / contain no-repeat;
+  filter: drop-shadow(0 0 .25em #fff) drop-shadow(0 0 .7em #70efff) drop-shadow(0 0 1.1em #ff45db);
   pointer-events: none;
   animation: lyric-magic-spark .9s ease-in-out infinite alternate;
   animation-delay: var(--magic-delay, 0ms);
 }
 .medieval-scene-details { position: absolute; inset: 0; z-index: 2; pointer-events: none; overflow: hidden; }
-.medieval-floating-note { position: absolute; display: block; color: #ffe6a0; font: 700 clamp(2rem, 4.5vw, 4.5rem)/1 Georgia, serif; text-shadow: 0 0 15px #bc6b20, 0 0 28px #ffc355; transition: transform 55ms linear, opacity 55ms linear; }
-.note-0 { left: 76%; top: 39%; } .note-1 { left: 82%; top: 29%; } .note-2 { left: 70%; top: 24%; } .note-3 { left: 88%; top: 51%; } .note-4 { left: 31%; top: 54%; }
-.medieval-stage-mug { position: absolute; left: 10%; bottom: 11%; font-size: clamp(1.5rem, 3vw, 2.4rem); filter: drop-shadow(0 5px 4px #432315); transform: rotate(-13deg); opacity: .9; }
-.medieval-stage-cheese { position: absolute; right: 11%; bottom: 12%; color: #ffd36a; font-size: clamp(1.8rem, 3vw, 2.7rem); text-shadow: 2px 2px #8e5627, 0 5px 8px #432315; transform: rotate(-15deg); }
+.medieval-floating-note { position: absolute; display: block; width: 8.2%; height: auto; filter: drop-shadow(0 0 9px #ffc355); transition: transform 55ms linear, opacity 55ms linear; }
+.note-0 { left: 75%; top: 31%; } .note-1 { left: 17%; top: 50%; width: 6.2%; }
+.medieval-stage-mug { position: absolute; left: 7.5%; bottom: 9.5%; width: 7%; height: auto; filter: drop-shadow(0 5px 4px #432315); opacity: .94; }
+.medieval-stage-cheese { position: absolute; left: 71%; bottom: 10%; width: 5.6%; height: auto; filter: drop-shadow(0 5px 4px #432315); transform: rotate(-15deg); }
+.medieval-stage-potion { position: absolute; left: 17.5%; bottom: 9%; width: 4.2%; height: auto; filter: drop-shadow(0 5px 4px #432315) drop-shadow(0 0 6px rgba(120,135,255,.5)); }
 .lyrics-heading { display: flex; align-items: center; gap: .55rem; padding-bottom: .55rem; border-bottom: 1px solid rgba(99, 59, 37, .35); color: #7a281f; }
 .lyrics-heading > span { color: #b9812b; }
 .lyrics-heading strong { flex: 1; font: 800 .66rem/1.2 ui-sans-serif, system-ui, sans-serif; letter-spacing: .13em; text-transform: uppercase; }
@@ -263,10 +281,9 @@ body {
 @keyframes medieval-prop-enter { from { opacity: 0; scale: .85; translate: 0 15px; } to { opacity: 1; scale: 1; translate: 0 0; } }
 @keyframes medieval-banner-pulse { to { filter: brightness(1.18); } }
 @keyframes medieval-notes { 0%,100% { translate: 0 6px; rotate: -5deg; } 50% { translate: 0 -10px; rotate: 6deg; } }
-@keyframes medieval-flame { to { transform: rotate(8deg) scaleX(.75); } }
 @keyframes medieval-spark { from { opacity: 0; transform: scale(.25) rotate(-45deg); } to { opacity: 1; transform: scale(1) rotate(0); } }
 @keyframes medieval-lyric-enter { from { opacity: .25; transform: translateY(4px); } to { opacity: 1; transform: translateY(0); } }
-@keyframes lyric-magic-wild { 0%,100% { transform: translateY(0) rotate(-1deg) scale(1); box-shadow: 0 2px 0 #24112e, 0 0 9px #ff50db, 0 0 18px #8e6bff, inset 0 0 9px rgba(255,255,255,.4); } 35% { transform: translateY(-.16em) rotate(2deg) scale(1.12); box-shadow: 0 3px 0 #251f58, 0 0 12px #fff, 0 0 24px #51edff, 0 0 35px #a679ff, inset 0 0 13px rgba(255,255,255,.7); } 70% { transform: translateY(.03em) rotate(-2deg) scale(1.04); box-shadow: 0 2px 0 #54204d, 0 0 10px #fff1ac, 0 0 22px #ff51cf, 0 0 32px #ffab4e, inset 0 0 10px rgba(255,255,255,.55); } }
+@keyframes lyric-magic-wild { 0%,100% { transform: translateY(0) rotate(-1deg) scale(1); box-shadow: 0 2px 0 #24112e, 0 0 9px var(--magic-glow, #ff50db), 0 0 18px var(--magic-aura, #8e6bff), inset 0 0 9px rgba(255,255,255,.4); } 35% { transform: translateY(-.16em) rotate(2deg) scale(1.12); box-shadow: 0 3px 0 #251f58, 0 0 12px #fff, 0 0 24px var(--magic-glow, #51edff), 0 0 35px var(--magic-aura, #a679ff), inset 0 0 13px rgba(255,255,255,.7); } 70% { transform: translateY(.03em) rotate(-2deg) scale(1.04); box-shadow: 0 2px 0 #54204d, 0 0 10px #fff1ac, 0 0 22px var(--magic-glow, #ff51cf), 0 0 32px var(--magic-aura, #ffab4e), inset 0 0 10px rgba(255,255,255,.55); } }
 @keyframes lyric-magic-spark { from { opacity: .35; transform: translateY(.15em) scale(.45) rotate(-35deg); } to { opacity: 1; transform: translateY(-.35em) scale(1.35) rotate(35deg); } }
 @keyframes charm-float { from { translate: 0 0; rotate: -8deg; } to { translate: 0 -10px; rotate: 8deg; } }
 
@@ -287,7 +304,8 @@ body {
   .medieval-volume input { width: 45px; }
 }
 @media (prefers-reduced-motion: reduce) {
-  .medieval-chorus-banner,.medieval-music-notes,.medieval-prop,.stage-candle i,.lyric-magic,.lyric-magic::after { animation-duration: .01ms; animation-iteration-count: 1; }
+  .medieval-chorus-banner,.medieval-music-notes,.medieval-prop,.lyric-magic,.lyric-magic::after { animation-duration: .01ms; animation-iteration-count: 1; }
+  .stage-candle { transition: none; }
 }
 
 /* ===== ANIMACIONES LOCAS DE FANTASIA ===== */
