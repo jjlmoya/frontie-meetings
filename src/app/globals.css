@@ -64,23 +64,9 @@ body {
 .medieval-life-rat,
 .medieval-life-waldo,
 .medieval-life-flag,
-.medieval-life-charm,
-.medieval-life-firefly,
-.medieval-life-comet,
 .medieval-life-lantern,
-.medieval-life-book,
-.medieval-life-moth,
-.medieval-life-scroll,
-.medieval-life-streamer,
-.medieval-life-owl,
 .medieval-life-ground-prop,
-.medieval-life-falling-leaf,
 .medieval-life-fairy,
-.medieval-life-phoenix,
-.medieval-life-bubbles,
-.medieval-life-frog,
-.medieval-life-bat,
-.medieval-life-shooting-star,
 .medieval-life-rapunzel-window,
 .medieval-life-rapunzel-braid {
   position: absolute;
@@ -90,40 +76,19 @@ body {
   pointer-events: none;
   will-change: transform, opacity, left;
 }
-.medieval-life-charm { z-index: 5; position: absolute; width: 5.2%; height: auto; filter: drop-shadow(0 0 9px rgba(255,215,114,.6)); animation: charm-float 3.8s ease-in-out infinite alternate; }
-.medieval-life-moon-charm { left: 36%; top: 31%; }
-.medieval-life-star-charm { right: 31%; top: 37%; width: 4.3%; }
-.medieval-life-twinkle { width: 2.5%; height: auto; filter: drop-shadow(0 0 5px #fff3be) drop-shadow(0 0 12px rgba(255,191,84,.85)); }
-.medieval-life-firefly { z-index: 6; filter: drop-shadow(0 0 6px #65edff) drop-shadow(0 0 13px #ba5cff); }
-.medieval-life-comet { z-index: 6; width: 14%; height: auto; filter: drop-shadow(0 0 8px #ffd86c); }
-.medieval-life-lantern { z-index: 5; width: 4.5%; height: auto; transform-origin: 50% 0; filter: drop-shadow(0 0 11px rgba(255,190,76,.65)); }
-.medieval-life-lantern-left { left: 13%; top: 42%; }
-.medieval-life-lantern-right { right: 13%; top: 42%; }
-.medieval-life-book { z-index: 6; width: 11%; height: auto; filter: drop-shadow(0 0 9px #ffda75); }
-.medieval-life-scroll { z-index: 6; position: absolute; width: 8.5%; height: auto; filter: drop-shadow(0 0 8px #ffda75) drop-shadow(0 0 14px rgba(88,220,255,.6)); }
-.medieval-life-moth { z-index: 7; position: absolute; width: 6.4%; height: auto; filter: drop-shadow(0 0 7px #67f4ee) drop-shadow(0 0 15px rgba(200,95,255,.7)); }
-.medieval-life-streamer { z-index: 6; position: absolute; width: 7.8%; height: auto; filter: drop-shadow(0 0 7px rgba(69,239,227,.65)) drop-shadow(0 0 14px rgba(255,120,165,.5)); }
-.medieval-life-owl { z-index: 7; position: absolute; width: 8.2%; height: auto; filter: drop-shadow(0 0 8px rgba(255,218,133,.72)) drop-shadow(0 0 16px rgba(93,210,244,.48)); }
+.medieval-life-lantern { z-index: 30; width: 4.5%; height: auto; transform-origin: 50% 0; filter: drop-shadow(0 0 11px rgba(255,190,76,.65)); }
+.medieval-life-lantern-left { left: 9%; top: 47%; }
+.medieval-life-lantern-right { right: 8%; top: 61%; }
 .medieval-life-ground-prop { position: absolute; height: auto; filter: drop-shadow(0 5px 4px rgba(26,15,13,.4)); }
 .medieval-life-mushrooms { z-index: 10; width: 5.5%; top: 62.5%; }
-.medieval-life-mushrooms-left { left: 15.8%; }
 .medieval-life-mushrooms-right { right: 14.8%; transform: scaleX(-1); }
 .medieval-life-flower { z-index: 10; width: 4.8%; bottom: 13.4%; transform-origin: 50% 100%; filter: drop-shadow(0 4px 3px rgba(26,15,13,.38)) drop-shadow(0 0 8px rgba(165,131,255,.35)); }
 .medieval-life-flower-left { left: 23%; }
 .medieval-life-flower-right { right: 23%; }
-.medieval-life-falling-leaf { width: 4.2%; filter: drop-shadow(0 3px 4px rgba(34,24,40,.45)); }
 .medieval-life-fairy { z-index: 7; width: 7%; filter: drop-shadow(0 0 8px #fff0b2) drop-shadow(0 0 17px rgba(207,117,255,.78)); }
-.medieval-life-phoenix { z-index: 5; width: 14%; filter: drop-shadow(0 0 9px rgba(255,179,75,.9)) drop-shadow(0 0 19px rgba(234,80,93,.62)); }
-.medieval-life-bubbles { z-index: 6; width: 12%; filter: drop-shadow(0 0 8px rgba(151,224,255,.7)); }
-.medieval-life-frog { z-index: 11; width: 7.5%; filter: drop-shadow(0 4px 4px rgba(25,15,11,.4)) drop-shadow(0 0 7px rgba(255,213,109,.45)); }
-.medieval-life-bat { z-index: 6; width: 6.5%; filter: drop-shadow(0 0 8px rgba(196,164,255,.8)); }
-.medieval-life-shooting-star { z-index: 7; width: 13%; filter: drop-shadow(0 0 8px #fff4b4) drop-shadow(0 0 18px rgba(255,176,66,.85)); }
 .medieval-life-rapunzel-window { z-index: 6; width: 6%; filter: drop-shadow(0 5px 5px rgba(33,18,15,.42)); transform-origin: 50% 90%; }
 .medieval-life-rapunzel-braid { z-index: 7; height: 13%; width: auto; transform-origin: 50% 0; filter: drop-shadow(1px 4px 3px rgba(37,22,18,.4)) drop-shadow(0 0 5px rgba(255,215,100,.5)); }
 .medieval-wall-detail { position: absolute; height: auto; pointer-events: none; will-change: transform; }
-.medieval-wall-ivy-left { z-index: 8; left: 1.5%; top: 69%; width: 18%; transform-origin: 12% 55%; filter: drop-shadow(0 4px 4px rgba(24,19,17,.38)); }
-.medieval-wall-ivy-right { z-index: 8; right: 13.5%; top: 69.5%; width: 7.5%; transform-origin: 50% 0; filter: drop-shadow(0 4px 4px rgba(24,19,17,.4)); }
-.medieval-wall-rune { z-index: 9; left: 12.2%; top: 73%; width: 5.2%; }
 .medieval-wall-shield { z-index: 9; right: 7.2%; top: 72%; width: 5.6%; transform-origin: 50% 5%; filter: drop-shadow(0 4px 4px rgba(24,19,17,.42)); }
 .medieval-life-flag { transform-origin: 50% 3%; filter: drop-shadow(2px 5px 3px rgba(26, 12, 10, .3)); }
 .medieval-life-waldo {
@@ -228,19 +193,16 @@ body {
 .medieval-music-notes { position: absolute; right: 16%; top: 40%; color: #ffe396; font: 700 clamp(2rem, 4vw, 4.5rem)/1 Georgia, serif; text-shadow: 0 0 15px #bd5429; animation: medieval-notes 2s ease-in-out infinite; }
 .medieval-music-notes span { display: inline-block; transform: translateY(-1.2em); font-size: .62em; }
 
-.medieval-side-stage { position: absolute; inset: auto 0 9%; z-index: 2; pointer-events: none; }
-.medieval-candle-eq { position: absolute; right: 5.5%; bottom: 0; display: flex; align-items: flex-end; gap: 4px; }
+.medieval-side-stage { position: absolute; inset: auto 0 5.5%; z-index: 2; pointer-events: none; }
+.medieval-candle-eq { position: absolute; right: 15%; bottom: 0; display: flex; align-items: flex-end; gap: 4px; }
 .stage-candle { position: relative; bottom: 0; flex: 0 0 clamp(12px, 1vw, 15px); width: clamp(12px, 1vw, 15px); height: 68px; transform-origin: bottom; opacity: .98; transition: transform 90ms ease-out; }
 .stage-candle-body { position: absolute; inset: 0; display: block; width: 100%; height: 100%; object-fit: fill; filter: drop-shadow(0 3px 2px rgba(28,14,13,.3)); }
 .stage-candle-flame { position: absolute; z-index: 2; top: -15px; left: 50%; width: clamp(12px, 1.05vw, 17px); height: auto; transform-origin: 50% 100%; filter: drop-shadow(0 0 5px #ffe985) drop-shadow(0 0 11px rgba(255,176,57,.8)); }
 .stage-candle-one { left: 3.5%; }
 .stage-candle-two { right: 3%; height: 82px; }
-.brass-spark { position: absolute; width: 4.5%; height: auto; filter: drop-shadow(0 0 8px #ffb836); animation: medieval-spark .5s ease-out both; }
-.brass-spark-one { left: 22%; bottom: 8rem; }
-.brass-spark-two { right: 25%; bottom: 12rem; width: 3.7%; }
 
 .medieval-lyrics { position: absolute; z-index: 9; left: 4vw; top: 7.5%; width: min(92vw, 1100px); pointer-events: none; color: #fff9e9; }
-.medieval-lyric-line { margin: 0; font: 700 clamp(1.45rem, 3vw, 2.85rem)/1.2 Georgia, serif; letter-spacing: .008em; color: #fff9e9; -webkit-text-stroke: .45px rgba(21,17,35,.8); text-shadow: 0 2px 2px #151323, 0 4px 9px rgba(15,13,30,.95), 0 0 20px rgba(16,15,32,.85); animation: medieval-lyric-enter .2s ease-out both; }
+.medieval-lyric-line { margin: 0; font: 700 clamp(1.45rem, 3vw, 2.85rem)/1.2 Georgia, serif; letter-spacing: .008em; color: #fff9e9; -webkit-text-stroke: .45px rgba(21,17,35,.8); text-shadow: 0 2px 2px #151323, 0 3px 5px rgba(15,13,30,.98); animation: medieval-lyric-enter .2s ease-out both; }
 .lyric-magic {
   position: relative;
   display: inline-block;
@@ -248,33 +210,33 @@ body {
   margin: 0 .015em;
   color: var(--lyric-crystal, #ffe68b);
   -webkit-text-fill-color: var(--lyric-crystal, #ffe68b);
-  -webkit-text-stroke: .6px rgba(22,15,34,.94);
-  text-shadow: 0 2px 2px #171020, 0 0 7px var(--lyric-aura, rgba(255,204,84,.75)), 0 0 18px var(--lyric-aura, rgba(255,141,68,.65));
-  animation: lyric-magic-glow 1.8s ease-in-out infinite;
+  -webkit-text-stroke: .7px rgba(22,15,34,.96);
+  text-shadow: 0 2px 2px #171020, 0 0 4px var(--lyric-aura, rgba(255,204,84,.72)), 0 0 11px var(--lyric-aura, rgba(255,141,68,.58));
+  animation: lyric-magic-glow 1.8s ease-in-out infinite, lyric-word-dance 2.3s ease-in-out infinite;
   transform-origin: 50% 80%;
 }
 .lyric-tone-0 { --lyric-crystal: #ffe68b; --lyric-aura: rgba(255,171,67,.82); }
 .lyric-tone-1 { --lyric-crystal: #a3fff0; --lyric-aura: rgba(41,222,205,.78); }
 .lyric-tone-2 { --lyric-crystal: #ffd0eb; --lyric-aura: rgba(244,77,186,.74); }
 .lyric-tone-3 { --lyric-crystal: #d8ccff; --lyric-aura: rgba(139,111,255,.8); }
-.lyric-magic::after {
+.lyric-magic::before {
   content: '';
   position: absolute;
-  top: -.55em;
-  right: -.24em;
-  width: .62em;
-  height: .62em;
-  background: url('/assets/medieval/details/paper-twinkle-star.png') center / contain no-repeat;
-  filter: drop-shadow(0 0 .18em #fff) drop-shadow(0 0 .7em var(--lyric-aura, #ffcf5d));
+  left: 0;
+  right: 0;
+  bottom: -.08em;
+  height: .13em;
+  border-radius: 999px;
+  background: linear-gradient(90deg, transparent, var(--lyric-crystal), #fff8df 50%, var(--lyric-crystal), transparent);
+  box-shadow: 0 0 7px var(--lyric-aura);
+  opacity: .75;
+  transform-origin: left center;
+  animation: lyric-rune-sweep 1.45s ease-in-out infinite;
   pointer-events: none;
-  animation: lyric-magic-spark .85s ease-in-out infinite alternate;
 }
 .medieval-scene-details { position: absolute; inset: 0; z-index: 2; pointer-events: none; overflow: hidden; }
 .medieval-floating-note { position: absolute; display: block; width: 8.2%; height: auto; filter: drop-shadow(0 0 9px #ffc355); transition: transform 55ms linear, opacity 55ms linear; }
 .note-0 { left: 75%; top: 31%; } .note-1 { left: 17%; top: 50%; width: 6.2%; }
-.medieval-stage-mug { position: absolute; left: 7.5%; bottom: 9.5%; width: 7%; height: auto; filter: drop-shadow(0 5px 4px #432315); opacity: .94; }
-.medieval-stage-cheese { position: absolute; left: 71%; bottom: 10%; width: 5.6%; height: auto; filter: drop-shadow(0 5px 4px #432315); transform: rotate(-15deg); }
-.medieval-stage-potion { position: absolute; left: 17.5%; bottom: 9%; width: 4.2%; height: auto; filter: drop-shadow(0 5px 4px #432315) drop-shadow(0 0 6px rgba(120,135,255,.5)); }
 .lyrics-heading { display: flex; align-items: center; gap: .55rem; padding-bottom: .55rem; border-bottom: 1px solid rgba(99, 59, 37, .35); color: #7a281f; }
 .lyrics-heading > span { color: #b9812b; }
 .lyrics-heading strong { flex: 1; font: 800 .66rem/1.2 ui-sans-serif, system-ui, sans-serif; letter-spacing: .13em; text-transform: uppercase; }
@@ -303,11 +265,10 @@ body {
 @keyframes medieval-prop-enter { from { opacity: 0; scale: .85; translate: 0 15px; } to { opacity: 1; scale: 1; translate: 0 0; } }
 @keyframes medieval-banner-pulse { to { filter: brightness(1.18); } }
 @keyframes medieval-notes { 0%,100% { translate: 0 6px; rotate: -5deg; } 50% { translate: 0 -10px; rotate: 6deg; } }
-@keyframes medieval-spark { from { opacity: 0; transform: scale(.25) rotate(-45deg); } to { opacity: 1; transform: scale(1) rotate(0); } }
 @keyframes medieval-lyric-enter { from { opacity: .25; transform: translateY(4px); } to { opacity: 1; transform: translateY(0); } }
-@keyframes lyric-magic-glow { 0%,100% { text-shadow: 0 2px 2px #171020, 0 0 6px var(--lyric-aura, rgba(255,204,84,.68)), 0 0 13px var(--lyric-aura, rgba(255,141,68,.42)); } 50% { text-shadow: 0 2px 2px #171020, 0 0 9px #fff4cc, 0 0 19px var(--lyric-aura, rgba(255,169,64,.9)); } }
-@keyframes lyric-magic-spark { from { opacity: .5; transform: translateY(.12em) scale(.65) rotate(-18deg); } to { opacity: 1; transform: translateY(-.2em) scale(1.1) rotate(18deg); } }
-@keyframes charm-float { from { translate: 0 0; rotate: -8deg; } to { translate: 0 -10px; rotate: 8deg; } }
+@keyframes lyric-magic-glow { 0%,100% { text-shadow: 0 2px 2px #171020, 0 0 4px var(--lyric-aura, rgba(255,204,84,.68)), 0 0 9px var(--lyric-aura, rgba(255,141,68,.42)); } 50% { text-shadow: 0 2px 2px #171020, 0 0 6px #fff4cc, 0 0 13px var(--lyric-aura, rgba(255,169,64,.9)); } }
+@keyframes lyric-word-dance { 0%,100% { transform: translateY(0) scale(1); } 42% { transform: translateY(-.035em) scale(1.035); } 62% { transform: translateY(0) scale(1.01); } }
+@keyframes lyric-rune-sweep { 0% { opacity: .38; transform: scaleX(.16) translateX(-12%); } 55% { opacity: .95; transform: scaleX(.76) translateX(0); } 100% { opacity: .62; transform: scaleX(1); } }
 
 @media (max-width: 760px) {
   .medieval-header { inset: 1rem 1rem auto; gap: .45rem; }
@@ -326,6 +287,6 @@ body {
   .medieval-volume input { width: 45px; }
 }
 @media (prefers-reduced-motion: reduce) {
-  .medieval-chorus-banner,.medieval-music-notes,.medieval-prop,.lyric-magic,.lyric-magic::after { animation-duration: .01ms; animation-iteration-count: 1; }
+  .medieval-chorus-banner,.medieval-music-notes,.medieval-prop,.lyric-magic,.lyric-magic::before,.lyric-magic::after { animation-duration: .01ms; animation-iteration-count: 1; }
   .stage-candle { transition: none; }
 }
