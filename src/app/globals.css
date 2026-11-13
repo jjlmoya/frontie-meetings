@@ -186,6 +186,32 @@ body {
 
 .medieval-lyrics { position: absolute; z-index: 9; left: 5vw; top: 8%; width: min(74vw, 870px); pointer-events: none; color: #fff5d7; }
 .medieval-lyric-line { margin: 0; font: 700 clamp(1.35rem, 2.6vw, 2.7rem)/1.18 Georgia, serif; letter-spacing: .01em; text-shadow: 0 3px 2px #28120e, 0 5px 13px #170a0b, 2px 0 9px #170a0b; animation: medieval-lyric-enter .16s ease-out both; }
+.lyric-magic {
+  position: relative;
+  display: inline-block;
+  padding: 0 .07em;
+  color: #fff18a;
+  -webkit-text-fill-color: #fff8c7;
+  -webkit-text-stroke: .65px #382050;
+  text-shadow: 0 2px 0 #24112e, 0 0 5px #fff, 0 0 12px #ff50db, 0 0 22px #8e6bff;
+  animation: lyric-magic-wild 1.35s ease-in-out infinite;
+  animation-delay: var(--magic-delay, 0ms);
+  transform-origin: 50% 80%;
+}
+.lyric-magic::after {
+  content: '✦';
+  position: absolute;
+  top: -.72em;
+  right: -.24em;
+  color: #a9fff4;
+  font: .62em/1 Georgia, serif;
+  -webkit-text-fill-color: #a9fff4;
+  -webkit-text-stroke: 0;
+  text-shadow: 0 0 .35em #fff, 0 0 .75em #70efff, 0 0 1.3em #ff45db;
+  pointer-events: none;
+  animation: lyric-magic-spark .9s ease-in-out infinite alternate;
+  animation-delay: var(--magic-delay, 0ms);
+}
 .medieval-scene-details { position: absolute; inset: 0; z-index: 2; pointer-events: none; overflow: hidden; }
 .medieval-floating-note { position: absolute; display: block; color: #ffe6a0; font: 700 clamp(2rem, 4.5vw, 4.5rem)/1 Georgia, serif; text-shadow: 0 0 15px #bc6b20, 0 0 28px #ffc355; transition: transform 55ms linear, opacity 55ms linear; }
 .note-0 { left: 76%; top: 39%; } .note-1 { left: 82%; top: 29%; } .note-2 { left: 70%; top: 24%; } .note-3 { left: 88%; top: 51%; } .note-4 { left: 31%; top: 54%; }
@@ -222,6 +248,8 @@ body {
 @keyframes medieval-flame { to { transform: rotate(8deg) scaleX(.75); } }
 @keyframes medieval-spark { from { opacity: 0; transform: scale(.25) rotate(-45deg); } to { opacity: 1; transform: scale(1) rotate(0); } }
 @keyframes medieval-lyric-enter { from { opacity: .25; transform: translateY(4px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes lyric-magic-wild { 0%,100% { transform: translateY(0) rotate(-1deg) scale(1); -webkit-text-fill-color: #fff8c7; text-shadow: 0 2px 0 #24112e, 0 0 5px #fff, 0 0 12px #ff50db, 0 0 22px #8e6bff; } 35% { transform: translateY(-.16em) rotate(2deg) scale(1.12); -webkit-text-fill-color: #a9fff4; text-shadow: 0 2px 0 #251f58, 0 0 7px #fff, 0 0 16px #51edff, 0 0 28px #a679ff; } 70% { transform: translateY(.03em) rotate(-2deg) scale(1.04); -webkit-text-fill-color: #ffb7ed; text-shadow: 0 2px 0 #54204d, 0 0 7px #fff1ac, 0 0 17px #ff51cf, 0 0 26px #ffab4e; } }
+@keyframes lyric-magic-spark { from { opacity: .35; transform: translateY(.15em) scale(.45) rotate(-35deg); } to { opacity: 1; transform: translateY(-.35em) scale(1.35) rotate(35deg); } }
 
 @media (max-width: 760px) {
   .medieval-header { inset: 1rem 1rem auto; gap: .45rem; }
@@ -240,7 +268,7 @@ body {
   .medieval-volume input { width: 45px; }
 }
 @media (prefers-reduced-motion: reduce) {
-  .medieval-chorus-banner,.medieval-music-notes,.medieval-prop,.stage-candle i { animation-duration: 2s; }
+  .medieval-chorus-banner,.medieval-music-notes,.medieval-prop,.stage-candle i,.lyric-magic,.lyric-magic::after { animation-duration: .01ms; animation-iteration-count: 1; }
 }
 
 /* ===== ANIMACIONES LOCAS DE FANTASIA ===== */

@@ -22,6 +22,16 @@ const AUDIO_URL = '/assets/medieval/audio/frontie-the-feline-king.mp3';
 const CUES_URL = '/assets/medieval/animation-cues.json';
 const ART = '/assets/medieval/layers/';
 const DETAILS = '/assets/medieval/details/';
+const LYRIC_MAGIC = [
+  'Front-line', 'Frontie', 'king', 'feline queen', 'glowing screen', 'tavern table', 'Hear the tale',
+  'keyboard', 'pull requests', 'Guardian', 'ancient fur', 'stand-up call', 'cold heart',
+  'Merge the branch', 'Resolve the conflict', 'sacred bell', 'modern spell', 'lobby',
+  'giant bundle', 'micro-frontends', 'Ten thousand', 'npm packages', 'deployment',
+  'CORS errors', 'hydration mismatches', 'sacrifice of mice', 'belly rub', 'tribute',
+  'Git push', 'tavern ale', 'product owners', 'stormy sea', 'Waiting', 'Meet',
+  'feline heart', 'Huzzah', 'the beast', 'legend', 'increased',
+];
+const LYRIC_MAGIC_PATTERN = new RegExp(`(${LYRIC_MAGIC.sort((a, b) => b.length - a.length).join('|')})`, 'gi');
 const SCENE_LAYERS = [
   'cielo-base.png', 'nube-izquierda.png', 'nube-derecha.png', 'castillo-fondo.png',
   'casa-izquierda.png', 'casa-derecha.png', 'arboleda.png', 'muralla.png',
@@ -51,6 +61,13 @@ function eventAt(time: number, starts: number[], duration: number, enter = .7, e
   const elapsed = time - start;
   const visibility = smooth(elapsed / enter) * smooth((duration - elapsed) / exit);
   return { elapsed, progress: elapsed / duration, visibility };
+}
+
+function renderMagicalLyric(text: string) {
+  return text.split(LYRIC_MAGIC_PATTERN).map((part, index) => {
+    if (!part || !LYRIC_MAGIC.some((word) => word.toLowerCase() === part.toLowerCase())) return part;
+    return <span className="lyric-magic" key={`${part}-${index}`} style={{ animationDelay: `${Math.min(index * 55, 330)}ms` }}>{part}</span>;
+  });
 }
 
 function layerMotion(layer: string, time: number): CSSProperties {
@@ -304,7 +321,7 @@ export function MedievalExperience() {
       </div>
 
       {activeLineText && <section className="medieval-lyrics" aria-live="polite" aria-label="Letra de la canción">
-        <p key={`${section?.id}-${activeLine}`} className="medieval-lyric-line">{activeLineText}</p>
+        <p key={`${section?.id}-${activeLine}`} className="medieval-lyric-line">{renderMagicalLyric(activeLineText)}</p>
       </section>}
 
       <footer className="medieval-player">
