@@ -150,8 +150,12 @@ body {
 .cat-arm-strum { left: 20%; top: 47%; width: 52%; height: 28%; transform-origin: 14% 32%; z-index: 7; }
 .cat-lute { left: 38%; top: 42%; width: 48%; height: 39%; transform-origin: 24% 78%; z-index: 5; }
 .cat-arm-fret { left: 52%; top: 38%; width: 33%; height: 34%; transform-origin: 17% 82%; z-index: 4; }
-.cat-head { left: 23%; top: 13%; width: 55%; height: 42%; transform-origin: 50% 93%; z-index: 8; }
-.cat-head.is-speaking { filter: drop-shadow(0 0 8px rgba(255, 193, 76, .18)); }
+.cat-head { position: absolute; left: 23%; top: 13%; width: 55%; height: 42%; transform-origin: 50% 93%; z-index: 8; }
+.cat-head-mouth { inset: 0; width: 100%; height: 100%; }
+.cat-head-mouth-closed { opacity: 1; }
+.cat-head-mouth-open { opacity: 0; }
+.cat-head.is-speaking .cat-head-mouth-closed { opacity: 0; }
+.cat-head.is-speaking .cat-head-mouth-open { opacity: 1; }
 .cat-sound-burst { position: absolute; z-index: 7; top: 31%; right: 9%; width: 16%; height: auto; filter: drop-shadow(0 0 9px #ffda72) drop-shadow(0 0 17px #a458f0); transition: opacity 70ms linear, transform 100ms ease-out; }
 .medieval-cat-shadow { position: absolute; z-index: 2; left: 50%; bottom: 6.5%; width: min(23vw, 350px); height: clamp(20px, 2.7vw, 39px); border-radius: 50%; background: radial-gradient(ellipse, rgba(30, 13, 9, .68), rgba(30, 13, 9, .3) 52%, transparent 76%); filter: blur(5px); will-change: transform, opacity; }
 

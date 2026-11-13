@@ -1,7 +1,7 @@
 'use client';
 
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import type { CSSProperties } from 'react';
+import type { CSSProperties, PointerEvent as ReactPointerEvent } from 'react';
 import { getCurrentLyricIndex, getLyricSection } from '@/data/medievalLyrics';
 
 type CueTracks = Record<string, number[]>;
@@ -84,6 +84,23 @@ function renderMagicalLyric(text: string) {
   const after = text.slice(emphasized.index + emphasized.phrase.length);
   const tone = LYRIC_MAGIC.indexOf(emphasized.phrase) % 4;
   return <>{before}<span className={`lyric-magic lyric-tone-${tone}`}>{phrase}</span>{after}</>;
+}
+
+type FaceMood = 'regia' | 'somnolienta' | 'picara' | 'neutral';
+function getFaceMood(sectionId: string | undefined): FaceMood {
+  switch (sectionId) {
+    case 'verse-1':
+    case 'chorus-1':
+    case 'verse-2':
+    case 'chorus-2':
+    case 'bridge':
+    case 'outro-finale':
+      return 'picara';
+    case 'outro-main':
+      return 'somnolienta';
+    default:
+      return 'neutral';
+  }
 }
 
 function layerMotion(layer: string, time: number): CSSProperties {
@@ -189,6 +206,7 @@ function SceneDetails({ time, energy }: { time: number; energy: number }) {
 
 export function MedievalExperience() {
   const audioRef = useRef<HTMLAudioElement>(null);
+  const gestureAutoplayRef = useRef(true);
   const frameRef = useRef(EMPTY_FRAME);
   const mouthRef = useRef({ open: false, changedAt: 0 });
   const lastRenderRef = useRef(0);
@@ -223,9 +241,26 @@ export function MedievalExperience() {
     const audio = audioRef.current;
     if (!audio) return;
     audio.play().then(() => {
+      gestureAutoplayRef.current = false;
       setIsPlaying(true);
       setAutoplayBlocked(false);
     }).catch(() => {
+      gestureAutoplayRef.current = true;
+      setAutoplayBlocked(true);
+    });
+  }, []);
+
+  const startPlaybackFromGesture = useCallback((event: ReactPointerEvent<HTMLElement>) => {
+    const audio = audioRef.current;
+    const target = event.target;
+    if (!gestureAutoplayRef.current || !audio?.paused || (target instanceof Element && target.closest('.medieval-play-button'))) return;
+    gestureAutoplayRef.current = false;
+    audio.play().then(() => {
+      setIsPlaying(true);
+      setAutoplayBlocked(false);
+      setLoadError(false);
+    }).catch(() => {
+      gestureAutoplayRef.current = true;
       setAutoplayBlocked(true);
     });
   }, []);
@@ -240,14 +275,16 @@ export function MedievalExperience() {
         const at = (name: string) => cues.tracks[name]?.[index] ?? 0;
         const section = getLyricSection(time);
         const vocalEnergy = at('lead');
-        const voiced = Boolean(section?.lines.length) && vocalEnergy > 0.16;
-        if (time < mouthRef.current.changedAt || !voiced) {
+        if (time < mouthRef.current.changedAt) {
           mouthRef.current = { open: false, changedAt: time };
         }
         const previous = mouthRef.current.open;
-        const syllable = Math.sin(time * Math.PI * (7.2 + vocalEnergy * 2.2));
-        const desired = voiced && syllable > -.08 - vocalEnergy * .2;
-        if (desired !== previous && time - mouthRef.current.changedAt >= 0.075) {
+        // Follow the lead vocal envelope directly. Hysteresis keeps brief
+        // consonant dips from chattering, while the short debounce preserves
+        // quick syllables in the fast verses.
+        const threshold = previous ? .24 : .4;
+        const desired = Boolean(section?.lines.length) && vocalEnergy > threshold;
+        if (desired !== previous && time - mouthRef.current.changedAt >= 0.1) {
           mouthRef.current = { open: desired, changedAt: time };
         }
         if (now - lastRenderRef.current > 1000 / 30) {
@@ -276,6 +313,7 @@ export function MedievalExperience() {
       try {
         if (audio.ended || audio.currentTime >= audio.duration) audio.currentTime = 0;
         await audio.play();
+        gestureAutoplayRef.current = false;
         setIsPlaying(true);
         setAutoplayBlocked(false);
         setLoadError(false);
@@ -284,6 +322,7 @@ export function MedievalExperience() {
       }
     } else {
       audio.pause();
+      gestureAutoplayRef.current = false;
       setIsPlaying(false);
     }
   }, []);
@@ -350,9 +389,11 @@ export function MedievalExperience() {
   const flare = Math.min(1, Math.max(frame.brass, frame.woodwinds) * 1.4);
 
   const activeLineText = section && activeLine >= 0 ? section.lines[activeLine].text : '';
+  const faceMood = getFaceMood(section?.id);
+  const faceOpen = frame.speaking && isPlaying;
 
   return (
-    <main className={`medieval-experience act-${act}`}>
+    <main className={`medieval-experience act-${act}`} onPointerDownCapture={startPlaybackFromGesture}>
       <audio
         ref={audioRef}
         src={AUDIO_URL}
@@ -393,12 +434,14 @@ export function MedievalExperience() {
         <img className="cat-arm cat-arm-fret" src={`${ART}brazo-acordes.png`} alt="" style={{ transform: `rotate(${isPlaying ? Math.sin(frame.time * 5.8) * (1 + frame.guitar * 2) : 0}deg)` }} />
         <img className="cat-lute" src={`${ART}laud.png`} alt="" style={{ transform: `rotate(${isPlaying ? beat * (1 + frame.guitar * 2) + danceLean * 0.16 : 0}deg)` }} />
         <img className="cat-arm cat-arm-strum" src={`${ART}brazo-rasgueo.png`} alt="" style={{ transform: `rotate(${strum}deg)` }} />
-        <img
-          className={`cat-head ${frame.speaking && isPlaying ? 'is-speaking' : ''}`}
-          src={`${ART}${frame.speaking && isPlaying ? 'cabeza-cantando.png' : 'cabeza-cerrada.png'}`}
-          alt=""
+        <span
+          className={`cat-head ${faceOpen ? 'is-speaking' : ''} face-${faceMood}`}
           style={{ transform: `rotate(${headNod}deg)` }}
-        />
+          aria-hidden="true"
+        >
+          <img className="cat-head-mouth cat-head-mouth-closed" src={`${ART}${faceMood === 'neutral' ? 'cabeza-cerrada.png' : `cabeza-${faceMood}-cerrada.png`}`} alt="" />
+          <img className="cat-head-mouth cat-head-mouth-open" src={`${ART}${faceMood === 'neutral' ? 'cabeza-cantando.png' : `cabeza-${faceMood}-abierta.png`}`} alt="" />
+        </span>
         <img className="cat-sound-burst" src={`${DETAILS}music-notes.png`} alt="" style={{ opacity: frame.speaking && isPlaying ? 0.9 : 0, transform: `scale(${0.8 + frame.backing * 0.55})` }} />
       </div>
 
