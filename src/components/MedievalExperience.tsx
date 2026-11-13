@@ -302,11 +302,51 @@ export function MedievalExperience() {
   const duration = cues?.duration ?? 142.032;
   const progress = duration ? (frame.time / duration) * 100 : 0;
   const beat = Math.sin(frame.time * Math.PI * 4);
-  const bounce = isPlaying ? Math.max(0, beat) * (1 + frame.drums * 3) : 0;
-  const bodyTilt = isPlaying ? beat * (1.3 + frame.bass * 2.2) : 0;
-  const tailSwing = isPlaying ? Math.sin(frame.time * Math.PI * 4 + 0.7) * (4 + frame.percussion * 9) : 2;
-  const strum = isPlaying ? Math.sin(frame.time * Math.PI * 7.2) * (3 + frame.guitar * 12) : 0;
-  const headNod = isPlaying ? Math.sin(frame.time * Math.PI * 2 + 0.3) * (1.5 + frame.backing * 5) : 0;
+  const step = Math.sin(frame.time * Math.PI * 2 + 0.35);
+  const shuffle = Math.sin(frame.time * Math.PI * 3.2 + 0.8);
+  const dance = act;
+  const danceLift = isPlaying
+    ? Math.max(0, dance === 'chorus' ? beat : dance === 'outro' ? shuffle : dance === 'bridge' ? step : Math.sin(frame.time * Math.PI * 2))
+      * (dance === 'chorus' ? 3.2 + frame.drums * 2.2 : dance === 'bridge' ? 1.4 + frame.drums : dance === 'outro' ? 2 + frame.drums * 1.4 : 1.2 + frame.drums)
+    : 0;
+  const danceSway = isPlaying
+    ? dance === 'bridge' ? Math.sin(frame.time * Math.PI * 1.25) * 4.5
+      : dance === 'outro' ? shuffle * 2.4
+        : dance === 'chorus' ? Math.sin(frame.time * Math.PI * 2) * 2
+          : step * 3.2
+    : 0;
+  const danceLean = isPlaying
+    ? dance === 'bridge' ? Math.sin(frame.time * Math.PI * 1.25 + 0.6) * 2.6
+      : dance === 'outro' ? shuffle * 1.5
+        : dance === 'chorus' ? beat * 1.2
+          : step * 1.8
+    : 0;
+  const danceStep = isPlaying
+    ? dance === 'chorus' ? beat * 4.5
+      : dance === 'bridge' ? step * 7
+        : dance === 'outro' ? shuffle * 5.5
+          : step * 6
+    : 0;
+  const bodyTilt = isPlaying
+    ? (dance === 'bridge' ? Math.sin(frame.time * Math.PI * 1.25 + 0.5) * 3.4
+      : dance === 'chorus' ? beat * 1.8
+        : dance === 'outro' ? shuffle * 2.6
+          : step * 2.8) + frame.bass * 1.4
+    : 0;
+  const tailSwing = isPlaying
+    ? (dance === 'bridge' ? Math.sin(frame.time * Math.PI * 1.3 + 0.7) * 15
+      : dance === 'outro' ? shuffle * 12
+        : Math.sin(frame.time * Math.PI * 4 + 0.7) * (4 + frame.percussion * 9))
+    : 2;
+  const strum = isPlaying
+    ? Math.sin(frame.time * Math.PI * (dance === 'chorus' ? 7.2 : dance === 'outro' ? 8 : dance === 'bridge' ? 5.2 : 6))
+      * (3 + frame.guitar * (dance === 'chorus' ? 12 : 9))
+    : 0;
+  const headNod = isPlaying
+    ? (dance === 'bridge' ? Math.sin(frame.time * Math.PI * 1.4 + 0.3) * 4.5
+      : dance === 'outro' ? shuffle * 3
+        : Math.sin(frame.time * Math.PI * 2 + 0.3) * (1.5 + frame.backing * 5))
+    : 0;
   const flare = Math.min(1, Math.max(frame.brass, frame.woodwinds) * 1.4);
 
   const activeLineText = section && activeLine >= 0 ? section.lines[activeLine].text : '';
@@ -332,24 +372,26 @@ export function MedievalExperience() {
       <div className="medieval-back-glow" style={{ opacity: 0.1 + frame.bass * 0.18 + flare * 0.16 }} />
 
       <SceneDetails time={frame.time} energy={Math.max(frame.guitar, frame.percussion, frame.brass, frame.woodwinds)}/>
-      <div className="medieval-cat-shadow" style={{ transform: `translateX(-50%) scaleX(${1.03 - bounce * 0.009})`, opacity: 0.42 - bounce * 0.007 }} />
+      <div className="medieval-cat-shadow" style={{ transform: `translateX(calc(-50% + ${danceSway * 0.35}px)) scaleX(${1.03 - danceLift * 0.009})`, opacity: 0.42 - danceLift * 0.007 }} />
 
       <div
         className="medieval-cat-rig"
+        data-dance={isPlaying ? dance : 'idle'}
         style={{
           left: '50%',
-          transform: `translateX(-50%) translateY(${-bounce}px)`,
+          transformOrigin: '50% 94%',
+          transform: `translateX(-50%) translateX(${danceSway}px) translateY(${-danceLift}px) rotate(${danceLean}deg)`,
           filter: `drop-shadow(0 14px 18px rgba(24, 10, 8, .38)) drop-shadow(0 0 ${4 + flare * 16}px rgba(255, 198, 73, ${0.12 + flare * 0.28}))`,
         }}
         aria-label={frame.speaking && isPlaying ? 'Frontie está cantando' : 'Frontie'}
       >
         <span className="cat-contact-shadow" aria-hidden="true" />
         <img className="cat-tail" src={`${ART}cola.png`} alt="" style={{ transform: `rotate(${tailSwing}deg)` }} />
-        <img className="cat-leg cat-leg-left" src={`${ART}pierna-derecha.png`} alt="" style={{ transform: `scaleX(-1) rotate(${isPlaying ? beat * (2 + frame.drums * 2) : 0}deg)` }} />
-        <img className="cat-leg cat-leg-right" src={`${ART}pierna-derecha.png`} alt="" style={{ transform: `rotate(${isPlaying ? -beat * (2 + frame.drums * 2) : 0}deg)` }} />
+        <img className="cat-leg cat-leg-left" src={`${ART}pierna-derecha.png`} alt="" style={{ transform: `scaleX(-1) rotate(${danceStep}deg)` }} />
+        <img className="cat-leg cat-leg-right" src={`${ART}pierna-derecha.png`} alt="" style={{ transform: `rotate(${-danceStep}deg)` }} />
         <img className="cat-torso" src={`${ART}torso.png`} alt="" style={{ transform: `rotate(${bodyTilt}deg) scale(${1 + frame.bass * 0.012})` }} />
         <img className="cat-arm cat-arm-fret" src={`${ART}brazo-acordes.png`} alt="" style={{ transform: `rotate(${isPlaying ? Math.sin(frame.time * 5.8) * (1 + frame.guitar * 2) : 0}deg)` }} />
-        <img className="cat-lute" src={`${ART}laud.png`} alt="" style={{ transform: `rotate(${isPlaying ? beat * (1 + frame.guitar * 2) : 0}deg)` }} />
+        <img className="cat-lute" src={`${ART}laud.png`} alt="" style={{ transform: `rotate(${isPlaying ? beat * (1 + frame.guitar * 2) + danceLean * 0.16 : 0}deg)` }} />
         <img className="cat-arm cat-arm-strum" src={`${ART}brazo-rasgueo.png`} alt="" style={{ transform: `rotate(${strum}deg)` }} />
         <img
           className={`cat-head ${frame.speaking && isPlaying ? 'is-speaking' : ''}`}
