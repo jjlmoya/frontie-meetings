@@ -17,7 +17,7 @@ type MotionFrame = {
   woodwinds: number;
   speaking: boolean;
 };
-type SurpriseName = 'dragon' | 'moth' | 'scroll' | 'streamer' | 'book' | 'owl';
+type SurpriseName = 'dragon' | 'moth' | 'scroll' | 'streamer' | 'book' | 'owl' | 'leaves' | 'fairy' | 'phoenix' | 'bubbles' | 'frog' | 'bat' | 'star' | 'rapunzel';
 type SurpriseSchedule = Record<SurpriseName, number[]>;
 
 const AUDIO_URL = '/assets/medieval/audio/frontie-the-feline-king.mp3';
@@ -25,15 +25,13 @@ const CUES_URL = '/assets/medieval/animation-cues.json';
 const ART = '/assets/medieval/layers/';
 const DETAILS = '/assets/medieval/details/';
 const LYRIC_MAGIC = [
-  'Front-line', 'Frontie', 'king', 'feline queen', 'glowing screen', 'tavern table', 'Hear the tale',
-  'keyboard', 'pull requests', 'Guardian', 'ancient fur', 'stand-up call', 'cold heart',
-  'Merge the branch', 'Resolve the conflict', 'sacred bell', 'modern spell', 'lobby',
-  'giant bundle', 'micro-frontends', 'Ten thousand', 'npm packages', 'deployment',
-  'CORS errors', 'hydration mismatches', 'sacrifice of mice', 'belly rub', 'tribute',
-  'Git push', 'tavern ale', 'product owners', 'stormy sea', 'Waiting', 'Meet',
-  'feline heart', 'Huzzah', 'the beast', 'legend', 'increased',
+  'cold heart', 'Frontie', 'Front-line', 'feline queen', 'feline heart', 'sacred bell', 'modern spell',
+  'sacrifice of mice', 'belly rub', 'the beast', 'legend', 'Huzzah', 'Guardian', 'ancient fur',
+  'glowing screen', 'tavern table', 'Hear the tale', 'keyboard', 'pull requests', 'stand-up call',
+  'Merge the branch', 'Resolve the conflict', 'giant bundle', 'micro-frontends', 'npm packages',
+  'Ten thousand', 'deployment', 'CORS errors', 'hydration mismatches', 'tribute', 'Git push',
+  'tavern ale', 'product owners', 'stormy sea', 'Waiting', 'Meet', 'increased', 'king', 'lobby',
 ];
-const LYRIC_MAGIC_PATTERN = new RegExp(`(${LYRIC_MAGIC.sort((a, b) => b.length - a.length).join('|')})`, 'gi');
 const SCENE_LAYERS = [
   'cielo-base.png', 'nube-izquierda.png', 'nube-derecha.png', 'castillo-fondo.png',
   'casa-izquierda.png', 'casa-derecha.png', 'arboleda.png', 'muralla.png',
@@ -53,20 +51,27 @@ const ambientEvents = {
 };
 const SURPRISE_DURATIONS: Record<SurpriseName, number> = {
   dragon: 9.4, moth: 8.2, scroll: 5.8, streamer: 5.4, book: 7.2, owl: 7.5,
+  leaves: 7.5, fairy: 6.2, phoenix: 7, bubbles: 5.5, frog: 5, bat: 5.3, star: 3.6, rapunzel: 8,
 };
+function emptySurpriseSchedule(): SurpriseSchedule {
+  return {
+    dragon: [], moth: [], scroll: [], streamer: [], book: [], owl: [], leaves: [],
+    fairy: [], phoenix: [], bubbles: [], frog: [], bat: [], star: [], rapunzel: [],
+  };
+}
 function createSurpriseSchedule(): SurpriseSchedule {
   const appearances: SurpriseName[] = [
-    'dragon', 'dragon', 'moth', 'moth', 'moth', 'scroll', 'scroll',
-    'streamer', 'streamer', 'book', 'book', 'owl',
+    'dragon', 'moth', 'moth', 'scroll', 'streamer', 'book', 'owl',
+    'leaves', 'leaves', 'fairy', 'fairy', 'phoenix', 'bubbles', 'bubbles', 'frog', 'bat', 'star', 'star', 'rapunzel',
   ];
   for (let index = appearances.length - 1; index > 0; index -= 1) {
     const other = Math.floor(Math.random() * (index + 1));
     [appearances[index], appearances[other]] = [appearances[other], appearances[index]];
   }
-  const schedule: SurpriseSchedule = { dragon: [], moth: [], scroll: [], streamer: [], book: [], owl: [] };
-  let cursor = 12.5;
+  const schedule = emptySurpriseSchedule();
+  let cursor = 9;
   for (const name of appearances) {
-    cursor += 1.8 + Math.random() * 1.2;
+    cursor += .12 + Math.random() * .24;
     schedule[name].push(Number(cursor.toFixed(1)));
     cursor += SURPRISE_DURATIONS[name];
   }
@@ -86,12 +91,16 @@ function eventAt(time: number, starts: number[], duration: number, enter = .7, e
 }
 
 function renderMagicalLyric(text: string) {
-  let toneIndex = 0;
-  return text.split(LYRIC_MAGIC_PATTERN).map((part, index) => {
-    if (!part || !LYRIC_MAGIC.some((word) => word.toLowerCase() === part.toLowerCase())) return part;
-    const tone = toneIndex++ % 4;
-    return <span className={`lyric-magic lyric-tone-${tone}`} key={`${part}-${index}`} style={{ animationDelay: `${Math.min(index * 55, 330)}ms` }}>{part}</span>;
-  });
+  const lowerText = text.toLowerCase();
+  const emphasized = LYRIC_MAGIC
+    .map((phrase) => ({ phrase, index: lowerText.indexOf(phrase.toLowerCase()) }))
+    .find((match) => match.index >= 0);
+  if (!emphasized) return text;
+  const before = text.slice(0, emphasized.index);
+  const phrase = text.slice(emphasized.index, emphasized.index + emphasized.phrase.length);
+  const after = text.slice(emphasized.index + emphasized.phrase.length);
+  const tone = LYRIC_MAGIC.indexOf(emphasized.phrase) % 4;
+  return <>{before}<span className={`lyric-magic lyric-tone-${tone}`}>{phrase}</span>{after}</>;
 }
 
 function layerMotion(layer: string, time: number): CSSProperties {
@@ -117,17 +126,95 @@ function StageLife({ time, surprises }: { time: number; surprises: SurpriseSched
   const owl = eventAt(time, surprises.owl, SURPRISE_DURATIONS.owl, .8, 1);
   const comet = eventAt(time, [27.6, 48.2, 89.7, 121.5], 4.8, .35, .7);
   const enchantedBook = eventAt(time, surprises.book, SURPRISE_DURATIONS.book, .6, .8);
+  const leaves = eventAt(time, surprises.leaves, SURPRISE_DURATIONS.leaves, .5, .85);
+  const fairy = eventAt(time, surprises.fairy, SURPRISE_DURATIONS.fairy, .7, .9);
+  const phoenix = eventAt(time, surprises.phoenix, SURPRISE_DURATIONS.phoenix, .8, 1);
+  const bubbles = eventAt(time, surprises.bubbles, SURPRISE_DURATIONS.bubbles, .6, .8);
+  const frog = eventAt(time, surprises.frog, SURPRISE_DURATIONS.frog, .55, .65);
+  const bat = eventAt(time, surprises.bat, SURPRISE_DURATIONS.bat, .5, .7);
+  const shootingStar = eventAt(time, surprises.star, SURPRISE_DURATIONS.star, .15, .5);
+  const rapunzel = eventAt(time, surprises.rapunzel, SURPRISE_DURATIONS.rapunzel, .65, .9);
+  const rapunzelWindowRise = rapunzel ? smooth((rapunzel.elapsed - .7) / 1) * smooth((7.4 - rapunzel.elapsed) / .65) : 0;
+  const rapunzelHairGrowth = rapunzel ? smooth((rapunzel.elapsed - .25) / 1.4) * smooth((7.15 - rapunzel.elapsed) / .9) : 0;
   const waldoBodyRise = waldo ? smooth((waldo.elapsed - 1) / 1.4) * smooth((5.1 - waldo.elapsed) / .7) : 0;
   const waldoHandsVisible = waldo ? smooth((waldo.elapsed - .35) / .35) * smooth((5.7 - waldo.elapsed) / .45) : 0;
 
   return <>
     <img className="medieval-life-charm medieval-life-moon-charm" src={`${DETAILS}moon-charm.png`} alt="" />
     <img className="medieval-life-charm medieval-life-star-charm" src={`${DETAILS}star-charm.png`} alt="" style={{ transform: `rotate(${Math.sin(time * 1.7) * 12}deg) scale(${.94 + Math.sin(time * 2.1) * .06})` }} />
-    <img className="medieval-life-lantern medieval-life-lantern-left" src={`${DETAILS}magic-lantern.png`} alt="" style={{ transform: `rotate(${Math.sin(time * 1.3) * 5}deg)` }} />
-    <img className="medieval-life-lantern medieval-life-lantern-right" src={`${DETAILS}magic-lantern.png`} alt="" style={{ transform: `rotate(${Math.sin(time * 1.3 + 1.7) * 5}deg)` }} />
+    <img className="medieval-life-lantern medieval-life-lantern-left" src={`${DETAILS}magic-lantern.png`} alt="" style={{
+      transform: `rotate(${Math.sin(time * 1.3) * 5}deg)`,
+      filter: `brightness(${1 + (Math.sin(time * 7) + 1) * .08}) drop-shadow(0 0 ${10 + (Math.sin(time * 7) + 1) * 4}px rgba(255,190,76,.7))`,
+    }} />
+    <img className="medieval-life-lantern medieval-life-lantern-right" src={`${DETAILS}magic-lantern.png`} alt="" style={{
+      transform: `rotate(${Math.sin(time * 1.3 + 1.7) * 5}deg)`,
+      filter: `brightness(${1 + (Math.sin(time * 7 + 1.7) + 1) * .08}) drop-shadow(0 0 ${10 + (Math.sin(time * 7 + 1.7) + 1) * 4}px rgba(255,190,76,.7))`,
+    }} />
     <img className="medieval-life-ground-prop medieval-life-mushrooms medieval-life-mushrooms-left" src={`${DETAILS}fantasy-mushrooms.png`} alt="" />
     <img className="medieval-life-ground-prop medieval-life-mushrooms medieval-life-mushrooms-right" src={`${DETAILS}fantasy-mushrooms.png`} alt="" />
-    {enchantedBook && <img className="medieval-life-book" src={`${DETAILS}flying-book.png`} alt="" style={{
+    <img className="medieval-life-ground-prop medieval-life-flower medieval-life-flower-left" src={`${DETAILS}moon-flower.png`} alt="" style={{ transform: `rotate(${Math.sin(time * 1.2) * 4}deg)` }} />
+    <img className="medieval-life-ground-prop medieval-life-flower medieval-life-flower-right" src={`${DETAILS}moon-flower.png`} alt="" style={{ transform: `scaleX(-1) rotate(${Math.sin(time * 1.2 + 1) * 4}deg)` }} />
+    <img className="medieval-wall-detail medieval-wall-ivy-left" src={`${DETAILS}wall-ivy-violet.png`} alt="" style={{ transform: `rotate(${Math.sin(time * .7) * 1.3}deg) translateY(${Math.sin(time * 1.2) * 1.5}px)` }} />
+    <img className="medieval-wall-detail medieval-wall-ivy-right" src={`${DETAILS}wall-ivy-berries.png`} alt="" style={{ transform: `rotate(${Math.sin(time * .8 + 1) * 2}deg)` }} />
+    <img className="medieval-wall-detail medieval-wall-rune" src={`${DETAILS}wall-glowing-rune.png`} alt="" style={{ filter: `drop-shadow(0 3px 3px rgba(27,18,15,.4)) drop-shadow(0 0 ${4 + (Math.sin(time * 2.2) + 1) * 3}px rgba(57,229,224,.65)) brightness(${.95 + (Math.sin(time * 2.2) + 1) * .04})` }} />
+    <img className="medieval-wall-detail medieval-wall-shield" src={`${DETAILS}wall-cat-shield.png`} alt="" style={{ transform: `rotate(${Math.sin(time * .8 + 2) * 1.2}deg)` }} />
+    {[
+      { left: 11, top: 23, phase: .2 }, { left: 23, top: 36, phase: 1.1 }, { left: 39, top: 25, phase: 2.3 },
+      { left: 61, top: 34, phase: 3.4 }, { left: 77, top: 22, phase: 4.2 }, { left: 91, top: 39, phase: 5.1 },
+    ].map(({ left, top, phase }, index) => <img key={index} className="medieval-life-twinkle" src={`${DETAILS}paper-twinkle-star.png`} alt="" style={{
+      zIndex: 5, left: `${left + Math.sin(time * .45 + phase) * .55}%`, top: `${top + Math.sin(time * .8 + phase) * .7}%`,
+      opacity: .18 + (Math.sin(time * 2.1 + phase) + 1) * .25,
+      transform: `rotate(${time * 8 + phase * 30}deg) scale(${.78 + (Math.sin(time * 2.4 + phase) + 1) * .22})`,
+    }} />)}
+    {leaves && [
+      { asset: 'falling-leaf-amber', left: 13, phase: .2, drift: 8 },
+      { asset: 'falling-leaf-crimson', left: 31, phase: 1.6, drift: -6 },
+      { asset: 'falling-leaf-teal', left: 68, phase: 2.8, drift: 7 },
+      { asset: 'falling-leaf-violet', left: 87, phase: 4.1, drift: -8 },
+    ].map(({ asset, left, phase, drift }) => {
+      const progress = smooth((leaves.progress - phase * .075) / .8);
+      return <img key={asset} className="medieval-life-falling-leaf" src={`${DETAILS}${asset}.png`} alt="" style={{
+        zIndex: 9, left: `${left + Math.sin(time * 2.4 + phase) * 1.8 + drift * progress}%`,
+        top: `${24 + progress * 42 + Math.sin(time * 2 + phase) * 1.2}%`, opacity: leaves.visibility * (1 - smooth((progress - .84) / .16)),
+        transform: `rotate(${progress * 210 + Math.sin(time * 3 + phase) * 18}deg) scale(${.8 + Math.sin(time * 4 + phase) * .08})`,
+      }} />;
+    })}
+    {fairy && <img className="medieval-life-fairy" src={`${DETAILS}paper-fairy.png`} alt="" style={{
+      left: `${-8 + fairy.progress * 118}%`, top: `${27 + Math.sin(time * 3.3) * 5}%`, opacity: fairy.visibility,
+      transform: `rotate(${Math.sin(time * 4.4) * 9}deg) scale(${.86 + Math.sin(time * 7) * .08})`,
+    }} />}
+    {phoenix && <img className="medieval-life-phoenix" src={`${DETAILS}paper-phoenix.png`} alt="" style={{
+      left: `${-12 + phoenix.progress * 125}%`, top: `${12 + Math.sin(time * 1.8) * 5}%`, opacity: phoenix.visibility,
+      transform: `rotate(${Math.sin(time * 2.2) * 7}deg) scale(${.88 + phoenix.visibility * .12})`,
+    }} />}
+    {bubbles && <img className="medieval-life-bubbles" src={`${DETAILS}spell-bubbles.png`} alt="" style={{
+      left: `${18 + bubbles.progress * 61 + Math.sin(time * 1.3) * 4}%`, top: `${27 + Math.sin(time * 2.1) * 6}%`, opacity: bubbles.visibility,
+      transform: `translateY(${Math.sin(time * 2.7) * 8}px) rotate(${Math.sin(time * 1.8) * 9}deg) scale(${.85 + bubbles.visibility * .15})`,
+    }} />}
+    {frog && <img className="medieval-life-frog" src={`${DETAILS}crowned-frog.png`} alt="" style={{
+      left: `${8 + Math.sin(time * 1.7) * 1.4}%`, bottom: `${30 + smooth(frog.progress / .18) * 1.5}%`, opacity: frog.visibility,
+      transform: `translateY(${(1 - smooth(frog.progress / .24)) * 65}%) scale(${.78 + smooth(frog.progress / .24) * .22})`,
+    }} />}
+    {rapunzel && <>
+      <img className="medieval-life-rapunzel-braid" src={`${DETAILS}rapunzel-braid.png`} alt="" style={{
+        left: '7.2%', top: '58.5%', opacity: rapunzel.visibility * smooth((rapunzel.elapsed - .1) / .45),
+        clipPath: `inset(0 0 ${(1 - rapunzelHairGrowth) * 100}% 0)`,
+        transform: `scaleY(${Math.max(.02, rapunzelHairGrowth)}) rotate(${Math.sin(time * 1.4) * 2}deg)`,
+      }} />
+      <img className="medieval-life-rapunzel-window" src={`${DETAILS}rapunzel-window.png`} alt="" style={{
+        left: '6.5%', top: '52.5%', opacity: rapunzel.visibility * rapunzelWindowRise,
+        transform: `translateY(${(1 - rapunzelWindowRise) * 23}px) scale(${.9 + rapunzelWindowRise * .1})`,
+      }} />
+    </>}
+    {bat && <img className="medieval-life-bat" src={`${DETAILS}moon-bat.png`} alt="" style={{
+      left: `${105 - bat.progress * 120}%`, top: `${16 + Math.sin(time * 5) * 3}%`, opacity: bat.visibility,
+      transform: `rotate(${Math.sin(time * 5.5) * 10}deg) scale(${.85 + Math.sin(time * 8) * .1})`,
+    }} />}
+    {shootingStar && <img className="medieval-life-shooting-star" src={`${DETAILS}shooting-star.png`} alt="" style={{
+      left: `${-10 + shootingStar.progress * 118}%`, top: `${10 + shootingStar.progress * 16}%`, opacity: shootingStar.visibility,
+      transform: `rotate(-12deg) scale(${.8 + shootingStar.visibility * .2})`,
+    }} />}
+    {enchantedBook && <img className="medieval-life-book" src={`${DETAILS}rune-spellbook.png`} alt="" style={{
       left: `${-12 + enchantedBook.progress * 125}%`, top: `${22 + Math.sin(time * 1.5) * 5}%`,
       opacity: enchantedBook.visibility, transform: `rotate(${Math.sin(time * 2.6) * 8}deg) scale(${.88 + enchantedBook.visibility * .12})`,
     }} />}
@@ -155,6 +242,14 @@ function StageLife({ time, surprises }: { time: number; surprises: SurpriseSched
       top: `${49 + Math.sin(time * 1.4 + phase) * 4}%`,
       opacity: .3 + (Math.sin(time * 3.4 + phase) + 1) * .32,
       transform: `translateY(${Math.sin(time * 2.2 + phase) * 8}px) scale(${.85 + (Math.sin(time * 3 + phase) + 1) * .12})`,
+    }} />)}
+    {[
+      { asset: 'blue-firefly', left: 37, top: 55, phase: .8 }, { asset: 'violet-firefly', left: 49, top: 47, phase: 2.4 },
+      { asset: 'blue-firefly', left: 63, top: 59, phase: 3.6 },
+    ].map(({ asset, left, top, phase }, index) => <img key={`firefly-cross-${index}`} className="medieval-life-firefly medieval-life-firefly-wandering" src={`${DETAILS}${asset}.png`} alt="" style={{
+      zIndex: 10, width: '2.5%', left: `${left + Math.sin(time * .9 + phase) * 2.7}%`, top: `${top + Math.sin(time * 1.7 + phase) * 3}%`,
+      opacity: .25 + (Math.sin(time * 2.8 + phase) + 1) * .27,
+      transform: `translateY(${Math.sin(time * 2.2 + phase) * 6}px) scale(${.7 + (Math.sin(time * 2.6 + phase) + 1) * .2})`,
     }} />)}
     {comet && <img className="medieval-life-comet" src={`${DETAILS}${comet.elapsed < 2.4 ? 'spark-trail-a.png' : 'spark-trail-b.png'}`} alt="" style={{
       left: `${-14 + comet.progress * 128}%`, top: `${18 + Math.sin(time * 2) * 8}%`,
@@ -223,7 +318,7 @@ export function MedievalExperience() {
   const [volume, setVolume] = useState(0.42);
   const [loadError, setLoadError] = useState(false);
   const [autoplayBlocked, setAutoplayBlocked] = useState(false);
-  const [surpriseSchedule, setSurpriseSchedule] = useState<SurpriseSchedule>({ dragon: [], moth: [], scroll: [], streamer: [], book: [], owl: [] });
+  const [surpriseSchedule, setSurpriseSchedule] = useState<SurpriseSchedule>(emptySurpriseSchedule);
 
   useEffect(() => {
     setSurpriseSchedule(createSurpriseSchedule());

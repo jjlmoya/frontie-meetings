@@ -73,7 +73,16 @@ body {
 .medieval-life-scroll,
 .medieval-life-streamer,
 .medieval-life-owl,
-.medieval-life-ground-prop {
+.medieval-life-ground-prop,
+.medieval-life-falling-leaf,
+.medieval-life-fairy,
+.medieval-life-phoenix,
+.medieval-life-bubbles,
+.medieval-life-frog,
+.medieval-life-bat,
+.medieval-life-shooting-star,
+.medieval-life-rapunzel-window,
+.medieval-life-rapunzel-braid {
   position: absolute;
   display: block;
   height: auto;
@@ -81,9 +90,10 @@ body {
   pointer-events: none;
   will-change: transform, opacity, left;
 }
-.medieval-life-charm { z-index: 5; position: absolute; width: 4.4%; height: auto; filter: drop-shadow(0 0 9px rgba(255,215,114,.6)); animation: charm-float 3.8s ease-in-out infinite alternate; }
+.medieval-life-charm { z-index: 5; position: absolute; width: 5.2%; height: auto; filter: drop-shadow(0 0 9px rgba(255,215,114,.6)); animation: charm-float 3.8s ease-in-out infinite alternate; }
 .medieval-life-moon-charm { left: 36%; top: 31%; }
-.medieval-life-star-charm { right: 31%; top: 37%; width: 3.4%; }
+.medieval-life-star-charm { right: 31%; top: 37%; width: 4.3%; }
+.medieval-life-twinkle { width: 2.5%; height: auto; filter: drop-shadow(0 0 5px #fff3be) drop-shadow(0 0 12px rgba(255,191,84,.85)); }
 .medieval-life-firefly { z-index: 6; filter: drop-shadow(0 0 6px #65edff) drop-shadow(0 0 13px #ba5cff); }
 .medieval-life-comet { z-index: 6; width: 14%; height: auto; filter: drop-shadow(0 0 8px #ffd86c); }
 .medieval-life-lantern { z-index: 5; width: 4.5%; height: auto; transform-origin: 50% 0; filter: drop-shadow(0 0 11px rgba(255,190,76,.65)); }
@@ -98,6 +108,23 @@ body {
 .medieval-life-mushrooms { z-index: 10; width: 5.5%; top: 62.5%; }
 .medieval-life-mushrooms-left { left: 15.8%; }
 .medieval-life-mushrooms-right { right: 14.8%; transform: scaleX(-1); }
+.medieval-life-flower { z-index: 10; width: 4.8%; bottom: 13.4%; transform-origin: 50% 100%; filter: drop-shadow(0 4px 3px rgba(26,15,13,.38)) drop-shadow(0 0 8px rgba(165,131,255,.35)); }
+.medieval-life-flower-left { left: 23%; }
+.medieval-life-flower-right { right: 23%; }
+.medieval-life-falling-leaf { width: 4.2%; filter: drop-shadow(0 3px 4px rgba(34,24,40,.45)); }
+.medieval-life-fairy { z-index: 7; width: 7%; filter: drop-shadow(0 0 8px #fff0b2) drop-shadow(0 0 17px rgba(207,117,255,.78)); }
+.medieval-life-phoenix { z-index: 5; width: 14%; filter: drop-shadow(0 0 9px rgba(255,179,75,.9)) drop-shadow(0 0 19px rgba(234,80,93,.62)); }
+.medieval-life-bubbles { z-index: 6; width: 12%; filter: drop-shadow(0 0 8px rgba(151,224,255,.7)); }
+.medieval-life-frog { z-index: 11; width: 7.5%; filter: drop-shadow(0 4px 4px rgba(25,15,11,.4)) drop-shadow(0 0 7px rgba(255,213,109,.45)); }
+.medieval-life-bat { z-index: 6; width: 6.5%; filter: drop-shadow(0 0 8px rgba(196,164,255,.8)); }
+.medieval-life-shooting-star { z-index: 7; width: 13%; filter: drop-shadow(0 0 8px #fff4b4) drop-shadow(0 0 18px rgba(255,176,66,.85)); }
+.medieval-life-rapunzel-window { z-index: 6; width: 6%; filter: drop-shadow(0 5px 5px rgba(33,18,15,.42)); transform-origin: 50% 90%; }
+.medieval-life-rapunzel-braid { z-index: 7; height: 13%; width: auto; transform-origin: 50% 0; filter: drop-shadow(1px 4px 3px rgba(37,22,18,.4)) drop-shadow(0 0 5px rgba(255,215,100,.5)); }
+.medieval-wall-detail { position: absolute; height: auto; pointer-events: none; will-change: transform; }
+.medieval-wall-ivy-left { z-index: 8; left: 1.5%; top: 69%; width: 18%; transform-origin: 12% 55%; filter: drop-shadow(0 4px 4px rgba(24,19,17,.38)); }
+.medieval-wall-ivy-right { z-index: 8; right: 13.5%; top: 69.5%; width: 7.5%; transform-origin: 50% 0; filter: drop-shadow(0 4px 4px rgba(24,19,17,.4)); }
+.medieval-wall-rune { z-index: 9; left: 12.2%; top: 73%; width: 5.2%; }
+.medieval-wall-shield { z-index: 9; right: 7.2%; top: 72%; width: 5.6%; transform-origin: 50% 5%; filter: drop-shadow(0 4px 4px rgba(24,19,17,.42)); }
 .medieval-life-flag { transform-origin: 50% 3%; filter: drop-shadow(2px 5px 3px rgba(26, 12, 10, .3)); }
 .medieval-life-waldo {
   /* Align to the same 1672:939 cover image as the stone gap at every viewport size. */
@@ -212,40 +239,35 @@ body {
 .brass-spark-one { left: 22%; bottom: 8rem; }
 .brass-spark-two { right: 25%; bottom: 12rem; width: 3.7%; }
 
-.medieval-lyrics { position: absolute; z-index: 9; left: 5vw; top: 8%; width: min(74vw, 870px); pointer-events: none; color: #fff5d7; }
-.medieval-lyric-line { margin: 0; font: 700 clamp(1.35rem, 2.6vw, 2.7rem)/1.18 Georgia, serif; letter-spacing: .01em; text-shadow: 0 3px 2px #28120e, 0 5px 13px #170a0b, 2px 0 9px #170a0b; animation: medieval-lyric-enter .16s ease-out both; }
+.medieval-lyrics { position: absolute; z-index: 9; left: 4vw; top: 7.5%; width: min(92vw, 1100px); pointer-events: none; color: #fff9e9; }
+.medieval-lyric-line { margin: 0; font: 700 clamp(1.45rem, 3vw, 2.85rem)/1.2 Georgia, serif; letter-spacing: .008em; color: #fff9e9; -webkit-text-stroke: .45px rgba(21,17,35,.8); text-shadow: 0 2px 2px #151323, 0 4px 9px rgba(15,13,30,.95), 0 0 20px rgba(16,15,32,.85); animation: medieval-lyric-enter .2s ease-out both; }
 .lyric-magic {
   position: relative;
   display: inline-block;
-  padding: 0 .13em .04em;
-  border: 1px solid #ffeaa3;
-  border-radius: .3em .55em .35em .48em;
-  color: #fff;
-  -webkit-text-fill-color: #fff;
-  -webkit-text-stroke: .25px #23102f;
-  background: linear-gradient(110deg, #b923a2, #6336d2 52%, #087caa);
-  box-shadow: 0 2px 0 #24112e, 0 0 9px var(--magic-glow, #ff50db), 0 0 18px var(--magic-aura, #8e6bff), inset 0 0 9px rgba(255,255,255,.4);
-  text-shadow: 0 2px 2px #21112d, 0 0 5px #fff;
-  animation: lyric-magic-wild 1.35s ease-in-out infinite;
-  animation-delay: var(--magic-delay, 0ms);
+  padding: 0 .1em .02em;
+  margin: 0 .015em;
+  color: var(--lyric-crystal, #ffe68b);
+  -webkit-text-fill-color: var(--lyric-crystal, #ffe68b);
+  -webkit-text-stroke: .6px rgba(22,15,34,.94);
+  text-shadow: 0 2px 2px #171020, 0 0 7px var(--lyric-aura, rgba(255,204,84,.75)), 0 0 18px var(--lyric-aura, rgba(255,141,68,.65));
+  animation: lyric-magic-glow 1.8s ease-in-out infinite;
   transform-origin: 50% 80%;
 }
-.lyric-tone-0 { --magic-glow: #ff50db; --magic-aura: #8e6bff; background: linear-gradient(112deg, #a52391, #5435c1 54%, #096d91); }
-.lyric-tone-1 { --magic-glow: #ff805e; --magic-aura: #ff3b78; background: linear-gradient(112deg, #7e1e44, #a52638 52%, #6b2579); }
-.lyric-tone-2 { --magic-glow: #40f2d2; --magic-aura: #387bff; background: linear-gradient(112deg, #075d65, #188088 52%, #3b4394); }
-.lyric-tone-3 { --magic-glow: #ffd05c; --magic-aura: #ed5a8d; background: linear-gradient(112deg, #85500b, #a43a27 50%, #5c286e); }
+.lyric-tone-0 { --lyric-crystal: #ffe68b; --lyric-aura: rgba(255,171,67,.82); }
+.lyric-tone-1 { --lyric-crystal: #a3fff0; --lyric-aura: rgba(41,222,205,.78); }
+.lyric-tone-2 { --lyric-crystal: #ffd0eb; --lyric-aura: rgba(244,77,186,.74); }
+.lyric-tone-3 { --lyric-crystal: #d8ccff; --lyric-aura: rgba(139,111,255,.8); }
 .lyric-magic::after {
   content: '';
   position: absolute;
-  top: -.72em;
+  top: -.55em;
   right: -.24em;
-  width: .68em;
-  height: .68em;
-  background: url('/assets/medieval/details/star-charm.png') center / contain no-repeat;
-  filter: drop-shadow(0 0 .25em #fff) drop-shadow(0 0 .7em #70efff) drop-shadow(0 0 1.1em #ff45db);
+  width: .62em;
+  height: .62em;
+  background: url('/assets/medieval/details/paper-twinkle-star.png') center / contain no-repeat;
+  filter: drop-shadow(0 0 .18em #fff) drop-shadow(0 0 .7em var(--lyric-aura, #ffcf5d));
   pointer-events: none;
-  animation: lyric-magic-spark .9s ease-in-out infinite alternate;
-  animation-delay: var(--magic-delay, 0ms);
+  animation: lyric-magic-spark .85s ease-in-out infinite alternate;
 }
 .medieval-scene-details { position: absolute; inset: 0; z-index: 2; pointer-events: none; overflow: hidden; }
 .medieval-floating-note { position: absolute; display: block; width: 8.2%; height: auto; filter: drop-shadow(0 0 9px #ffc355); transition: transform 55ms linear, opacity 55ms linear; }
@@ -283,8 +305,8 @@ body {
 @keyframes medieval-notes { 0%,100% { translate: 0 6px; rotate: -5deg; } 50% { translate: 0 -10px; rotate: 6deg; } }
 @keyframes medieval-spark { from { opacity: 0; transform: scale(.25) rotate(-45deg); } to { opacity: 1; transform: scale(1) rotate(0); } }
 @keyframes medieval-lyric-enter { from { opacity: .25; transform: translateY(4px); } to { opacity: 1; transform: translateY(0); } }
-@keyframes lyric-magic-wild { 0%,100% { transform: translateY(0) rotate(-1deg) scale(1); box-shadow: 0 2px 0 #24112e, 0 0 9px var(--magic-glow, #ff50db), 0 0 18px var(--magic-aura, #8e6bff), inset 0 0 9px rgba(255,255,255,.4); } 35% { transform: translateY(-.16em) rotate(2deg) scale(1.12); box-shadow: 0 3px 0 #251f58, 0 0 12px #fff, 0 0 24px var(--magic-glow, #51edff), 0 0 35px var(--magic-aura, #a679ff), inset 0 0 13px rgba(255,255,255,.7); } 70% { transform: translateY(.03em) rotate(-2deg) scale(1.04); box-shadow: 0 2px 0 #54204d, 0 0 10px #fff1ac, 0 0 22px var(--magic-glow, #ff51cf), 0 0 32px var(--magic-aura, #ffab4e), inset 0 0 10px rgba(255,255,255,.55); } }
-@keyframes lyric-magic-spark { from { opacity: .35; transform: translateY(.15em) scale(.45) rotate(-35deg); } to { opacity: 1; transform: translateY(-.35em) scale(1.35) rotate(35deg); } }
+@keyframes lyric-magic-glow { 0%,100% { text-shadow: 0 2px 2px #171020, 0 0 6px var(--lyric-aura, rgba(255,204,84,.68)), 0 0 13px var(--lyric-aura, rgba(255,141,68,.42)); } 50% { text-shadow: 0 2px 2px #171020, 0 0 9px #fff4cc, 0 0 19px var(--lyric-aura, rgba(255,169,64,.9)); } }
+@keyframes lyric-magic-spark { from { opacity: .5; transform: translateY(.12em) scale(.65) rotate(-18deg); } to { opacity: 1; transform: translateY(-.2em) scale(1.1) rotate(18deg); } }
 @keyframes charm-float { from { translate: 0 0; rotate: -8deg; } to { translate: 0 -10px; rotate: 8deg; } }
 
 @media (max-width: 760px) {
@@ -306,277 +328,4 @@ body {
 @media (prefers-reduced-motion: reduce) {
   .medieval-chorus-banner,.medieval-music-notes,.medieval-prop,.lyric-magic,.lyric-magic::after { animation-duration: .01ms; animation-iteration-count: 1; }
   .stage-candle { transition: none; }
-}
-
-/* ===== ANIMACIONES LOCAS DE FANTASIA ===== */
-
-/* BEACH - Chill wave vibes */
-@keyframes wave-beach {
-  0% { 
-    transform: translateY(0px) scale(1);
-    text-shadow: 0 0 20px #00FFFF, 0 0 40px #87CEEB;
-  }
-  25% { 
-    transform: translateY(-8px) scale(1.02);
-    text-shadow: 0 0 25px #87CEEB, 0 0 50px #1E90FF;
-  }
-  50% { 
-    transform: translateY(-12px) scale(1.03);
-    text-shadow: 0 0 30px #1E90FF, 0 0 60px #00BFFF;
-  }
-  75% { 
-    transform: translateY(-6px) scale(1.01);
-    text-shadow: 0 0 25px #00BFFF, 0 0 50px #20B2AA;
-  }
-  100% { 
-    transform: translateY(0px) scale(1);
-    text-shadow: 0 0 20px #00FFFF, 0 0 40px #87CEEB;
-  }
-}
-
-/* FUNKY CHAOS - Locura total */
-@keyframes funky-chaos {
-  0% { 
-    transform: rotate(0deg) scale(1) skewX(0deg);
-    text-shadow: 0 0 20px #FF1493;
-    filter: hue-rotate(0deg);
-  }
-  10% { 
-    transform: rotate(5deg) scale(1.2) skewX(-5deg);
-    text-shadow: 0 0 40px #FF69B4, 0 0 60px #FF1493;
-    filter: hue-rotate(36deg);
-  }
-  20% { 
-    transform: rotate(-3deg) scale(0.9) skewX(8deg);
-    text-shadow: 0 0 60px #8A2BE2, 0 0 80px #FF1493;
-    filter: hue-rotate(72deg);
-  }
-  30% { 
-    transform: rotate(8deg) scale(1.3) skewX(-10deg);
-    text-shadow: 0 0 80px #FF1493, 0 0 100px #8A2BE2;
-    filter: hue-rotate(108deg);
-  }
-  40% { 
-    transform: rotate(-6deg) scale(0.8) skewX(12deg);
-    filter: hue-rotate(144deg);
-  }
-  50% { 
-    transform: rotate(10deg) scale(1.4) skewX(-8deg);
-    filter: hue-rotate(180deg);
-  }
-  60% { 
-    transform: rotate(-4deg) scale(0.95) skewX(6deg);
-    filter: hue-rotate(216deg);
-  }
-  70% { 
-    transform: rotate(7deg) scale(1.1) skewX(-4deg);
-    filter: hue-rotate(252deg);
-  }
-  80% { 
-    transform: rotate(-2deg) scale(1.05) skewX(2deg);
-    filter: hue-rotate(288deg);
-  }
-  90% { 
-    transform: rotate(3deg) scale(0.98) skewX(-1deg);
-    filter: hue-rotate(324deg);
-  }
-  100% { 
-    transform: rotate(0deg) scale(1) skewX(0deg);
-    filter: hue-rotate(360deg);
-  }
-}
-
-/* FUNKY GLITCH - Efecto Matrix roto */
-@keyframes funky-glitch {
-  0%, 100% { 
-    transform: translate(0, 0) scale(1);
-    text-shadow: 0 0 30px #FFD700;
-    filter: contrast(1);
-  }
-  10% { 
-    transform: translate(-5px, 2px) scale(1.05);
-    text-shadow: -3px 0 #FF4500, 3px 0 #FFD700;
-    filter: contrast(1.5);
-  }
-  20% { 
-    transform: translate(-10px, -2px) scale(0.95);
-    text-shadow: -6px 0 #FF4500, 6px 0 #FFD700, 0 0 50px #FFD700;
-    filter: contrast(2);
-  }
-  30% { 
-    transform: translate(8px, 1px) scale(1.1);
-    text-shadow: -2px 0 #FF4500, 2px 0 #FFD700;
-  }
-  40% { 
-    transform: translate(-3px, -3px) scale(0.9);
-    text-shadow: -8px 0 #FF4500, 8px 0 #FFD700;
-  }
-  50% { 
-    transform: translate(12px, 0px) scale(1.2);
-    text-shadow: -4px 0 #FF4500, 4px 0 #FFD700, 0 0 100px #FFD700;
-  }
-  60% { 
-    transform: translate(-7px, 2px) scale(0.85);
-  }
-  70% { 
-    transform: translate(4px, -1px) scale(1.15);
-  }
-  80% { 
-    transform: translate(-2px, 3px) scale(0.92);
-  }
-  90% { 
-    transform: translate(1px, -1px) scale(1.03);
-  }
-}
-
-/* GROOVIE PSYCHEDELIC - Smooth waves and vibes */
-@keyframes groovie-psychedelic {
-  0% { 
-    transform: translateY(0px) scale(1) rotateZ(0deg);
-    filter: hue-rotate(0deg) saturate(1.2) brightness(1);
-    text-shadow: 0 0 30px #FF1493, 0 0 60px #FF69B4, 0 0 90px #9932CC, 0 0 120px #DA70D6;
-  }
-  16.6% { 
-    transform: translateY(-8px) scale(1.05) rotateZ(2deg);
-    filter: hue-rotate(60deg) saturate(1.4) brightness(1.1);
-    text-shadow: 0 0 40px #FF69B4, 0 0 70px #DA70D6, 0 0 100px #BA55D3, 0 0 130px #FF1493;
-  }
-  33.3% { 
-    transform: translateY(-12px) scale(1.1) rotateZ(-3deg);
-    filter: hue-rotate(120deg) saturate(1.6) brightness(1.2);
-    text-shadow: 0 0 50px #DA70D6, 0 0 80px #BA55D3, 0 0 110px #9932CC, 0 0 140px #FF69B4;
-  }
-  50% { 
-    transform: translateY(-6px) scale(1.08) rotateZ(1deg);
-    filter: hue-rotate(180deg) saturate(1.8) brightness(1.3);
-    text-shadow: 0 0 60px #BA55D3, 0 0 90px #9932CC, 0 0 120px #FF1493, 0 0 150px #DA70D6;
-  }
-  66.6% { 
-    transform: translateY(4px) scale(1.02) rotateZ(-2deg);
-    filter: hue-rotate(240deg) saturate(1.5) brightness(1.15);
-    text-shadow: 0 0 55px #9932CC, 0 0 85px #FF1493, 0 0 115px #FF69B4, 0 0 145px #BA55D3;
-  }
-  83.3% { 
-    transform: translateY(8px) scale(0.98) rotateZ(3deg);
-    filter: hue-rotate(300deg) saturate(1.3) brightness(1.05);
-    text-shadow: 0 0 45px #FF1493, 0 0 75px #FF69B4, 0 0 105px #DA70D6, 0 0 135px #9932CC;
-  }
-  100% { 
-    transform: translateY(0px) scale(1) rotateZ(0deg);
-    filter: hue-rotate(360deg) saturate(1.2) brightness(1);
-    text-shadow: 0 0 30px #FF1493, 0 0 60px #FF69B4, 0 0 90px #9932CC, 0 0 120px #DA70D6;
-  }
-}
-
-/* METAL DESTRUCTION - Apocalipsis */
-@keyframes metal-destruction {
-  0%, 100% { 
-    transform: scale(1) rotate(0deg);
-    text-shadow: 
-      0 0 20px #FF0000,
-      0 0 40px #FF0000,
-      0 0 60px #FF0000,
-      0 0 80px #FF0000;
-    filter: brightness(1);
-  }
-  10% { 
-    transform: scale(1.2) rotate(-2deg);
-    text-shadow: 
-      5px 5px 0px #800000,
-      10px 10px 0px #400000,
-      15px 15px 0px #200000,
-      0 0 100px #FF0000;
-    filter: brightness(1.5);
-  }
-  20% { 
-    transform: scale(0.8) rotate(3deg);
-    text-shadow: 
-      -3px -3px 0px #800000,
-      -6px -6px 0px #400000,
-      0 0 80px #FF0000;
-    filter: brightness(2);
-  }
-  30% { 
-    transform: scale(1.4) rotate(-1deg);
-    text-shadow: 
-      0 0 120px #FF0000,
-      0 0 150px #FF4500;
-    filter: brightness(0.8);
-  }
-  40% { 
-    transform: scale(0.6) rotate(4deg);
-    filter: brightness(2.5);
-  }
-  50% { 
-    transform: scale(1.6) rotate(0deg);
-    text-shadow: 
-      0 0 200px #FF0000,
-      0 0 300px #FF0000;
-    filter: brightness(0.5);
-  }
-  60% { 
-    transform: scale(0.9) rotate(-3deg);
-    filter: brightness(3);
-  }
-  70% { 
-    transform: scale(1.1) rotate(2deg);
-    filter: brightness(0.7);
-  }
-  80% { 
-    transform: scale(0.95) rotate(-1deg);
-    filter: brightness(2);
-  }
-  90% { 
-    transform: scale(1.05) rotate(1deg);
-    filter: brightness(1.2);
-  }
-}
-
-/* REGGAETON BOUNCE - Latino vibes with rhythm */
-@keyframes reggaeton-bounce {
-  0% { 
-    transform: translateY(0px) scale(1) rotateZ(0deg);
-    text-shadow: 0 0 25px #FF6B35, 0 0 50px #FFD23F, 0 0 75px #FF6B35;
-    filter: saturate(1.2) brightness(1);
-  }
-  12.5% { 
-    transform: translateY(-15px) scale(1.08) rotateZ(1deg);
-    text-shadow: 0 0 30px #FFD23F, 0 0 60px #FF6B35, 0 0 90px #E74C3C;
-    filter: saturate(1.4) brightness(1.1);
-  }
-  25% { 
-    transform: translateY(8px) scale(0.95) rotateZ(-1deg);
-    text-shadow: 0 0 35px #E74C3C, 0 0 65px #FFD23F, 0 0 95px #FF6B35;
-    filter: saturate(1.6) brightness(1.2);
-  }
-  37.5% { 
-    transform: translateY(-10px) scale(1.12) rotateZ(2deg);
-    text-shadow: 0 0 40px #FF6B35, 0 0 70px #E74C3C, 0 0 100px #FFD23F;
-    filter: saturate(1.3) brightness(1.15);
-  }
-  50% { 
-    transform: translateY(12px) scale(0.9) rotateZ(0deg);
-    text-shadow: 0 0 45px #FFD23F, 0 0 75px #FF6B35, 0 0 105px #E74C3C;
-    filter: saturate(1.8) brightness(1.3);
-  }
-  62.5% { 
-    transform: translateY(-8px) scale(1.06) rotateZ(-2deg);
-    text-shadow: 0 0 40px #E74C3C, 0 0 70px #FFD23F, 0 0 100px #FF6B35;
-    filter: saturate(1.5) brightness(1.1);
-  }
-  75% { 
-    transform: translateY(5px) scale(1.02) rotateZ(1deg);
-    text-shadow: 0 0 35px #FF6B35, 0 0 65px #E74C3C, 0 0 95px #FFD23F;
-    filter: saturate(1.4) brightness(1.2);
-  }
-  87.5% { 
-    transform: translateY(-5px) scale(1.04) rotateZ(-1deg);
-    text-shadow: 0 0 30px #FFD23F, 0 0 60px #FF6B35, 0 0 90px #E74C3C;
-    filter: saturate(1.3) brightness(1.05);
-  }
-  100% { 
-    transform: translateY(0px) scale(1) rotateZ(0deg);
-    text-shadow: 0 0 25px #FF6B35, 0 0 50px #FFD23F, 0 0 75px #FF6B35;
-    filter: saturate(1.2) brightness(1);
-  }
 }
