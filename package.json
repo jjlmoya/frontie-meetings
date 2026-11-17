@@ -6,7 +6,8 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "build:medieval-assets": "node scripts/assemble-medieval-layers.mjs && node scripts/build-waldo-layers.mjs && node scripts/build-medieval-runtime-assets.mjs"
   },
   "dependencies": {
     "critters": "^0.0.23",

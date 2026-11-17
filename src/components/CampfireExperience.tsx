@@ -352,7 +352,7 @@ export function CampfireExperience() {
   const fireFrame = Math.floor(fireFramePosition) % 4;
   const fireFrameMix = isPlaying && !prefersReducedMotion ? fireFramePosition - Math.floor(fireFramePosition) : 0;
   const strum = (isPlaying
-    ? (Math.sin(time * Math.PI * (6 + chorusMotion * 1.2 - bridgeMotion * 0.8 + (outro ? 0.2 : 0)))
+    ? (Math.sin(time * Math.PI * (4.4 + chorusMotion * 0.8 - bridgeMotion * 0.8 + (outro ? 0.1 : 0)))
       * (2.2 + guitar * (6.2 + chorusMotion * 2.8 - bridgeMotion * 1.2)) - storyAccent * 6) * motionScale
     : 0) - 7;
   const fret = (isPlaying ? Math.sin(time * 4.2) * (0.35 + guitar * 0.85) * motionScale : 0) - 52;

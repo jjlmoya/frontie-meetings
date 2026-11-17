@@ -1,13 +1,15 @@
 import sharp from 'sharp';
 
-const dir = 'public/assets/medieval/layers/scene';
+const sourceDir = 'scripts/assets/medieval/layers/scene';
+const outputDir = 'scripts/assets/medieval/runtime-pngs/layers/scene';
+const previewDir = 'scripts/assets/medieval/previews';
 const width = 1672;
 const height = 941;
 
 // Each master is already a true RGBA cutout. These splits keep independent
 // left/right pieces in the original canvas coordinates.
 async function split(master, outputs) {
-  const source = await sharp(`${dir}/_sources/${master}.png`).ensureAlpha().raw().toBuffer();
+  const source = await sharp(`${sourceDir}/_sources/${master}.png`).ensureAlpha().raw().toBuffer();
   for (const [name, accepts] of outputs) {
     const pixels = Buffer.from(source);
     for (let y = 0; y < height; y += 1) {
@@ -15,14 +17,14 @@ async function split(master, outputs) {
         if (!accepts(x, y)) pixels[(y * width + x) * 4 + 3] = 0;
       }
     }
-    await sharp(pixels, { raw: { width, height, channels: 4 } }).png().toFile(`${dir}/${name}.png`);
+    await sharp(pixels, { raw: { width, height, channels: 4 } }).png().toFile(`${outputDir}/${name}.png`);
   }
 }
 
-await sharp(`${dir}/cielo-base-maestro.png`).resize(width, height, { fit: 'fill' }).png().toFile(`${dir}/cielo-base.png`);
-await sharp(`${dir}/_sources/muralla.png`).extract({ left: 0, top: 9, width, height: height - 9 })
+await sharp(`${sourceDir}/cielo-base-maestro.png`).resize(width, height, { fit: 'fill' }).png().toFile(`${outputDir}/cielo-base.png`);
+await sharp(`${sourceDir}/_sources/muralla.png`).extract({ left: 0, top: 9, width, height: height - 9 })
   .extend({ top: 0, bottom: 9, left: 0, right: 0, background: { r: 0, g: 0, b: 0, alpha: 0 } })
-  .png().toFile(`${dir}/muralla.png`);
+  .png().toFile(`${outputDir}/muralla.png`);
 await split('nubes', [
   ['nube-izquierda', x => x < width / 2],
   ['nube-derecha', x => x >= width / 2],
@@ -49,5 +51,5 @@ export const order = [
   'banderines-izquierda.png', 'banderines-derecha.png',
 ];
 await sharp({ create: { width, height, channels: 4, background: { r: 0, g: 0, b: 0, alpha: 0 } } })
-  .composite(await Promise.all(order.map(async file => ({ input: await sharp(`${dir}/${file}`).png().toBuffer(), left: 0, top: 0 }))))
-  .png().toFile(`${dir}/escenario-reensamblado.png`);
+  .composite(await Promise.all(order.map(async file => ({ input: await sharp(`${outputDir}/${file}`).png().toBuffer(), left: 0, top: 0 }))))
+  .png().toFile(`${previewDir}/escenario-reensamblado.png`);

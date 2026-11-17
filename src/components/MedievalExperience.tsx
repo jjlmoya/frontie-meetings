@@ -33,11 +33,11 @@ const LYRIC_MAGIC = [
   'tavern ale', 'product owners', 'stormy sea', 'Waiting', 'Meet', 'increased', 'king', 'lobby',
 ];
 const SCENE_LAYERS = [
-  'cielo-base.png', 'nube-izquierda.png', 'nube-derecha.png', 'castillo-fondo.png',
-  'casa-izquierda.png', 'casa-derecha.png', 'arboleda.png', 'muralla.png',
-  'suelo-escenario.png', 'hojas-suelo.png', 'banderines-izquierda.png', 'banderines-derecha.png',
-  'pilar-izquierdo.png', 'pilar-derecho.png',
-  'cortina-superior.png', 'cortina-izquierda.png', 'cortina-derecha.png',
+  'cielo-base.webp', 'nube-izquierda.webp', 'nube-derecha.webp', 'castillo-fondo.webp',
+  'casa-izquierda.webp', 'casa-derecha.webp', 'arboleda.webp', 'muralla.webp',
+  'suelo-escenario.webp', 'hojas-suelo.webp', 'banderines-izquierda.webp', 'banderines-derecha.webp',
+  'pilar-izquierdo.webp', 'pilar-derecho.webp',
+  'cortina-superior.webp', 'cortina-izquierda.webp', 'cortina-derecha.webp',
 ];
 const EMPTY_FRAME: MotionFrame = {
   time: 0, drums: 0, percussion: 0, bass: 0, guitar: 0, backing: 0, brass: 0, woodwinds: 0, speaking: false,
@@ -104,13 +104,13 @@ function getFaceMood(sectionId: string | undefined): FaceMood {
 }
 
 function layerMotion(layer: string, time: number): CSSProperties {
-  if (layer === 'nube-izquierda.png') return { transform: `translate(${Math.sin(time * .15) * 15}px, ${Math.sin(time * .31) * 3}px)` };
-  if (layer === 'nube-derecha.png') return { transform: `translate(${Math.sin(time * .12 + 2) * 19}px, ${Math.sin(time * .27 + 1) * 4}px)` };
-  if (layer === 'arboleda.png') return { transform: `translateY(5%) translateX(${Math.sin(time * .46) * 2.5}px) rotate(${Math.sin(time * .39) * .08}deg)`, transformOrigin: '50% 72%' };
-  if (layer === 'castillo-fondo.png') return { transform: 'translateY(14%)' };
-  if (['casa-izquierda.png', 'casa-derecha.png'].includes(layer)) return { transform: 'translateY(4%)' };
-  if (layer === 'muralla.png') return { transform: 'translateY(1.6%)' };
-  if (layer === 'banderines-izquierda.png' || layer === 'banderines-derecha.png') return { transform: `translateY(${Math.sin(time * .85 + (layer.includes('derecha') ? 1.8 : 0)) * 1.4}px)` };
+  if (layer === 'nube-izquierda.webp') return { transform: `translate(${Math.sin(time * .15) * 15}px, ${Math.sin(time * .31) * 3}px)` };
+  if (layer === 'nube-derecha.webp') return { transform: `translate(${Math.sin(time * .12 + 2) * 19}px, ${Math.sin(time * .27 + 1) * 4}px)` };
+  if (layer === 'arboleda.webp') return { transform: `translateY(5%) translateX(${Math.sin(time * .46) * 2.5}px) rotate(${Math.sin(time * .39) * .08}deg)`, transformOrigin: '50% 72%' };
+  if (layer === 'castillo-fondo.webp') return { transform: 'translateY(14%)' };
+  if (['casa-izquierda.webp', 'casa-derecha.webp'].includes(layer)) return { transform: 'translateY(4%)' };
+  if (layer === 'muralla.webp') return { transform: 'translateY(1.6%)' };
+  if (layer === 'banderines-izquierda.webp' || layer === 'banderines-derecha.webp') return { transform: `translateY(${Math.sin(time * .85 + (layer.includes('derecha') ? 1.8 : 0)) * 1.4}px)` };
   return {};
 }
 
@@ -128,51 +128,51 @@ function StageLife({ time, surprises }: { time: number; surprises: SurpriseSched
   const waldoHandsVisible = waldo ? smooth((waldo.elapsed - .35) / .35) * smooth((5.7 - waldo.elapsed) / .45) : 0;
 
   return <>
-    <img className="medieval-life-lantern medieval-life-lantern-left" src={`${DETAILS}magic-lantern.png`} alt="" style={{
+    <img className="medieval-life-lantern medieval-life-lantern-left" src={`${DETAILS}magic-lantern.webp`} alt="" style={{
       transform: `rotate(${-7 + Math.sin(time * 1.3) * 2}deg)`,
       filter: `brightness(${1 + (Math.sin(time * 7) + 1) * .08}) drop-shadow(0 0 ${10 + (Math.sin(time * 7) + 1) * 4}px rgba(255,190,76,.7))`,
     }} />
-    <img className="medieval-life-lantern medieval-life-lantern-right" src={`${DETAILS}magic-lantern.png`} alt="" style={{
+    <img className="medieval-life-lantern medieval-life-lantern-right" src={`${DETAILS}magic-lantern.webp`} alt="" style={{
       transform: `rotate(${7 + Math.sin(time * 1.3 + 1.7) * 2}deg)`,
       filter: `brightness(${1 + (Math.sin(time * 7 + 1.7) + 1) * .08}) drop-shadow(0 0 ${10 + (Math.sin(time * 7 + 1.7) + 1) * 4}px rgba(255,190,76,.7))`,
     }} />
-    <img className="medieval-life-ground-prop medieval-life-mushrooms medieval-life-mushrooms-right" src={`${DETAILS}fantasy-mushrooms.png`} alt="" />
-    <img className="medieval-life-ground-prop medieval-life-flower medieval-life-flower-left" src={`${DETAILS}moon-flower.png`} alt="" style={{ transform: `rotate(${Math.sin(time * 1.2) * 4}deg)` }} />
-    <img className="medieval-life-ground-prop medieval-life-flower medieval-life-flower-right" src={`${DETAILS}moon-flower.png`} alt="" style={{ transform: `scaleX(-1) rotate(${Math.sin(time * 1.2 + 1) * 4}deg)` }} />
-    <img className="medieval-wall-detail medieval-wall-shield" src={`${DETAILS}wall-cat-shield.png`} alt="" style={{ transform: `rotate(${Math.sin(time * .8 + 2) * 1.2}deg)` }} />
-    {fairy && <img className="medieval-life-fairy" src={`${DETAILS}paper-fairy.png`} alt="" style={{
+    <img className="medieval-life-ground-prop medieval-life-mushrooms medieval-life-mushrooms-right" src={`${DETAILS}fantasy-mushrooms.webp`} alt="" />
+    <img className="medieval-life-ground-prop medieval-life-flower medieval-life-flower-left" src={`${DETAILS}moon-flower.webp`} alt="" style={{ transform: `rotate(${Math.sin(time * 1.2) * 4}deg)` }} />
+    <img className="medieval-life-ground-prop medieval-life-flower medieval-life-flower-right" src={`${DETAILS}moon-flower.webp`} alt="" style={{ transform: `scaleX(-1) rotate(${Math.sin(time * 1.2 + 1) * 4}deg)` }} />
+    <img className="medieval-wall-detail medieval-wall-shield" src={`${DETAILS}wall-cat-shield.webp`} alt="" style={{ transform: `rotate(${Math.sin(time * .8 + 2) * 1.2}deg)` }} />
+    {fairy && <img className="medieval-life-fairy" src={`${DETAILS}paper-fairy.webp`} alt="" style={{
       left: `${-8 + fairy.progress * 118}%`, top: `${27 + Math.sin(time * 3.3) * 5}%`, opacity: fairy.visibility,
       transform: `rotate(${Math.sin(time * 4.4) * 9}deg) scale(${.86 + Math.sin(time * 7) * .08})`,
     }} />}
     {rapunzel && <>
-      <img className="medieval-life-rapunzel-braid" src={`${DETAILS}rapunzel-braid.png`} alt="" style={{
+      <img className="medieval-life-rapunzel-braid" src={`${DETAILS}rapunzel-braid.webp`} alt="" style={{
         left: '7.2%', top: '58.5%', opacity: rapunzel.visibility * smooth((rapunzel.elapsed - .1) / .45),
         clipPath: `inset(0 0 ${(1 - rapunzelHairGrowth) * 100}% 0)`,
         transform: `scaleY(${Math.max(.02, rapunzelHairGrowth)}) rotate(${Math.sin(time * 1.4) * 2}deg)`,
       }} />
-      <img className="medieval-life-rapunzel-window" src={`${DETAILS}rapunzel-window.png`} alt="" style={{
+      <img className="medieval-life-rapunzel-window" src={`${DETAILS}rapunzel-window.webp`} alt="" style={{
         left: '6.5%', top: '52.5%', opacity: rapunzel.visibility * rapunzelWindowRise,
         transform: `translateY(${(1 - rapunzelWindowRise) * 23}px) scale(${.9 + rapunzelWindowRise * .1})`,
       }} />
     </>}
-    {birds && [1, 2, 3].map((n) => <img key={n} className="medieval-life-bird" src={`${DETAILS}bird-${n}.png`} alt="" style={{
+    {birds && [1, 2, 3].map((n) => <img key={n} className="medieval-life-bird" src={`${DETAILS}bird-${n}.webp`} alt="" style={{
       zIndex: 5, width: `${4.3 + n * .65}%`, top: `${24 + n * 2.5}%`,
       left: `${-12 + birds.progress * 130 - n * 7}%`, opacity: birds.visibility * .9,
       transform: `translateY(${Math.sin(time * (8 + n) + n) * (3 + n)}px) rotate(${Math.sin(time * (7 + n) + n) * 5}deg)`,
     }} />)}
-    {dragon && <img className="medieval-life-dragon" src={`${DETAILS}paper-dragon.png`} alt="" style={{
+    {dragon && <img className="medieval-life-dragon" src={`${DETAILS}paper-dragon.webp`} alt="" style={{
       zIndex: 5, width: '24%', top: `${25 + Math.sin(time * .8) * 3}%`, left: `${-28 + dragon.progress * 152}%`,
       opacity: dragon.visibility, transform: `rotate(${Math.sin(time * 3) * 5}deg) scale(${.85 + Math.sin(time * .7) * .05})`,
     }} />}
-    {flag && <img className="medieval-life-flag" src={`${DETAILS}front-line-flag.png`} alt="" style={{
+    {flag && <img className="medieval-life-flag" src={`${DETAILS}front-line-flag.webp`} alt="" style={{
       zIndex: 6, width: '12%', left: '78%', bottom: '28%', opacity: flag.visibility,
       transform: `translateY(${(1 - flag.visibility) * 95}%) rotate(${Math.sin(time * 2.2) * 2.2}deg)`,
     }} />}
     {waldo && <>
-      <img className="medieval-life-waldo" src={`${DETAILS}waldo-body.png`} alt="" style={{ zIndex: 6, opacity: waldo.visibility, transform: `translateY(${(1 - waldoBodyRise) * 115}%) rotate(${Math.sin(time * 2.7) * .8}deg)` }} />
-      <img className="medieval-life-waldo" src={`${DETAILS}waldo-hands.png`} alt="" style={{ zIndex: 8, opacity: waldoHandsVisible, transform: `rotate(${Math.sin(time * 2.7) * .8}deg)` }} />
+      <img className="medieval-life-waldo" src={`${DETAILS}waldo-body.webp`} alt="" style={{ zIndex: 6, opacity: waldo.visibility, transform: `translateY(${(1 - waldoBodyRise) * 115}%) rotate(${Math.sin(time * 2.7) * .8}deg)` }} />
+      <img className="medieval-life-waldo" src={`${DETAILS}waldo-hands.webp`} alt="" style={{ zIndex: 8, opacity: waldoHandsVisible, transform: `rotate(${Math.sin(time * 2.7) * .8}deg)` }} />
     </>}
-    {rat && <img className="medieval-life-rat" src={`${DETAILS}running-rat.png`} alt="" style={{
+    {rat && <img className="medieval-life-rat" src={`${DETAILS}running-rat.webp`} alt="" style={{
       zIndex: 11, width: '9%', left: `${-10 + rat.progress * 123}%`, bottom: `${12 + Math.max(0, Math.sin(time * 16)) * .6}%`,
       opacity: rat.visibility, transform: `rotate(${Math.sin(time * 11) * 3}deg)`,
     }} />}
@@ -199,7 +199,7 @@ function SceneDetails({ time, energy }: { time: number; energy: number }) {
       const phase = time * (1.3 + index * 0.22) + index * 1.7;
       const lift = Math.sin(phase) * (10 + energy * 28);
       const sway = Math.cos(phase * .7) * (6 + energy * 22);
-      return <img key={index} className={`medieval-floating-note note-${index}`} src={`${DETAILS}music-notes.png`} alt="" style={{ transform: `translate(${sway}px, ${lift}px) rotate(${Math.sin(phase) * (8 + energy * 18)}deg) scale(${.76 + energy * .32})`, opacity: .36 + energy * .54 }} />;
+      return <img key={index} className={`medieval-floating-note note-${index}`} src={`${DETAILS}music-notes.webp`} alt="" style={{ transform: `translate(${sway}px, ${lift}px) rotate(${Math.sin(phase) * (8 + energy * 18)}deg) scale(${.76 + energy * .32})`, opacity: .36 + energy * .54 }} />;
     })}
   </div>;
 }
@@ -427,22 +427,22 @@ export function MedievalExperience() {
         aria-label={frame.speaking && isPlaying ? 'Frontie está cantando' : 'Frontie'}
       >
         <span className="cat-contact-shadow" aria-hidden="true" />
-        <img className="cat-tail" src={`${ART}cola.png`} alt="" style={{ transform: `rotate(${tailSwing}deg)` }} />
-        <img className="cat-leg cat-leg-left" src={`${ART}pierna-derecha.png`} alt="" style={{ transform: `scaleX(-1) rotate(${danceStep}deg)` }} />
-        <img className="cat-leg cat-leg-right" src={`${ART}pierna-derecha.png`} alt="" style={{ transform: `rotate(${-danceStep}deg)` }} />
-        <img className="cat-torso" src={`${ART}torso.png`} alt="" style={{ transform: `rotate(${bodyTilt}deg) scale(${1 + frame.bass * 0.012})` }} />
-        <img className="cat-arm cat-arm-fret" src={`${ART}brazo-acordes.png`} alt="" style={{ transform: `rotate(${isPlaying ? Math.sin(frame.time * 5.8) * (1 + frame.guitar * 2) : 0}deg)` }} />
-        <img className="cat-lute" src={`${ART}laud.png`} alt="" style={{ transform: `rotate(${isPlaying ? beat * (1 + frame.guitar * 2) + danceLean * 0.16 : 0}deg)` }} />
-        <img className="cat-arm cat-arm-strum" src={`${ART}brazo-rasgueo.png`} alt="" style={{ transform: `rotate(${strum}deg)` }} />
+        <img className="cat-tail" src={`${ART}cola.webp`} alt="" style={{ transform: `rotate(${tailSwing}deg)` }} />
+        <img className="cat-leg cat-leg-left" src={`${ART}pierna-derecha.webp`} alt="" style={{ transform: `scaleX(-1) rotate(${danceStep}deg)` }} />
+        <img className="cat-leg cat-leg-right" src={`${ART}pierna-derecha.webp`} alt="" style={{ transform: `rotate(${-danceStep}deg)` }} />
+        <img className="cat-torso" src={`${ART}torso.webp`} alt="" style={{ transform: `rotate(${bodyTilt}deg) scale(${1 + frame.bass * 0.012})` }} />
+        <img className="cat-arm cat-arm-fret" src={`${ART}brazo-acordes.webp`} alt="" style={{ transform: `rotate(${isPlaying ? Math.sin(frame.time * 5.8) * (1 + frame.guitar * 2) : 0}deg)` }} />
+        <img className="cat-lute" src={`${ART}laud.webp`} alt="" style={{ transform: `rotate(${isPlaying ? beat * (1 + frame.guitar * 2) + danceLean * 0.16 : 0}deg)` }} />
+        <img className="cat-arm cat-arm-strum" src={`${ART}brazo-rasgueo.webp`} alt="" style={{ transform: `rotate(${strum}deg)` }} />
         <span
           className={`cat-head ${faceOpen ? 'is-speaking' : ''} face-${faceMood}`}
           style={{ transform: `rotate(${headNod}deg)` }}
           aria-hidden="true"
         >
-          <img className="cat-head-mouth cat-head-mouth-closed" src={`${ART}${faceMood === 'neutral' ? 'cabeza-cerrada.png' : `cabeza-${faceMood}-cerrada.png`}`} alt="" />
-          <img className="cat-head-mouth cat-head-mouth-open" src={`${ART}${faceMood === 'neutral' ? 'cabeza-cantando.png' : `cabeza-${faceMood}-abierta.png`}`} alt="" />
+          <img className="cat-head-mouth cat-head-mouth-closed" src={`${ART}${faceMood === 'neutral' ? 'cabeza-cerrada.webp' : `cabeza-${faceMood}-cerrada.webp`}`} alt="" />
+          <img className="cat-head-mouth cat-head-mouth-open" src={`${ART}${faceMood === 'neutral' ? 'cabeza-cantando.webp' : `cabeza-${faceMood}-abierta.webp`}`} alt="" />
         </span>
-        <img className="cat-sound-burst" src={`${DETAILS}music-notes.png`} alt="" style={{ opacity: frame.speaking && isPlaying ? 0.9 : 0, transform: `scale(${0.8 + frame.backing * 0.55})` }} />
+        <img className="cat-sound-burst" src={`${DETAILS}music-notes.webp`} alt="" style={{ opacity: frame.speaking && isPlaying ? 0.9 : 0, transform: `scale(${0.8 + frame.backing * 0.55})` }} />
       </div>
 
       <div className="medieval-side-stage" aria-hidden="true">
@@ -451,8 +451,8 @@ export function MedievalExperience() {
             const candleScale = (26 + (index % 3) * 8 + level * 56) / 68;
             const candleColor = ['ivory', 'ruby', 'teal', 'violet', 'ivory', 'ruby', 'teal'][index];
             return <div key={index} className="stage-candle" style={{ transform: `scaleY(${candleScale})` }}>
-              <img className="stage-candle-body" src={`${DETAILS}candle-${candleColor}.png`} alt="" />
-              <img className="stage-candle-flame" src={`${DETAILS}candle-flame.png`} alt="" style={{
+              <img className="stage-candle-body" src={`${DETAILS}candle-${candleColor}.webp`} alt="" />
+              <img className="stage-candle-flame" src={`${DETAILS}candle-flame.webp`} alt="" style={{
                 transform: `translateX(-50%) scaleY(${1 / candleScale}) rotate(${Math.sin(frame.time * 8 + index) * 8}deg) scaleX(${.88 + (Math.sin(frame.time * 13 + index) + 1) * .08})`,
                 opacity: .72 + level * .28,
               }} />
