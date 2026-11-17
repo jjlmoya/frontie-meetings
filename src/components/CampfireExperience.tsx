@@ -361,6 +361,9 @@ export function CampfireExperience() {
       <div className={styles.embersGlow} style={{ opacity: 0.42 + scenePulse * 0.32 }} aria-hidden="true" />
 
       <div className={styles.sceneDetails} aria-hidden="true">
+        <Image className={styles.moon} src={`${ART}scene/crescent-moon.png`} width={1024} height={1024} sizes="min(8vw, 92px)" unoptimized alt="" />
+        <Image className={styles.constellation} src={`${ART}scene/constellation.png`} width={1536} height={1024} sizes="min(11vw, 128px)" unoptimized alt="" />
+        <span className={styles.shootingStar} />
         <Image className={`${styles.airplane} ${styles.airplane1}`} src={`${ART}scene/distant-plane.webp`} width={844} height={276} sizes="112px" style={{ height: 'auto' }} unoptimized alt="" />
         <Image className={`${styles.airplane} ${styles.airplane2}`} src={`${ART}scene/distant-plane.webp`} width={844} height={276} sizes="100px" style={{ height: 'auto' }} unoptimized alt="" />
         <Image className={`${styles.fallingLeaf} ${styles.fallingLeaf1}`} src={`${ART}scene/falling-leaf-1.webp`} width={374} height={377} sizes="40px" style={{ height: 'auto' }} unoptimized alt="" />
