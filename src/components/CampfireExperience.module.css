@@ -253,7 +253,7 @@
   border-radius: 50%;
   background: linear-gradient(90deg, transparent, rgba(239, 221, 188, .3) 48%, rgba(255, 246, 225, .95));
   filter: drop-shadow(0 0 4px rgba(255, 225, 175, .65));
-  transform: rotate(24deg);
+  transform: rotate(13deg);
   transform-origin: right center;
   /* Let the first pass happen shortly after opening the scene, then keep it rare. */
   animation: rare-shooting-star 96s linear -5.5s infinite;
@@ -528,10 +528,10 @@
 }
 
 @keyframes rare-shooting-star {
-  0%, 6% { opacity: 0; transform: translate(-2vw, -1vh) rotate(24deg); }
+  0%, 6% { opacity: 0; transform: translate(-2vw, -1vh) rotate(13deg); }
   6.2% { opacity: .82; }
-  7.2% { opacity: .74; transform: translate(17vw, 7vh) rotate(24deg); }
-  7.6%, 100% { opacity: 0; transform: translate(18vw, 8vh) rotate(24deg); }
+  7.2% { opacity: .74; transform: translate(17vw, 7vh) rotate(13deg); }
+  7.6%, 100% { opacity: 0; transform: translate(18vw, 8vh) rotate(13deg); }
 }
 
 @keyframes constellation-glint {
