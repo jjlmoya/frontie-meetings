@@ -230,17 +230,17 @@
 }
 
 .airplane1 {
-  top: 17%;
-  width: min(10vw, 112px);
-  animation: airplane-pass 44s linear infinite;
-  animation-delay: -8s;
+  top: 16%;
+  width: min(8vw, 96px);
+  animation: airplane-pass 151s linear infinite;
+  animation-delay: -38s;
 }
 
 .airplane2 {
-  top: 36%;
-  width: min(9vw, 100px);
-  animation: airplane-pass-reverse 57s linear infinite;
-  animation-delay: -33s;
+  top: 22%;
+  width: min(7.5vw, 88px);
+  animation: airplane-pass-reverse 193s linear infinite;
+  animation-delay: -112s;
 }
 
 .fallingLeaf {
@@ -462,17 +462,17 @@
 }
 
 @keyframes airplane-pass {
-  0%,4% { opacity: 0; transform: translateX(-15vw) scale(.86); }
-  7% { opacity: .88; }
-  43% { opacity: .76; transform: translateX(112vw) scale(1); }
-  49%,100% { opacity: 0; transform: translateX(112vw) scale(1); }
+  0%,4% { opacity: 0; transform: translateX(-15vw) scale(.72); }
+  5% { opacity: .68; }
+  14% { opacity: .64; transform: translateX(112vw) scale(.82); }
+  16%,100% { opacity: 0; transform: translateX(112vw) scale(.82); }
 }
 
 @keyframes airplane-pass-reverse {
-  0%,8% { opacity: 0; transform: translateX(112vw) scaleX(-1) scale(.84); }
-  11% { opacity: .82; }
-  47% { opacity: .7; transform: translateX(-15vw) scaleX(-1) scale(1); }
-  53%,100% { opacity: 0; transform: translateX(-15vw) scaleX(-1) scale(1); }
+  0%,4% { opacity: 0; transform: translateX(112vw) scaleX(-1) scale(.7); }
+  5% { opacity: .66; }
+  14% { opacity: .62; transform: translateX(-15vw) scaleX(-1) scale(.8); }
+  16%,100% { opacity: 0; transform: translateX(-15vw) scaleX(-1) scale(.8); }
 }
 
 @keyframes leaf-fall {

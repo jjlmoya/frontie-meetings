@@ -273,10 +273,10 @@ export function CampfireExperience() {
     phraseAccent(time, 165.5, 171.6),
   );
   const screamJolt = Math.max(phraseAccent(time, 182, 184), phraseAccent(time, 191, 193));
-  const hauntingLine = lyrics.find((line) => line.event && line.appearanceAt !== undefined && time >= line.appearanceAt && time < line.end + 0.3);
+  const hauntingLine = lyrics.find((line) => line.event && line.appearanceAt !== undefined && time >= line.appearanceAt && time < line.end + (line.event === 'xavi' ? 1.5 : 0.3));
   const haunting = hauntingLine?.event ?? '';
   const hauntingAge = hauntingLine?.appearanceAt === undefined ? 0 : time - hauntingLine.appearanceAt;
-  const hauntingDuration = hauntingLine?.appearanceAt === undefined ? 0 : hauntingLine.end + 0.3 - hauntingLine.appearanceAt;
+  const hauntingDuration = hauntingLine?.appearanceAt === undefined ? 0 : hauntingLine.end + (hauntingLine.event === 'xavi' ? 1.5 : 0.3) - hauntingLine.appearanceAt;
   const hauntingOpacity = haunting && hauntingAge > hauntingDuration - 0.18 ? Math.max(0, (hauntingDuration - hauntingAge) / 0.18) : haunting ? 1 : 0;
   const hauntingScale = haunting && !prefersReducedMotion && hauntingAge < 0.12 ? 1.1 - hauntingAge * 0.83 : 1;
   const storytellingMotion = Math.max(
