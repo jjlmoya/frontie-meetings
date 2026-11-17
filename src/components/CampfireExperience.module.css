@@ -64,7 +64,7 @@
   left: 5vw;
   width: 90vw;
   text-align: center;
-  color: #f7ead8;
+  color: #d5d0c6;
   font-family: 'Palatino Linotype', 'Book Antiqua', Georgia, serif;
   font-size: clamp(2.05rem, 4.25vw, 4.15rem);
   font-weight: 700;
@@ -72,36 +72,27 @@
   letter-spacing: .018em;
   text-wrap: balance;
   -webkit-text-stroke: .5px rgba(16, 12, 24, .88);
-  text-shadow: 0 1px 0 rgba(105, 30, 32, .85), 0 2px 4px rgba(0, 0, 0, .98), 0 5px 14px rgba(0, 0, 0, .78), 0 0 22px rgba(140, 20, 29, .42);
+  text-shadow: 0 2px 4px rgba(0, 0, 0, .98), 0 7px 18px rgba(0, 0, 0, .68);
   pointer-events: none;
 }
 
 .lyricText {
   display: block;
-  animation: lyric-haunt-in 300ms cubic-bezier(.2,.8,.24,1) both;
+  animation: lyric-settle-in 220ms ease-out both;
 }
 
-.lyricGhost {
-  position: absolute;
-  inset: 0;
-  color: rgba(197, 34, 45, .68);
-  -webkit-text-stroke: 0;
-  text-shadow: 0 0 16px rgba(182, 20, 35, .82), 0 1px 5px rgba(28, 4, 9, .8);
-  opacity: 0;
-  transform: translate(4px, 1px) skewX(-1.5deg);
-  clip-path: inset(48% 0 0 0);
-  pointer-events: none;
-  animation: lyric-spectral-echo 760ms ease-out both;
+.lyricWord {
+  display: inline-block;
+  position: relative;
+  transform-origin: center 82%;
+  transition: transform 105ms cubic-bezier(.2,.72,.3,1);
+  will-change: transform;
 }
 
 .lyricFearWord {
-  display: inline-block;
-  position: relative;
-  color: #ff7773;
-  -webkit-text-stroke: .8px rgba(47, 4, 11, 1);
-  text-shadow: 0 0 8px rgba(255, 49, 57, .96), 0 0 20px rgba(179, 13, 32, .86), 0 0 34px rgba(112, 4, 22, .64), 0 2px 5px rgba(0, 0, 0, 1);
-  animation: lyric-word-omen 2.7s ease-in-out 180ms infinite;
-  transform-origin: center 72%;
+  color: #a87878;
+  -webkit-text-stroke: .45px rgba(22, 17, 19, .92);
+  text-shadow: 0 2px 4px rgba(0, 0, 0, .98), 0 6px 12px rgba(0, 0, 0, .72);
 }
 
 .puppet {
@@ -556,29 +547,9 @@
   100% { opacity: 0; }
 }
 
-@keyframes lyric-haunt-in {
-  0% { opacity: 1; filter: none; transform: translate(-4px, -1px); }
-  28% { opacity: 1; filter: none; transform: translate(2px, 0); }
-  52% { opacity: 1; filter: none; transform: translate(-1px, 0); }
-  74% { opacity: 1; filter: none; transform: translate(.5px, 0); }
-  100% { opacity: 1; filter: none; transform: translate(0, 0); }
-}
-
-@keyframes lyric-spectral-echo {
-  0% { opacity: .68; transform: translate(6px, 2px) skewX(-1.2deg); }
-  30% { opacity: .34; transform: translate(-2px, 1px) skewX(.45deg); }
-  100% { opacity: 0; transform: translate(0, 0) skewX(0); }
-}
-
-@keyframes lyric-word-omen {
-  0%, 100% { color: #ff7773; transform: translateY(0) scale(1); text-shadow: 0 0 10px rgba(255, 34, 44, 1), 0 0 25px rgba(165, 5, 25, .92), 0 0 40px rgba(81, 0, 14, .72), 0 2px 5px rgba(0, 0, 0, 1); }
-  7% { color: #fff0e7; transform: translateY(-3px) scale(1.13); text-shadow: 0 0 14px rgba(255, 151, 128, 1), 0 0 34px rgba(235, 24, 43, 1), 0 0 50px rgba(137, 4, 25, .98), 0 2px 5px rgba(0, 0, 0, 1); }
-  12%, 18% { color: #ed282f; transform: translateY(1px) scale(1.06) skewX(-3deg); text-shadow: 0 0 16px rgba(255, 30, 45, 1), 0 0 36px rgba(168, 5, 29, 1), 0 0 50px rgba(103, 0, 19, .96), 0 2px 5px rgba(0, 0, 0, 1); }
-  14% { color: #fff0e7; transform: translateY(-1px) scale(1.09) skewX(2deg); }
-  20% { color: #ffe2d9; transform: translateX(-2px) scale(1.05) skewX(-1deg); }
-  21% { color: #ff4c4e; transform: translateX(2px) scale(1.05) skewX(1deg); }
-  22%, 36% { color: #ffb9af; transform: translateX(0) scale(1.01); text-shadow: 0 0 10px rgba(255, 69, 68, 1), 0 0 25px rgba(179, 13, 32, .95), 0 0 38px rgba(112, 4, 22, .8), 0 2px 5px rgba(0, 0, 0, 1); }
-  40% { color: #ff7773; transform: translateY(0) scale(1); text-shadow: 0 0 10px rgba(255, 34, 44, 1), 0 0 25px rgba(165, 5, 25, .92), 0 0 40px rgba(81, 0, 14, .72), 0 2px 5px rgba(0, 0, 0, 1); }
+@keyframes lyric-settle-in {
+  from { opacity: 0; transform: translateY(7px); }
+  to { opacity: 1; transform: translateY(0); }
 }
 
 @media (max-width: 650px) {
@@ -600,5 +571,6 @@
 @media (prefers-reduced-motion: reduce) {
   .stars,.airplane,.fallingLeaf,.shootingStar,.constellation { animation: none; }
   .screamerFlash { animation-duration: .01ms; animation-iteration-count: 1; }
-  .lyricText,.lyricGhost,.lyricFearWord { animation: none; }
+  .lyricText { animation: none; }
+  .lyricWord { transform: none !important; transition: none; }
 }

@@ -2,7 +2,7 @@
 
 import Image from 'next/image';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import type { PointerEvent as ReactPointerEvent } from 'react';
+import type { CSSProperties, PointerEvent as ReactPointerEvent } from 'react';
 import styles from './CampfireExperience.module.css';
 
 type LyricLine = { start: number; end: number; text: string; event?: 'maria' | 'xavi'; appearanceAt?: number };
@@ -59,12 +59,32 @@ const hauntedWords = new Set([
 ]);
 const hauntedWordPattern = /((?:sin ningún control|build ha muerto|ci checks rojos|breaking change|request changes|no puede ser|escalofríos|inconsciente|front-line|jest\.mock|sin alma|sin avisar|producción|oscuridad|traición|sangre|sombras|maldita|hostil|fatal|temor|terror|revert|release|fuego|a salvo|xavi|maría|\bpr\b|\bmal\b|a+h{2,}|n[oó]{3,}))/gi;
 
-function renderLyric(text: string) {
-  return text.split(hauntedWordPattern).map((part, index) => (
-    hauntedWords.has(part.toLocaleLowerCase()) || /^(?:a+h{2,}|n[oó]{3,})$/i.test(part)
-      ? <span className={styles.lyricFearWord} key={`${part}-${index}`}>{part}</span>
-      : part
-  ));
+function renderLyric(text: string, beat: number) {
+  let wordIndex = 0;
+  return text.split(hauntedWordPattern).flatMap((part, phraseIndex) => {
+    const isFearPhrase = hauntedWords.has(part.toLocaleLowerCase()) || /^(?:a+h{2,}|n[oó]{3,})$/i.test(part);
+    return part.split(/(\s+)/).map((word, wordIndexInPhrase) => {
+      if (!word.trim()) return word;
+      const index = wordIndex++;
+      const side = index % 2 === 0 ? 1 : -1;
+      const lift = beat * (isFearPhrase ? 12 : 6);
+      const rotation = beat * side * (isFearPhrase ? 2.6 : 1.1);
+      const scale = 1 + beat * (isFearPhrase ? 0.1 : 0.045);
+      const style: CSSProperties = {
+        transform: `translate3d(0, ${-lift}px, 0) rotate(${rotation}deg) scale(${scale})`,
+        transitionDelay: `${(index % 3) * 12}ms`,
+      };
+      return (
+        <span
+          className={isFearPhrase ? `${styles.lyricWord} ${styles.lyricFearWord}` : styles.lyricWord}
+          key={`${phraseIndex}-${wordIndexInPhrase}-${word}`}
+          style={style}
+        >
+          {word}
+        </span>
+      );
+    });
+  });
 }
 
 export function CampfireExperience() {
@@ -260,6 +280,8 @@ export function CampfireExperience() {
   const guitar = cueAt(cues, 'guitar', time);
   const drums = cueAt(cues, 'drums', time);
   const pulse = Math.max(guitar, drums * 0.72);
+  const previousPulse = Math.max(cueAt(cues, 'guitar', time - 0.08), cueAt(cues, 'drums', time - 0.08) * 0.72);
+  const lyricBeat = Math.min(1, Math.max(0, pulse * 0.22 + (pulse - previousPulse) * 2.1));
   const motionScale = prefersReducedMotion ? 0.35 : 1;
   const scenePulse = pulse * motionScale;
   const chorusMotion = Math.max(sectionEnvelope(time, 65.36, 80.46), sectionEnvelope(time, 126.38, 141.8));
@@ -361,8 +383,8 @@ export function CampfireExperience() {
       <div className={styles.embersGlow} style={{ opacity: 0.42 + scenePulse * 0.32 }} aria-hidden="true" />
 
       <div className={styles.sceneDetails} aria-hidden="true">
-        <Image className={styles.moon} src={`${ART}scene/crescent-moon.png`} width={1024} height={1024} sizes="min(8vw, 92px)" unoptimized alt="" />
-        <Image className={styles.constellation} src={`${ART}scene/constellation.png`} width={1536} height={1024} sizes="min(11vw, 128px)" unoptimized alt="" />
+        <Image className={styles.moon} src={`${ART}scene/crescent-moon.webp`} width={184} height={184} sizes="min(8vw, 92px)" unoptimized alt="" />
+        <Image className={styles.constellation} src={`${ART}scene/constellation.webp`} width={256} height={171} sizes="min(11vw, 128px)" unoptimized alt="" />
         <span className={styles.shootingStar} />
         <Image className={`${styles.airplane} ${styles.airplane1}`} src={`${ART}scene/distant-plane.webp`} width={844} height={276} sizes="112px" style={{ height: 'auto' }} unoptimized alt="" />
         <Image className={`${styles.airplane} ${styles.airplane2}`} src={`${ART}scene/distant-plane.webp`} width={844} height={276} sizes="100px" style={{ height: 'auto' }} unoptimized alt="" />
@@ -378,8 +400,7 @@ export function CampfireExperience() {
       <Image className={styles.foregroundTrees} src={`${ART}scene/foreground-tree-canopies.webp`} width={1672} height={941} sizes="100vw" unoptimized priority alt="" />
 
       {activeLine && <div key={`${activeLine.start}-${activeLine.text}`} className={styles.lyric} aria-live="polite" aria-label="Letra de la canción">
-        <span className={styles.lyricGhost} aria-hidden="true">{activeLine.text}</span>
-        <span className={styles.lyricText}>{renderLyric(activeLine.text)}</span>
+        <span className={styles.lyricText}>{renderLyric(activeLine.text, lyricBeat)}</span>
       </div>}
 
       <div className={styles.puppet} role="img" style={{ transform: `translateX(calc(-50% + ${bodySway}px))` }} aria-label="Frontie, juglar anciano cantando junto a la hoguera">
