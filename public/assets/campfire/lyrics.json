@@ -1,0 +1,259 @@
+{
+  "source": "Suno lyric panel, checked against the master audio; timestamps from the local transcription pass",
+  "lines": [
+    {
+      "start": 19.3,
+      "end": 22.54,
+      "text": "Acércate al fuego, no tengas temor,"
+    },
+    {
+      "start": 22.54,
+      "end": 26.1,
+      "text": "os traigo una historia de puro terror."
+    },
+    {
+      "start": 26.1,
+      "end": 29.78,
+      "text": "De gente inconsciente, sin alma ni ley,"
+    },
+    {
+      "start": 29.78,
+      "end": 33.9,
+      "text": "que sube una PR y no sabe ni qué."
+    },
+    {
+      "start": 36.55,
+      "end": 39.36,
+      "text": "Mirad a las sombras, prestad atención:"
+    },
+    {
+      "start": 39.36,
+      "end": 43.2,
+      "text": "¡Alguien metió un jest.mock sin ningún control!"
+    },
+    {
+      "start": 43.2,
+      "end": 46.82,
+      "text": "Pasó un componente por prop sin render,"
+    },
+    {
+      "start": 46.82,
+      "end": 50.5,
+      "text": "¡y en plena mayúscula, no puede ser!"
+    },
+    {
+      "start": 50.84,
+      "end": 54.14,
+      "text": "Y en frontend-shell hizo composición"
+    },
+    {
+      "start": 54.14,
+      "end": 58.38,
+      "text": "¡de su misma librería, qué traición!"
+    },
+    {
+      "start": 60.2,
+      "end": 62.32,
+      "text": "¡Escalofríos en producción!"
+    },
+    {
+      "start": 65.36,
+      "end": 69.56,
+      "text": "¡Oh, cuidadito con lo que hacéis!"
+    },
+    {
+      "start": 69.58,
+      "end": 72.66,
+      "text": "Que en Front-line vigilan lo que subéis."
+    },
+    {
+      "start": 72.66,
+      "end": 75.8,
+      "text": "¡Jota-Jota, Puche y Miguel sin compasión..."
+    },
+    {
+      "start": 75.8,
+      "end": 80.46,
+      "text": "¡El Request changes te espera en la oscuridad!"
+    },
+    {
+      "start": 80.46,
+      "end": 83.86,
+      "text": "¡AAAHHH!"
+    },
+    {
+      "start": 83.86,
+      "end": 84.72,
+      "text": "¡Fue…"
+    },
+    {
+      "start": 84.72,
+      "end": 85.9,
+      "text": "¡Xavi!",
+      "event": "xavi",
+      "appearanceAt": 84.72
+    },
+    {
+      "start": 87.22,
+      "end": 89.04,
+      "text": "¡Rechazó esa PR!"
+    },
+    {
+      "start": 93.1,
+      "end": 96.04,
+      "text": "Calma, muchachos, la noche es hostil,"
+    },
+    {
+      "start": 96.04,
+      "end": 99.38,
+      "text": "¡que el mal nos acecha en cada commit!"
+    },
+    {
+      "start": 99.38,
+      "end": 103.36,
+      "text": "Hay almas perdidas, de sangre muy fría,"
+    },
+    {
+      "start": 103.36,
+      "end": 107.26,
+      "text": "que borran CI checks rojos a la luz del día."
+    },
+    {
+      "start": 107.26,
+      "end": 111.28,
+      "text": "Cerrados requirements de MFEs,"
+    },
+    {
+      "start": 111.28,
+      "end": 115.42,
+      "text": "¡y meten un cambio que no toca otra vez!"
+    },
+    {
+      "start": 115.42,
+      "end": 117.74,
+      "text": "Y en Prisma Design System,"
+    },
+    {
+      "start": 117.74,
+      "end": 119.16,
+      "text": "¡qué crueldad!"
+    },
+    {
+      "start": 119.34,
+      "end": 121.76,
+      "text": "¡Metieron un breaking change"
+    },
+    {
+      "start": 121.76,
+      "end": 123.5,
+      "text": "sin avisar!"
+    },
+    {
+      "start": 124.85,
+      "end": 126.58,
+      "text": "¡La build ha muerto!"
+    },
+    {
+      "start": 126.78,
+      "end": 130.9,
+      "text": "¡Oh, cuidadito con lo que hacéis!"
+    },
+    {
+      "start": 130.9,
+      "end": 133.96,
+      "text": "Que en Front-line vigilan lo que subéis."
+    },
+    {
+      "start": 133.96,
+      "end": 137.1,
+      "text": "¡Miguel, Puche y Jota-Jota sin compasión..."
+    },
+    {
+      "start": 137.1,
+      "end": 141.8,
+      "text": "¡El revert te espera en la oscuridad!"
+    },
+    {
+      "start": 141.8,
+      "end": 143.94,
+      "text": "¡NOOO!"
+    },
+    {
+      "start": 143.94,
+      "end": 145.05,
+      "text": "¡No! ¡Es…"
+    },
+    {
+      "start": 145.05,
+      "end": 146.66,
+      "text": "¡María!",
+      "event": "maria",
+      "appearanceAt": 145.05
+    },
+    {
+      "start": 148.48,
+      "end": 150.22,
+      "text": "¡No estáis a salvo!"
+    },
+    {
+      "start": 153.7,
+      "end": 155.2,
+      "text": "Todo está testeado,"
+    },
+    {
+      "start": 156.55,
+      "end": 157.8,
+      "text": "listo para salir..."
+    },
+    {
+      "start": 158.95,
+      "end": 160.24,
+      "text": "Son las dos de la tarde,"
+    },
+    {
+      "start": 161.25,
+      "end": 162.5,
+      "text": "ya nos vamos a ir..."
+    },
+    {
+      "start": 163.15,
+      "end": 165.5,
+      "text": "Pero suena un mensaje en el chat general..."
+    },
+    {
+      "start": 165.5,
+      "end": 168.52,
+      "text": "Una frase maldita,"
+    },
+    {
+      "start": 170.25,
+      "end": 171.6,
+      "text": "un presagio fatal..."
+    },
+    {
+      "start": 173.85,
+      "end": 174.96,
+      "text": "Oye, perdona..."
+    },
+    {
+      "start": 176.15,
+      "end": 177.68,
+      "text": "es un cambio chiquitito..."
+    },
+    {
+      "start": 179.4,
+      "end": 181.46,
+      "text": "¿Me esperas para la release?"
+    },
+    {
+      "start": 182.0,
+      "end": 189.6,
+      "text": "¡AAAAAHHHHH!"
+    },
+    {
+      "start": 191.0,
+      "end": 195.6,
+      "text": "¡NOOOOO!"
+    }
+  ]
+}

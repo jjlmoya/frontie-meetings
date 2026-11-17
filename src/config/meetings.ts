@@ -7,7 +7,6 @@ export const MEETINGS_CONFIG: readonly MeetingConfig[] = [
     type: 'creative',
     schedule: [],
     assets: {
-      video: '/assets/medieval/video/preview-medieval.gif',
       audio: '/assets/medieval/audio/frontie-the-feline-king.mp3',
     },
     style: {
@@ -15,6 +14,22 @@ export const MEETINGS_CONFIG: readonly MeetingConfig[] = [
       fallbackFont: 'Georgia, serif',
       primaryColor: '#F3CF7A',
       backgroundColor: '#241314',
+      textAnimation: 'funky-chaos',
+    },
+  },
+  {
+    id: 'campfire',
+    name: 'Escalofríos en Producción',
+    type: 'creative',
+    schedule: [],
+    assets: {
+      audio: '/assets/campfire/audio/Escalofríos en Producción.mp3',
+    },
+    style: {
+      fontFamily: 'Georgia, serif',
+      fallbackFont: 'Georgia, serif',
+      primaryColor: '#f8d99a',
+      backgroundColor: '#08101e',
       textAnimation: 'funky-chaos',
     },
   },

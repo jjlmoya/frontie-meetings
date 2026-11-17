@@ -19,7 +19,9 @@ export const WebGLEffects = ({
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const glRef = useRef<WebGLRenderingContext | null>(null);
   const programRef = useRef<WebGLProgram | null>(null);
+  const bufferRef = useRef<WebGLBuffer | null>(null);
   const animationRef = useRef<number>(0);
+  const renderRef = useRef<() => void>(() => {});
   const [isWebGLSupported, setIsWebGLSupported] = useState(true);
 
   // Vertex shader for audio-reactive effects
@@ -194,7 +196,7 @@ export const WebGLEffects = ({
     }
   `;
 
-  const createShader = (gl: WebGLRenderingContext, type: number, source: string): WebGLShader | null => {
+  const createShader = useCallback((gl: WebGLRenderingContext, type: number, source: string): WebGLShader | null => {
     const shader = gl.createShader(type);
     if (!shader) return null;
     
@@ -208,16 +210,24 @@ export const WebGLEffects = ({
     }
     
     return shader;
-  };
+  }, []);
 
-  const createProgram = (gl: WebGLRenderingContext): WebGLProgram | null => {
+  const createProgram = useCallback((gl: WebGLRenderingContext): WebGLProgram | null => {
     const vertexShader = createShader(gl, gl.VERTEX_SHADER, vertexShaderSource);
     const fragmentShader = createShader(gl, gl.FRAGMENT_SHADER, fragmentShaderSource);
-    
-    if (!vertexShader || !fragmentShader) return null;
+
+    if (!vertexShader || !fragmentShader) {
+      if (vertexShader) gl.deleteShader(vertexShader);
+      if (fragmentShader) gl.deleteShader(fragmentShader);
+      return null;
+    }
     
     const program = gl.createProgram();
-    if (!program) return null;
+    if (!program) {
+      gl.deleteShader(vertexShader);
+      gl.deleteShader(fragmentShader);
+      return null;
+    }
     
     gl.attachShader(program, vertexShader);
     gl.attachShader(program, fragmentShader);
@@ -226,11 +236,15 @@ export const WebGLEffects = ({
     if (!gl.getProgramParameter(program, gl.LINK_STATUS)) {
       console.error('Program linking error:', gl.getProgramInfoLog(program));
       gl.deleteProgram(program);
+      gl.deleteShader(vertexShader);
+      gl.deleteShader(fragmentShader);
       return null;
     }
-    
+
+    gl.deleteShader(vertexShader);
+    gl.deleteShader(fragmentShader);
     return program;
-  };
+  }, [createShader, vertexShaderSource, fragmentShaderSource]);
 
   const initWebGL = useCallback(() => {
     const canvas = canvasRef.current;
@@ -263,6 +277,11 @@ export const WebGLEffects = ({
 
       const webgl = gl as WebGLRenderingContext;
       const buffer = webgl.createBuffer();
+      if (!buffer) {
+        setIsWebGLSupported(false);
+        return false;
+      }
+      bufferRef.current = buffer;
       webgl.bindBuffer(webgl.ARRAY_BUFFER, buffer);
       webgl.bufferData(webgl.ARRAY_BUFFER, vertices, webgl.STATIC_DRAW);
 
@@ -276,7 +295,7 @@ export const WebGLEffects = ({
       setIsWebGLSupported(false);
       return false;
     }
-  }, []);
+  }, [createProgram]);
 
   const getThemeIndex = (theme: string): number => {
     if (theme.includes('beach') || theme.includes('wave')) return 0;
@@ -329,8 +348,10 @@ export const WebGLEffects = ({
     // Draw
     gl.drawArrays(gl.TRIANGLES, 0, 6);
 
-    animationRef.current = requestAnimationFrame(render);
+    animationRef.current = requestAnimationFrame(() => renderRef.current());
   }, [isEnabled, style.textAnimation, audioData, intensity]);
+
+  renderRef.current = render;
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -364,7 +385,7 @@ export const WebGLEffects = ({
         gl.viewport(0, 0, canvas.width, canvas.height);
         gl.clearColor(0, 0, 0, 0);
         gl.clear(gl.COLOR_BUFFER_BIT);
-        animationRef.current = requestAnimationFrame(render);
+        animationRef.current = requestAnimationFrame(() => renderRef.current());
       }
     }
 
@@ -373,8 +394,14 @@ export const WebGLEffects = ({
       if (animationRef.current) {
         cancelAnimationFrame(animationRef.current);
       }
+      const gl = glRef.current;
+      if (gl && bufferRef.current) gl.deleteBuffer(bufferRef.current);
+      if (gl && programRef.current) gl.deleteProgram(programRef.current);
+      bufferRef.current = null;
+      programRef.current = null;
+      glRef.current = null;
     };
-  }, [initWebGL, render]);
+  }, [initWebGL, isEnabled]);
 
   // Fallback to canvas if WebGL not supported
   if (!isWebGLSupported || !isEnabled) {

@@ -13,6 +13,7 @@ import { LiveMessenger } from '@/components/LiveMessenger';
 import { useMeetingConfig } from '@/hooks/useMeetingConfig';
 import { useAudioAnalyzer } from '@/hooks/useAudioAnalyzer';
 import { MedievalExperience } from '@/components/MedievalExperience';
+import { CampfireExperience } from '@/components/CampfireExperience';
 
 export default function FantasiaPage() {
   const { config, loading, error } = useMeetingConfig();
@@ -25,7 +26,7 @@ export default function FantasiaPage() {
   // Detectar cualquier interacción del usuario y usar el hook correctamente
   useEffect(() => {
     const handleInteraction = async () => {
-      if (!userInteracted && config && play && config.id !== 'medieval') {
+      if (!userInteracted && config && play && config.id !== 'medieval' && config.id !== 'campfire') {
         setUserInteracted(true);
         
         // Usar el hook de audio que tiene el analizador
@@ -79,6 +80,10 @@ export default function FantasiaPage() {
 
   if (config.id === 'medieval') {
     return <MedievalExperience />;
+  }
+
+  if (config.id === 'campfire') {
+    return <CampfireExperience />;
   }
 
   return (

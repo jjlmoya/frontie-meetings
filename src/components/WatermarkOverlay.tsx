@@ -1,7 +1,7 @@
 'use client';
 
 import Image from 'next/image';
-import { useEffect, useRef } from 'react';
+import { useCallback, useEffect, useRef } from 'react';
 import type { AudioAnalyzerData } from '@/types';
 
 interface WatermarkOverlayProps {
@@ -23,12 +23,15 @@ export const WatermarkOverlay = ({ audioData }: WatermarkOverlayProps) => {
   const logoRef = useRef<HTMLDivElement>(null);
   const ripplesRef = useRef<Ripple[]>([]);
   const lastBassRef = useRef<number>(0);
+  const audioDataRef = useRef(audioData);
+  audioDataRef.current = audioData;
 
   // Extraer SOLO graves para las ondas
-  const getBassIntensity = () => {
-    if (!audioData?.frequencyData || audioData.frequencyData.length === 0) return 0;
+  const getBassIntensity = useCallback(() => {
+    const currentAudioData = audioDataRef.current;
+    if (!currentAudioData?.frequencyData || currentAudioData.frequencyData.length === 0) return 0;
     
-    const dataArray = Array.from(audioData.frequencyData);
+    const dataArray = Array.from(currentAudioData.frequencyData);
     
     // SOLO graves (0-10% del espectro - más restrictivo)
     const bassEnd = Math.floor(dataArray.length * 0.1);
@@ -39,7 +42,7 @@ export const WatermarkOverlay = ({ audioData }: WatermarkOverlayProps) => {
     
     // SOLO graves, no volumen general
     return bassValue;
-  };
+  }, []);
 
   // Canvas resize and animation
   useEffect(() => {
@@ -120,7 +123,7 @@ export const WatermarkOverlay = ({ audioData }: WatermarkOverlayProps) => {
         cancelAnimationFrame(animationRef.current);
       }
     };
-  }, [audioData]);
+  }, [getBassIntensity]);
 
   // Golpeos muy suaves del tambor
   const bassIntensity = getBassIntensity();

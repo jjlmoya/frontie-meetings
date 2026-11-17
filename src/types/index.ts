@@ -7,7 +7,7 @@ export type TimeSlot = {
 };
 
 export type MediaAssets = {
-  readonly video: string;
+  readonly video?: string;
   readonly audio: string;
 };
 
@@ -47,7 +47,7 @@ export interface IAssetService {
 
 export interface IMeetingService {
   getCurrentMeetingConfig(): Promise<MeetingConfig | null>;
-  preloadCurrentAssets(): Promise<void>;
+  preloadCurrentAssets(config?: MeetingConfig): Promise<void>;
 }
 
 export type AudioAnalyzerData = {

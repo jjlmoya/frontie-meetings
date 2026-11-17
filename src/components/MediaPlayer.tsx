@@ -24,12 +24,12 @@ export const MediaPlayer = ({
   onVideoLoad 
 }: MediaPlayerProps) => {
   const [videoLoaded, setVideoLoaded] = useState(false);
-  const [videoError, setVideoError] = useState(false);
+  const [videoError, setVideoError] = useState(!assets.video);
   const videoRef = useRef<HTMLVideoElement>(null);
 
   useEffect(() => {
     setVideoLoaded(false);
-    setVideoError(false);
+    setVideoError(!assets.video);
   }, [assets.video]);
 
   const handleVideoLoad = () => {
@@ -62,7 +62,7 @@ export const MediaPlayer = ({
         className="absolute inset-0 transition-all duration-1000"
         style={{ backgroundColor: style.backgroundColor }}
       >
-        {!videoError && (
+        {assets.video && !videoError && (
           <video
             ref={videoRef}
             className={`w-full h-full object-cover transition-opacity duration-1000 ${
@@ -82,7 +82,7 @@ export const MediaPlayer = ({
           </video>
         )}
 
-        {videoError && (
+        {(!assets.video || videoError) && (
           <div className="absolute inset-0 flex items-center justify-center text-white text-2xl">
             Video no disponible
           </div>

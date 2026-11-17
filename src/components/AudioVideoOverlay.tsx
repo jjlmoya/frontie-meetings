@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useRef, useState, useCallback } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import type { ThemeConfig, AudioAnalyzerData } from '@/types';
 
 interface AudioVideoOverlayProps {
@@ -25,6 +25,7 @@ export const AudioVideoOverlay = ({
 }: AudioVideoOverlayProps) => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const animationRef = useRef<number>(0);
+  const renderRef = useRef<(currentTime: number) => void>(() => {});
   const lastRenderTime = useRef<number>(0);
   const [frequencies, setFrequencies] = useState<AudioFrequencies>({
     bass: 0,
@@ -217,8 +218,6 @@ export const AudioVideoOverlay = ({
     }
     
     // Psychedelic rotating gradient backdrop - FULL SCREEN
-    const rotation = time + effectiveVolume * intensity * Math.PI;
-    
     const gradient = ctx.createRadialGradient(centerX, centerY, 0, centerX, centerY, Math.max(canvas.width, canvas.height));
     gradient.addColorStop(0, `rgba(255, 20, 147, ${effectiveBass * intensity * 0.25})`);
     gradient.addColorStop(0.3, `rgba(255, 105, 180, ${effectiveMid * intensity * 0.18})`);
@@ -282,7 +281,7 @@ export const AudioVideoOverlay = ({
   };
 
   // Main render function
-  const render = useCallback((currentTime: number) => {
+  const render = (currentTime: number) => {
     const canvas = canvasRef.current;
     if (!canvas || !isEnabled) return;
     
@@ -294,7 +293,7 @@ export const AudioVideoOverlay = ({
     
     // Frame rate limiting: target 60fps (16.67ms per frame)
     if (currentTime - lastRenderTime.current < 16.67) {
-      animationRef.current = requestAnimationFrame(render);
+      animationRef.current = requestAnimationFrame((nextTime) => renderRef.current(nextTime));
       return;
     }
     lastRenderTime.current = currentTime;
@@ -331,13 +330,15 @@ export const AudioVideoOverlay = ({
       drawGroovieEffects(ctx, canvas);
     }
     
-    animationRef.current = requestAnimationFrame(render);
-  }, [isEnabled, style.textAnimation, frequencies, intensity, drawBeachEffects, drawGroovieEffects, drawMetalEffects]);
+    animationRef.current = requestAnimationFrame((nextTime) => renderRef.current(nextTime));
+  };
+
+  renderRef.current = render;
 
   // Start/stop animation loop
   useEffect(() => {
     if (isEnabled) {
-      animationRef.current = requestAnimationFrame(render);
+      animationRef.current = requestAnimationFrame((nextTime) => renderRef.current(nextTime));
     } else {
       if (animationRef.current) {
         cancelAnimationFrame(animationRef.current);
@@ -349,7 +350,7 @@ export const AudioVideoOverlay = ({
         cancelAnimationFrame(animationRef.current);
       }
     };
-  }, [isEnabled, render]);
+  }, [isEnabled]);
 
   if (!isEnabled) return null;
 

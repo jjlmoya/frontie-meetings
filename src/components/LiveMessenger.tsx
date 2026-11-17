@@ -1,12 +1,28 @@
 'use client';
 
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, useCallback } from 'react';
 
 export const LiveMessenger = () => {
   const [displayedMessage, setDisplayedMessage] = useState<string>('');
   const [isVisible, setIsVisible] = useState(false);
+  const isVisibleRef = useRef(false);
   const inputRef = useRef<HTMLInputElement>(null);
   const timeoutRef = useRef<NodeJS.Timeout | null>(null);
+
+  const showMessage = useCallback((message: string) => {
+    if (timeoutRef.current) {
+      clearTimeout(timeoutRef.current);
+    }
+
+    setDisplayedMessage(message);
+    isVisibleRef.current = true;
+    setIsVisible(true);
+    if (inputRef.current) inputRef.current.value = '';
+    timeoutRef.current = setTimeout(() => {
+      isVisibleRef.current = false;
+      setIsVisible(false);
+    }, 2500);
+  }, []);
 
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
@@ -22,7 +38,8 @@ export const LiveMessenger = () => {
       
       // Si empiezas a escribir, solo borra el mensaje visual
       if (e.key.length === 1 || e.key === 'Backspace' || e.key === 'Space') {
-        if (isVisible) {
+        if (isVisibleRef.current) {
+          isVisibleRef.current = false;
           setIsVisible(false);
           if (timeoutRef.current) {
             clearTimeout(timeoutRef.current);
@@ -41,27 +58,7 @@ export const LiveMessenger = () => {
         clearTimeout(timeoutRef.current);
       }
     };
-  }, []);
-
-  const showMessage = (message: string) => {
-    // Limpiar timeout anterior si existe
-    if (timeoutRef.current) {
-      clearTimeout(timeoutRef.current);
-    }
-
-    setDisplayedMessage(message);
-    setIsVisible(true);
-    
-    // Limpiar el input después de mostrar el mensaje
-    if (inputRef.current) {
-      inputRef.current.value = '';
-    }
-
-    // Auto-hide después de 2.5 segundos
-    timeoutRef.current = setTimeout(() => {
-      setIsVisible(false);
-    }, 2500);
-  };
+  }, [showMessage]);
 
   const handleInputChange = () => {
     // Ya no necesitamos esto aquí, se maneja en keydown

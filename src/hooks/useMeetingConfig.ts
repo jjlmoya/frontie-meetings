@@ -14,9 +14,9 @@ export const useMeetingConfig = () => {
   useEffect(() => {
     let isMounted = true;
 
-    const loadConfig = async () => {
+    const loadConfig = async (showLoading = false) => {
       try {
-        setLoading(true);
+        if (showLoading) setLoading(true);
         setError(null);
         
         const currentConfig = await meetingService.getCurrentMeetingConfig(queryConfig || undefined);
@@ -24,8 +24,8 @@ export const useMeetingConfig = () => {
         if (isMounted) {
           setConfig(currentConfig);
           
-          if (currentConfig) {
-            await meetingService.preloadCurrentAssets();
+          if (currentConfig && currentConfig.id !== 'medieval' && currentConfig.id !== 'campfire') {
+            await meetingService.preloadCurrentAssets(currentConfig);
           }
         }
       } catch (err) {
@@ -39,7 +39,7 @@ export const useMeetingConfig = () => {
       }
     };
 
-    loadConfig();
+    loadConfig(true);
 
     const interval = setInterval(loadConfig, 60000);
 
@@ -57,8 +57,8 @@ export const useMeetingConfig = () => {
       const currentConfig = await meetingService.getCurrentMeetingConfig(queryConfig || undefined);
       setConfig(currentConfig);
       
-      if (currentConfig) {
-        await meetingService.preloadCurrentAssets();
+      if (currentConfig && currentConfig.id !== 'medieval' && currentConfig.id !== 'campfire') {
+        await meetingService.preloadCurrentAssets(currentConfig);
       }
     } catch (err) {
       setError(err instanceof Error ? err : new Error('Unknown error occurred'));

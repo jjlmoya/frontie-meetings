@@ -33,9 +33,9 @@ export class MeetingService implements IMeetingService {
     }
   }
 
-  public async preloadCurrentAssets(): Promise<void> {
+  public async preloadCurrentAssets(forcedConfig?: MeetingConfig): Promise<void> {
     try {
-      const config = await this.getCurrentMeetingConfig();
+      const config = forcedConfig ?? await this.getCurrentMeetingConfig();
       if (!config) return;
 
       await this.assetService.preloadAssets(config.assets);
@@ -64,11 +64,11 @@ export class MeetingService implements IMeetingService {
   }
 
   public async validateAssets(config: MeetingConfig): Promise<{
-    video: boolean;
+    video: boolean | null;
     audio: boolean;
   }> {
     const results = await Promise.allSettled([
-      this.assetService.isVideoAvailable(config.assets.video),
+      config.assets.video ? this.assetService.isVideoAvailable(config.assets.video) : Promise.resolve(null),
       this.validateAudioUrl(config.assets.audio),
     ]);
 

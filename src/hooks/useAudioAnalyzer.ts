@@ -86,30 +86,6 @@ export const useAudioAnalyzer = (audioUrl: string, initialVolume: number = 0.2) 
     animationFrameRef.current = requestAnimationFrame(updateAudioData);
   }, []);
 
-  const fadeIn = useCallback((targetVolume: number, duration: number = 2000) => {
-    if (!audioRef.current || fadeIntervalRef.current) return;
-
-    const steps = 20;
-    const stepDuration = duration / steps;
-    const volumeStep = targetVolume / steps;
-    let currentStep = 0;
-
-    fadeIntervalRef.current = setInterval(() => {
-      if (!audioRef.current) return;
-
-      currentStep++;
-      const newVolume = Math.min(volumeStep * currentStep, targetVolume);
-      audioRef.current.volume = newVolume;
-
-      if (currentStep >= steps) {
-        if (fadeIntervalRef.current) {
-          clearInterval(fadeIntervalRef.current);
-          fadeIntervalRef.current = null;
-        }
-      }
-    }, stepDuration);
-  }, []);
-
   const fadeOut = useCallback((duration: number = 1500) => {
     if (!audioRef.current || fadeIntervalRef.current) return;
 
