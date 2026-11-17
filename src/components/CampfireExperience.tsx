@@ -388,9 +388,6 @@ export function CampfireExperience() {
         <span className={styles.shootingStar} />
         <Image className={`${styles.airplane} ${styles.airplane1}`} src={`${ART}scene/distant-plane.webp`} width={844} height={276} sizes="112px" style={{ height: 'auto' }} unoptimized alt="" />
         <Image className={`${styles.airplane} ${styles.airplane2}`} src={`${ART}scene/distant-plane.webp`} width={844} height={276} sizes="100px" style={{ height: 'auto' }} unoptimized alt="" />
-        <Image className={`${styles.fallingLeaf} ${styles.fallingLeaf1}`} src={`${ART}scene/falling-leaf-1.webp`} width={374} height={377} sizes="40px" style={{ height: 'auto' }} unoptimized alt="" />
-        <Image className={`${styles.fallingLeaf} ${styles.fallingLeaf2}`} src={`${ART}scene/falling-leaf-2.webp`} width={699} height={583} sizes="40px" style={{ height: 'auto' }} unoptimized alt="" />
-        <Image className={`${styles.fallingLeaf} ${styles.fallingLeaf3}`} src={`${ART}scene/falling-leaf-3.webp`} width={580} height={327} sizes="35px" style={{ height: 'auto' }} unoptimized alt="" />
         <Image className={`${styles.groundProp} ${styles.skull}`} src={`${ART}scene/raven-skull.webp`} width={594} height={351} sizes="min(7vw, 72px)" unoptimized alt="" />
         <Image className={`${styles.groundProp} ${styles.bramble}`} src={`${ART}scene/bramble-cluster.webp`} width={669} height={377} sizes="min(13vw, 125px)" unoptimized alt="" />
         <Image className={`${styles.groundProp} ${styles.spentCandle}`} src={`${ART}scene/spent-candle.webp`} width={642} height={313} sizes="min(5vw, 48px)" unoptimized alt="" />
@@ -398,6 +395,11 @@ export function CampfireExperience() {
 
       <Image className={styles.midgroundTrees} src={`${ART}scene/midground-treeline.webp`} width={1672} height={941} sizes="100vw" unoptimized priority alt="" />
       <Image className={styles.foregroundTrees} src={`${ART}scene/foreground-tree-canopies.webp`} width={1672} height={941} sizes="100vw" unoptimized priority alt="" />
+      <div className={styles.foregroundLeaves} aria-hidden="true">
+        <Image className={`${styles.fallingLeaf} ${styles.fallingLeaf1}`} src={`${ART}scene/falling-leaf-1.webp`} width={374} height={377} sizes="40px" style={{ height: 'auto' }} unoptimized alt="" />
+        <Image className={`${styles.fallingLeaf} ${styles.fallingLeaf2}`} src={`${ART}scene/falling-leaf-2.webp`} width={699} height={583} sizes="40px" style={{ height: 'auto' }} unoptimized alt="" />
+        <Image className={`${styles.fallingLeaf} ${styles.fallingLeaf3}`} src={`${ART}scene/falling-leaf-3.webp`} width={580} height={327} sizes="35px" style={{ height: 'auto' }} unoptimized alt="" />
+      </div>
 
       {activeLine && <div key={`${activeLine.start}-${activeLine.text}`} className={styles.lyric} aria-live="polite" aria-label="Letra de la canción">
         <span className={styles.lyricText}>{renderLyric(activeLine.text, lyricBeat)}</span>

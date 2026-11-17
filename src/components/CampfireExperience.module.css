@@ -202,6 +202,14 @@
 .midgroundTrees { z-index: 3; }
 .foregroundTrees { z-index: 4; }
 
+.foregroundLeaves {
+  position: absolute;
+  z-index: 4;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+
 .groundProp {
   position: absolute;
   height: auto;
@@ -288,7 +296,7 @@
 
 .fallingLeaf {
   position: absolute;
-  z-index: 2;
+  z-index: 1;
   top: 8%;
   height: auto;
   opacity: 0;
