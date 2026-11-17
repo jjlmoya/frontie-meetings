@@ -255,7 +255,8 @@
   filter: drop-shadow(0 0 4px rgba(255, 225, 175, .65));
   transform: rotate(24deg);
   transform-origin: right center;
-  animation: rare-shooting-star 96s linear -51s infinite;
+  /* Let the first pass happen shortly after opening the scene, then keep it rare. */
+  animation: rare-shooting-star 96s linear -5.5s infinite;
 }
 
 .shootingStar::after {
