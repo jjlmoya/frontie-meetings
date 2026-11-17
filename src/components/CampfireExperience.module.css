@@ -81,6 +81,20 @@
   animation: lyric-settle-in 220ms ease-out both;
 }
 
+.translationText {
+  display: block;
+  margin-top: clamp(2px, .45vh, 6px);
+  color: #b8b2a8;
+  font-family: Inter, system-ui, sans-serif;
+  font-size: clamp(1rem, 1.55vw, 1.4rem);
+  font-weight: 600;
+  line-height: 1.2;
+  letter-spacing: .015em;
+  -webkit-text-stroke: 0;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, .98), 0 6px 14px rgba(0, 0, 0, .68);
+  animation: lyric-settle-in 280ms ease-out both;
+}
+
 .lyricWord {
   display: inline-block;
   position: relative;
@@ -579,6 +593,6 @@
 @media (prefers-reduced-motion: reduce) {
   .stars,.airplane,.fallingLeaf,.shootingStar,.constellation { animation: none; }
   .screamerFlash { animation-duration: .01ms; animation-iteration-count: 1; }
-  .lyricText { animation: none; }
+  .lyricText,.translationText { animation: none; }
   .lyricWord { transform: none !important; transition: none; }
 }

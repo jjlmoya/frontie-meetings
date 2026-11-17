@@ -5,7 +5,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import type { CSSProperties, PointerEvent as ReactPointerEvent } from 'react';
 import styles from './CampfireExperience.module.css';
 
-type LyricLine = { start: number; end: number; text: string; event?: 'maria' | 'xavi'; appearanceAt?: number };
+type LyricLine = { start: number; end: number; text: string; translation?: string; event?: 'maria' | 'xavi'; appearanceAt?: number; appearanceEnd?: number };
 type LyricsFile = { lines: LyricLine[] };
 type CueFile = { duration: number; sampleRateHz: number; tracks: Record<string, number[]> };
 type MouthState = { open: boolean; changedAt: number; belowThresholdSince: number | null; smoothedVocal: number; peakSinceOpen: number; lastUpdateTime: number | null; lastCueIndex: number | null };
@@ -56,8 +56,10 @@ const hauntedWords = new Set([
   'front-line', 'request changes', 'oscuridad', 'hostil', 'mal', 'sangre',
   'ci checks rojos', 'breaking change', 'sin avisar', 'build ha muerto', 'revert',
   'a salvo', 'maldita', 'fatal', 'xavi', 'maría', 'release', 'pr',
+  'fire', 'afraid', 'fear', 'shadows', 'betrayal', 'chills', 'dark', 'darkness', 'no conscience',
+  'souls', 'evil', 'hostile', 'blood', 'no mercy', 'dead', 'cursed', 'omen', 'safe', 'rejected',
 ]);
-const hauntedWordPattern = /((?:sin ningún control|build ha muerto|ci checks rojos|breaking change|request changes|no puede ser|escalofríos|inconsciente|front-line|jest\.mock|sin alma|sin avisar|producción|oscuridad|traición|sangre|sombras|maldita|hostil|fatal|temor|terror|revert|release|fuego|a salvo|xavi|maría|\bpr\b|\bmal\b|a+h{2,}|n[oó]{3,}))/gi;
+const hauntedWordPattern = /((?:sin ningún control|build ha muerto|ci checks rojos|breaking change|request changes|no puede ser|no conscience|no mercy|escalofríos|inconsciente|front-line|jest\.mock|sin alma|sin avisar|producción|oscuridad|traición|sangre|sombras|maldita|hostile|hostil|fatal|temor|terror|revert|release|fuego|a salvo|darkness|betrayal|shadows|rejected|cursed|afraid|chills|souls|blood|evil|dead|omen|safe|dark|fire|fear|xavi|maría|\bpr\b|\bmal\b|a+h{2,}|n[oó]{3,}))/gi;
 
 function renderLyric(text: string, beat: number) {
   let wordIndex = 0;
@@ -141,7 +143,7 @@ export function CampfireExperience() {
   }, []);
 
   const handleSceneGesture = useCallback((event: ReactPointerEvent<HTMLElement>) => {
-    if ((event.target as HTMLElement).closest('button,input')) return;
+    if ((event.target as HTMLElement).closest('button')) return;
     if (!startedRef.current && !intentionalPauseRef.current) void play();
   }, [play]);
 
@@ -281,7 +283,7 @@ export function CampfireExperience() {
   const drums = cueAt(cues, 'drums', time);
   const pulse = Math.max(guitar, drums * 0.72);
   const previousPulse = Math.max(cueAt(cues, 'guitar', time - 0.08), cueAt(cues, 'drums', time - 0.08) * 0.72);
-  const lyricBeat = Math.min(1, Math.max(0, pulse * 0.22 + (pulse - previousPulse) * 2.1));
+  const lyricBeat = Math.min(1, Math.max(0, pulse * 0.9 + (pulse - previousPulse)));
   const motionScale = prefersReducedMotion ? 0.35 : 1;
   const scenePulse = pulse * motionScale;
   const chorusMotion = Math.max(sectionEnvelope(time, 65.36, 80.46), sectionEnvelope(time, 126.38, 141.8));
@@ -295,10 +297,10 @@ export function CampfireExperience() {
     phraseAccent(time, 165.5, 171.6),
   );
   const screamJolt = Math.max(phraseAccent(time, 182, 184), phraseAccent(time, 191, 193));
-  const hauntingLine = lyrics.find((line) => line.event && line.appearanceAt !== undefined && time >= line.appearanceAt && time < line.end + (line.event === 'xavi' ? 1.5 : 0.3));
+  const hauntingLine = lyrics.find((line) => line.event && line.appearanceAt !== undefined && time >= line.appearanceAt && time < (line.appearanceEnd ?? line.end + (line.event === 'xavi' ? 1.5 : 0.3)));
   const haunting = hauntingLine?.event ?? '';
   const hauntingAge = hauntingLine?.appearanceAt === undefined ? 0 : time - hauntingLine.appearanceAt;
-  const hauntingDuration = hauntingLine?.appearanceAt === undefined ? 0 : hauntingLine.end + (hauntingLine.event === 'xavi' ? 1.5 : 0.3) - hauntingLine.appearanceAt;
+  const hauntingDuration = hauntingLine?.appearanceAt === undefined ? 0 : (hauntingLine.appearanceEnd ?? hauntingLine.end + (hauntingLine.event === 'xavi' ? 1.5 : 0.3)) - hauntingLine.appearanceAt;
   const hauntingOpacity = haunting && hauntingAge > hauntingDuration - 0.18 ? Math.max(0, (hauntingDuration - hauntingAge) / 0.18) : haunting ? 1 : 0;
   const hauntingScale = haunting && !prefersReducedMotion && hauntingAge < 0.12 ? 1.1 - hauntingAge * 0.83 : 1;
   const storytellingMotion = Math.max(
@@ -401,8 +403,9 @@ export function CampfireExperience() {
         <Image className={`${styles.fallingLeaf} ${styles.fallingLeaf3}`} src={`${ART}scene/falling-leaf-3.webp`} width={580} height={327} sizes="35px" style={{ height: 'auto' }} unoptimized alt="" />
       </div>
 
-      {activeLine && <div key={`${activeLine.start}-${activeLine.text}`} className={styles.lyric} aria-live="polite" aria-label="Letra de la canción">
+      {activeLine && <div key={`${activeLine.start}-${activeLine.text}`} className={styles.lyric} aria-live="polite" aria-label="Letra y traducción de la canción">
         <span className={styles.lyricText}>{renderLyric(activeLine.text, lyricBeat)}</span>
+        {activeLine.translation && <span lang="en" className={styles.translationText}>{renderLyric(activeLine.translation, lyricBeat * 0.72)}</span>}
       </div>}
 
       <div className={styles.puppet} role="img" style={{ transform: `translateX(calc(-50% + ${bodySway}px))` }} aria-label="Frontie, juglar anciano cantando junto a la hoguera">
