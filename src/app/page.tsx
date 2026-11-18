@@ -14,6 +14,7 @@ import { useMeetingConfig } from '@/hooks/useMeetingConfig';
 import { useAudioAnalyzer } from '@/hooks/useAudioAnalyzer';
 import { MedievalExperience } from '@/components/MedievalExperience';
 import { CampfireExperience } from '@/components/CampfireExperience';
+import { WannabeLyricsOverlay } from '@/components/WannabeLyricsOverlay';
 
 export default function FantasiaPage() {
   const { config, loading, error } = useMeetingConfig();
@@ -22,11 +23,13 @@ export default function FantasiaPage() {
   const [userInteracted, setUserInteracted] = useState(false);
   const [effectsEnabled, setEffectsEnabled] = useState(true);
   const [effectsIntensity, setEffectsIntensity] = useState(0.8);
+  const [videoTime, setVideoTime] = useState(0);
+  const isWannabe = config?.id === 'wannabe';
 
   // Detectar cualquier interacción del usuario y usar el hook correctamente
   useEffect(() => {
     const handleInteraction = async () => {
-      if (!userInteracted && config && play && config.id !== 'medieval' && config.id !== 'campfire') {
+      if (!userInteracted && config && play && config.id !== 'medieval' && config.id !== 'campfire' && !isWannabe) {
         setUserInteracted(true);
         
         // Usar el hook de audio que tiene el analizador
@@ -47,7 +50,7 @@ export default function FantasiaPage() {
       document.removeEventListener('click', handleInteraction);
       document.removeEventListener('keydown', handleInteraction);
     };
-  }, [config, userInteracted, play]);
+  }, [config, userInteracted, play, isWannabe]);
 
   // Refresh cuando cambie la query
   useEffect(() => {
@@ -93,36 +96,41 @@ export default function FantasiaPage() {
         assets={config.assets}
         style={config.style}
         audioData={audioData}
-        effectsEnabled={effectsEnabled}
+        effectsEnabled={!isWannabe && effectsEnabled}
         effectsIntensity={effectsIntensity}
+        onVideoTimeUpdate={isWannabe ? setVideoTime : undefined}
+        preserveFrame={isWannabe}
+        embeddedAudio={isWannabe ? { volume: currentVolume, onEnabled: () => setUserInteracted(true) } : undefined}
       />
 
+      {isWannabe && <WannabeLyricsOverlay time={videoTime} />}
+
       {/* High-performance WebGL effects layer - ABOVE VIDEO */}
-      <WebGLEffects
+      {!isWannabe && <WebGLEffects
         style={config.style}
         audioData={audioData}
         isEnabled={effectsEnabled}
         intensity={effectsIntensity}
-      />
+      />}
       
-      <StartingSoonText 
+      {!isWannabe && <StartingSoonText
         style={config.style}
         audioData={audioData}
-      />
+      />}
 
       <VolumeController 
         volume={currentVolume}
         onVolumeChange={setVolume}
       />
 
-      <WatermarkOverlay audioData={audioData} />
+      {!isWannabe && <WatermarkOverlay audioData={audioData} />}
 
-      <EffectsController 
+      {!isWannabe && <EffectsController
         isEnabled={effectsEnabled}
         intensity={effectsIntensity}
         onToggle={setEffectsEnabled}
         onIntensityChange={setEffectsIntensity}
-      />
+      />}
 
       <PerformanceMonitor 
         position="top-right"

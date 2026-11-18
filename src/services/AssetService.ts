@@ -5,7 +5,8 @@ export class AssetService implements IAssetService {
   private readonly imageCache = new Map<string, string>();
 
   public async preloadAssets(assets: MediaAssets): Promise<void> {
-    const preloadPromises: Promise<void>[] = [this.preloadAudio(assets.audio)];
+    const preloadPromises: Promise<void>[] = [];
+    if (assets.audio) preloadPromises.push(this.preloadAudio(assets.audio));
     if (assets.video) preloadPromises.push(this.preloadVideo(assets.video));
 
     await Promise.allSettled(preloadPromises);

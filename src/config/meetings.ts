@@ -34,6 +34,23 @@ export const MEETINGS_CONFIG: readonly MeetingConfig[] = [
     },
   },
   {
+    id: 'wannabe',
+    name: 'Wannabe · Front-Line Cosplay',
+    type: 'creative',
+    schedule: [],
+    assets: {
+      video: '/assets/wannabe/cosplay-preview.mp4?v=28',
+      audio: '',
+    },
+    style: {
+      fontFamily: 'Georgia, serif',
+      fallbackFont: 'Georgia, serif',
+      primaryColor: '#f5d28d',
+      backgroundColor: '#100a1a',
+      textAnimation: 'funky-chaos',
+    },
+  },
+  {
     id: 'beach',
     name: 'Beach Vibes Daily',
     type: 'daily',
