@@ -1,0 +1,30 @@
+export type JazzLyricLine = { start: number; end: number; text: string };
+
+// Phrase boundaries aligned to word timestamps from the selected lead-vocal stem.
+export const JAZZ_LYRICS: readonly JazzLyricLine[] = [
+  { start: 0, end: 3.46, text: 'The room is almost ready...' },
+  { start: 4.04, end: 6.6, text: 'Frontie found the downbeat.' },
+  { start: 7.54, end: 10.24, text: 'Somewhere a team has a page to ship,' },
+  { start: 10.74, end: 13.4, text: 'A shared library, one loose thread to clip.' },
+  { start: 14.54, end: 16.76, text: 'We bring the map when the routes run deep,' },
+  { start: 17.04, end: 20.24, text: 'Keep the little things moving while the whole stack sleeps.' },
+  { start: 21.04, end: 23.5, text: 'One light blinks, then another comes through,' },
+  { start: 23.96, end: 26.94, text: 'Front-Line on the line, making room for you.' },
+  { start: 26.94, end: 30.3, text: 'While we wait, let the blue lights sway,' },
+  { start: 30.78, end: 33.76, text: 'Frontie keeps time till the call comes our way.' },
+  { start: 34.36, end: 36.98, text: 'M-F-E, one more step in flight,' },
+  { start: 37.48, end: 40.44, text: "Release that rhythm, we'll get it right." },
+  { start: 40.44, end: 43.94, text: 'While we wait, keep the whole thing light—' },
+  { start: 44.46, end: 47.24, text: "Front-Line's here, and the groove's all right." },
+  { start: 47.94, end: 49.72, text: "We're not in the spotlight's glow," },
+  { start: 50.64, end: 53.94, text: "We're the steady little signal behind the show." },
+  { start: 53.94, end: 55.94, text: 'A cat at the console, a chord in the air,' },
+  { start: 56.18, end: 59.2, text: 'When your team needs a hand,' },
+  { start: 59.48, end: 60.7, text: 'Front-Line is there.' },
+  { start: 61.8, end: 64.12, text: 'While we wait, let the blue lights sway,' },
+  { start: 64.64, end: 67.64, text: 'Frontie keeps time till the call comes our way.' },
+  { start: 68.48, end: 70.84, text: 'M-F-E, one more step in flight,' },
+  { start: 71.4, end: 75.64, text: "Release that rhythm, we'll get it right." },
+  { start: 75.64, end: 77.4, text: 'While we wait, keep the whole thing light—' },
+  { start: 77.56, end: 82.1, text: "Front-Line's here, and the groove's all right." },
+];

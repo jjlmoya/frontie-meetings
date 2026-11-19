@@ -5,6 +5,7 @@ import { MEETINGS_CONFIG } from '@/config/meetings';
 import styles from './SongSelector.module.css';
 
 const titleFontById: Record<string, string> = {
+  jazz: 'Didot, Bodoni MT, Georgia, serif',
   medieval: 'var(--font-righteous)',
   campfire: 'Georgia, serif',
   wannabe: 'var(--font-audiowide)',
@@ -46,7 +47,7 @@ export function SongSelector() {
       <section className={styles.grid} aria-label="Songs">
         {MEETINGS_CONFIG.map((song, index) => (
           <Link
-            className={`${styles.card} ${song.id === 'wannabe' ? styles.wannabeCard : ''}`}
+            className={`${styles.card} ${song.id === 'wannabe' ? styles.wannabeCard : ''} ${song.id === 'jazz' ? styles.jazzCard : ''}`}
             href={`/?config=${encodeURIComponent(song.id)}`}
             key={song.id}
             style={{
@@ -58,7 +59,7 @@ export function SongSelector() {
             <div className={styles.art}>
               <Image
                 className={styles.coverImage}
-                src={`/assets/covers-art/${song.id}.webp`}
+                src={song.id === 'jazz' ? '/assets/jazz/layers/jazz-banner.webp' : `/assets/covers-art/${song.id}.webp`}
                 alt=""
                 fill
                 sizes="(max-width: 720px) 94vw, (max-width: 1200px) 46vw, 44vw"

@@ -243,6 +243,8 @@
 }
 
 .wannabeCard .coverImage { object-position: center 48%; }
+.jazzCard .coverImage { filter: saturate(.82) contrast(1.12) brightness(.9); }
+.jazzCard:hover .coverImage { filter: saturate(.94) contrast(1.1) brightness(.98); }
 .wannabeCard .artShade {
   background: linear-gradient(90deg, rgba(19, 8, 21, .9), rgba(19, 8, 21, .65) 28%, rgba(19, 8, 21, .18) 62%, transparent), linear-gradient(0deg, rgba(10, 7, 12, .44), transparent 60%);
 }

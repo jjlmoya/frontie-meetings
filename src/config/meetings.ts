@@ -2,6 +2,22 @@ import type { MeetingConfig } from '@/types';
 
 export const MEETINGS_CONFIG: readonly MeetingConfig[] = [
   {
+    id: 'jazz',
+    name: 'While We Wait',
+    type: 'creative',
+    schedule: [],
+    assets: {
+      audio: '/assets/jazz/audio/while-we-wait.mp3',
+    },
+    style: {
+      fontFamily: 'Didot, Bodoni MT, Georgia, serif',
+      fallbackFont: 'Georgia, serif',
+      primaryColor: '#e5bd78',
+      backgroundColor: '#111522',
+      textAnimation: 'funky-chaos',
+    },
+  },
+  {
     id: 'medieval',
     name: 'Frontie the Feline King',
     type: 'creative',
