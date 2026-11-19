@@ -58,7 +58,7 @@ export function SongSelector() {
             <div className={styles.art}>
               <Image
                 className={styles.coverImage}
-                src={`/assets/covers-art/${song.id === 'medieval' ? 'frontie-creepypasta' : song.id}.webp`}
+                src={`/assets/covers-art/${song.id}.webp`}
                 alt=""
                 fill
                 sizes="(max-width: 720px) 94vw, (max-width: 1200px) 46vw, 44vw"
@@ -70,6 +70,11 @@ export function SongSelector() {
           </Link>
         ))}
       </section>
+
+      <footer className={styles.footer} aria-hidden="true">
+        <span className={styles.footerTrace} />
+        <span className={styles.footerBurn} />
+      </footer>
     </main>
   );
 }
