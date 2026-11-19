@@ -27,8 +27,26 @@ export function SongSelector() {
     <main className={styles.page}>
       <header className={styles.header}>
         <a className={styles.brand} href="/" aria-label="Front-Line home">FRONT-LINE</a>
-        <h1 className={styles.heading}>Choose a song</h1>
       </header>
+
+      <section className={styles.hero}>
+        <h1 className={styles.heading} data-text="Choose a song">Choose a song</h1>
+        <div className={styles.threads} aria-hidden="true">
+          <span />
+          <span />
+          <span />
+          <span />
+        </div>
+        <Image
+          className={styles.overseer}
+          src="/assets/covers-art/frontie-malevolent.webp"
+          alt=""
+          width={1254}
+          height={1254}
+          priority
+          aria-hidden="true"
+        />
+      </section>
 
       <section className={styles.grid} aria-label="Songs">
         {MEETINGS_CONFIG.map((song, index) => (
