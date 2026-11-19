@@ -1,0 +1,144 @@
+.page {
+  min-height: 100dvh;
+  padding: 0 clamp(18px, 5vw, 72px) 42px;
+  color: #f2eee5;
+  background:
+    radial-gradient(ellipse at 50% -40%, rgba(173, 128, 79, .13), transparent 62%),
+    #11120f;
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+.header {
+  display: flex;
+  min-height: 67px;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  border-bottom: 1px solid rgba(242, 238, 229, .12);
+}
+
+.brand {
+  color: #eee9df;
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: .22em;
+  text-decoration: none;
+}
+
+.heading {
+  margin: 0;
+  color: #eee9df;
+  font: 400 clamp(22px, 2.7vw, 31px)/1 Georgia, 'Times New Roman', serif;
+  letter-spacing: -.035em;
+}
+
+.grid {
+  display: grid;
+  width: min(100%, 1380px);
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: clamp(11px, 1.35vw, 19px);
+  margin: 22px auto 0;
+}
+
+.card {
+  display: block;
+  min-width: 0;
+  overflow: hidden;
+  border: 1px solid rgba(242, 238, 229, .12);
+  border-radius: 8px;
+  background: #181814;
+  text-decoration: none;
+  transition: border-color .3s ease, transform .35s cubic-bezier(.2,.7,.2,1), box-shadow .35s ease;
+}
+
+.card:hover,
+.card:focus-visible {
+  transform: translateY(-3px);
+  border-color: color-mix(in srgb, var(--cover-accent) 62%, #eee3d2 16%);
+  box-shadow: 0 14px 32px rgba(0, 0, 0, .32), 0 0 25px color-mix(in srgb, var(--cover-accent) 13%, transparent);
+  outline: none;
+}
+
+.art {
+  position: relative;
+  isolation: isolate;
+  aspect-ratio: 2.55 / 1;
+  overflow: hidden;
+  background: linear-gradient(135deg, color-mix(in srgb, var(--cover-accent) 36%, #171512), #10110f 82%);
+}
+
+.coverImage {
+  position: absolute;
+  z-index: -2;
+  object-fit: cover;
+  object-position: center;
+  filter: saturate(.96) contrast(1.035);
+  transition: transform .8s cubic-bezier(.2,.65,.25,1), filter .4s ease;
+}
+
+.card:hover .coverImage {
+  transform: scale(1.035);
+  filter: saturate(1.05) contrast(1.05);
+}
+
+.artShade {
+  position: absolute;
+  z-index: -1;
+  inset: 0;
+  background:
+    linear-gradient(90deg, rgba(10, 10, 9, .86), rgba(10, 10, 9, .63) 28%, rgba(10, 10, 9, .17) 55%, transparent 100%),
+    linear-gradient(0deg, rgba(10, 10, 9, .29), transparent 54%);
+  pointer-events: none;
+}
+
+.songName {
+  position: absolute;
+  right: 32%;
+  bottom: clamp(15px, 2vw, 25px);
+  left: clamp(16px, 2.2vw, 29px);
+  color: color-mix(in srgb, var(--cover-accent) 22%, #fff9ef);
+  font-family: var(--title-font), Georgia, serif;
+  font-size: clamp(19px, 2.4vw, 33px);
+  font-weight: 400;
+  line-height: 1.04;
+  letter-spacing: -.035em;
+  text-wrap: balance;
+  text-shadow: 0 2px 15px rgba(0, 0, 0, .65), 0 1px 2px rgba(0, 0, 0, .85);
+  pointer-events: none;
+}
+
+.art::after {
+  position: absolute;
+  inset: 0;
+  border-left: 2px solid color-mix(in srgb, var(--cover-accent) 70%, #e9d8bd 15%);
+  content: '';
+  opacity: .8;
+  pointer-events: none;
+}
+
+.wannabeCard .coverImage { object-position: center 48%; }
+.wannabeCard .artShade {
+  background: linear-gradient(90deg, rgba(23, 9, 31, .88), rgba(23, 9, 31, .64) 28%, rgba(23, 9, 31, .13) 62%, transparent), linear-gradient(0deg, rgba(14, 7, 21, .37), transparent 60%);
+}
+
+@media (min-width: 1550px) {
+  .grid { gap: 19px; margin-top: 26px; }
+  .art { aspect-ratio: 2.7 / 1; }
+}
+
+@media (max-width: 720px) {
+  .page { padding: 0 14px 25px; }
+  .header { min-height: 59px; }
+  .grid { grid-template-columns: 1fr; gap: 11px; margin-top: 14px; }
+  .art { aspect-ratio: 2.3 / 1; }
+  .songName { right: 28%; bottom: 17px; left: 16px; font-size: clamp(22px, 5.8vw, 31px); }
+}
+
+@media (max-width: 390px) {
+  .art { aspect-ratio: 1.95 / 1; }
+  .songName { right: 26%; font-size: 23px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .card, .coverImage { transition: none; }
+}

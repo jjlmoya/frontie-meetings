@@ -15,6 +15,7 @@ import { useAudioAnalyzer } from '@/hooks/useAudioAnalyzer';
 import { MedievalExperience } from '@/components/MedievalExperience';
 import { CampfireExperience } from '@/components/CampfireExperience';
 import { WannabeLyricsOverlay } from '@/components/WannabeLyricsOverlay';
+import { SongSelector } from '@/components/SongSelector';
 
 export default function FantasiaPage() {
   const { config, loading, error } = useMeetingConfig();
@@ -74,11 +75,7 @@ export default function FantasiaPage() {
   }
 
   if (!config) {
-    return (
-      <div className="fixed inset-0 flex items-center justify-center bg-gray-900">
-        <div className="text-white text-xl">No meeting configured</div>
-      </div>
-    );
+    return <SongSelector />;
   }
 
   if (config.id === 'medieval') {

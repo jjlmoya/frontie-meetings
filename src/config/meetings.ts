@@ -176,25 +176,6 @@ export const MEETINGS_CONFIG: readonly MeetingConfig[] = [
     },
   },
   {
-    id: 'catch-up',
-    name: 'Team Catch-up',
-    type: 'catch-up',
-    schedule: [
-      { dayOfWeek: 2, startHour: 14, endHour: 15, startMinute: 45, endMinute: 30 }, // Tuesday 14:45-15:30
-    ],
-    assets: {
-      video: '/assets/videos/funky.mp4',
-      audio: '/assets/audio/funky.mp3',
-    },
-    style: {
-      fontFamily: 'var(--font-bungee)',
-      fallbackFont: 'Impact, sans-serif',
-      primaryColor: '#FF1493',
-      backgroundColor: '#8A2BE2',
-      textAnimation: 'funky-chaos',
-    },
-  },
-  {
     id: 'funky',
     name: 'Funky Session',
     type: 'creative',

@@ -14,6 +14,16 @@ export const useMeetingConfig = () => {
   useEffect(() => {
     let isMounted = true;
 
+    // Sin ?config= queremos abrir el selector, no elegir Metal por defecto.
+    if (!queryConfig) {
+      setConfig(null);
+      setError(null);
+      setLoading(false);
+      return () => {
+        isMounted = false;
+      };
+    }
+
     const loadConfig = async (showLoading = false) => {
       try {
         if (showLoading) setLoading(true);
@@ -50,6 +60,12 @@ export const useMeetingConfig = () => {
   }, [meetingService, queryConfig]);
 
   const refreshConfig = useCallback(async () => {
+    if (!queryConfig) {
+      setConfig(null);
+      setLoading(false);
+      return;
+    }
+
     try {
       setLoading(true);
       setError(null);
