@@ -1,4 +1,5 @@
 import Image from 'next/image';
+import Link from 'next/link';
 import type { CSSProperties } from 'react';
 import { MEETINGS_CONFIG } from '@/config/meetings';
 import styles from './SongSelector.module.css';
@@ -26,7 +27,7 @@ export function SongSelector() {
   return (
     <main className={styles.page}>
       <header className={styles.header}>
-        <a className={styles.brand} href="/" aria-label="Front-Line home">FRONT-LINE</a>
+        <Link className={styles.brand} href="/" aria-label="Front-Line home">FRONT-LINE</Link>
       </header>
 
       <section className={styles.hero}>
@@ -50,7 +51,7 @@ export function SongSelector() {
 
       <section className={styles.grid} aria-label="Songs">
         {MEETINGS_CONFIG.map((song, index) => (
-          <a
+          <Link
             className={`${styles.card} ${song.id === 'wannabe' ? styles.wannabeCard : ''}`}
             href={`/?config=${encodeURIComponent(song.id)}`}
             key={song.id}
@@ -72,7 +73,7 @@ export function SongSelector() {
               <span className={styles.artShade} />
               <span className={styles.songName}>{song.name.trim()}</span>
             </div>
-          </a>
+          </Link>
         ))}
       </section>
     </main>
