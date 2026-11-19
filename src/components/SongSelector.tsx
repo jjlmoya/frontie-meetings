@@ -32,14 +32,15 @@ export function SongSelector() {
       </header>
 
       <section className={styles.hero}>
-        <h1 className={styles.heading} data-text="Choose a song">Choose a song</h1>
+        <h1 className={styles.heading}>Choose a song</h1>
         <Image
           className={styles.heroArtwork}
-          src="/assets/covers-art/frontie-creepypasta.webp"
+          src="/assets/covers-art/frontie-creepypasta-blink-only.webp"
           alt=""
           fill
           sizes="(max-width: 720px) 100vw, min(100vw, 1380px)"
           priority
+          unoptimized
           aria-hidden="true"
         />
       </section>

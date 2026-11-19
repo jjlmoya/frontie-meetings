@@ -36,10 +36,10 @@
 .performer {
   position: absolute;
   z-index: 0;
-  right: -24vw;
-  bottom: -1.5vh;
+  right: clamp(24px, 3.5vw, 106px);
+  bottom: -5vh;
   width: auto;
-  height: 92vh;
+  height: 90vh;
   max-height: 1100px;
   object-fit: contain;
   pointer-events: none;
