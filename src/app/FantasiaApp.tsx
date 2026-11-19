@@ -1,0 +1,142 @@
+'use client';
+
+import { useEffect, useState } from 'react';
+import { MediaPlayer } from '@/components/MediaPlayer';
+import { StartingSoonText } from '@/components/StartingSoonText';
+import { VolumeController } from '@/components/VolumeController';
+import { WatermarkOverlay } from '@/components/WatermarkOverlay';
+import { InteractionPrompt } from '@/components/InteractionPrompt';
+import { EffectsController } from '@/components/EffectsController';
+import { PerformanceMonitor } from '@/components/PerformanceMonitor';
+import { WebGLEffects } from '@/components/WebGLEffects';
+import { LiveMessenger } from '@/components/LiveMessenger';
+import { useMeetingConfig } from '@/hooks/useMeetingConfig';
+import { useAudioAnalyzer } from '@/hooks/useAudioAnalyzer';
+import { MedievalExperience } from '@/components/MedievalExperience';
+import { CampfireExperience } from '@/components/CampfireExperience';
+import { WannabeLyricsOverlay } from '@/components/WannabeLyricsOverlay';
+import { SongSelector } from '@/components/SongSelector';
+
+export default function FantasiaPage() {
+  const { config, loading, error } = useMeetingConfig();
+  const { audioData, setVolume, currentVolume, play } = useAudioAnalyzer(config?.assets.audio || '', 0.05);
+  const [configKey, setConfigKey] = useState(0);
+  const [userInteracted, setUserInteracted] = useState(false);
+  const [effectsEnabled, setEffectsEnabled] = useState(true);
+  const [effectsIntensity, setEffectsIntensity] = useState(0.8);
+  const [videoTime, setVideoTime] = useState(0);
+  const isWannabe = config?.id === 'wannabe';
+
+  // Detectar cualquier interacción del usuario y usar el hook correctamente
+  useEffect(() => {
+    const handleInteraction = async () => {
+      if (!userInteracted && config && play && config.id !== 'medieval' && config.id !== 'campfire' && !isWannabe) {
+        setUserInteracted(true);
+        
+        // Usar el hook de audio que tiene el analizador
+        try {
+          await play();
+          // Audio started successfully
+        } catch (error) {
+          console.error('Failed to play audio with hook:', error);
+        }
+      }
+    };
+
+    // Solo click por ahora para ser más específico
+    document.addEventListener('click', handleInteraction);
+    document.addEventListener('keydown', handleInteraction);
+
+    return () => {
+      document.removeEventListener('click', handleInteraction);
+      document.removeEventListener('keydown', handleInteraction);
+    };
+  }, [config, userInteracted, play, isWannabe]);
+
+  // Refresh cuando cambie la query
+  useEffect(() => {
+    setConfigKey(prev => prev + 1);
+  }, [config?.id]);
+
+  if (loading) {
+    return (
+      <div className="fixed inset-0 flex items-center justify-center bg-gray-900">
+        <div className="text-white text-xl">Loading FANTASIA...</div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="fixed inset-0 flex items-center justify-center bg-red-900">
+        <div className="text-white text-xl">Error: {error.message}</div>
+      </div>
+    );
+  }
+
+  if (!config) {
+    return <SongSelector />;
+  }
+
+  if (config.id === 'medieval') {
+    return <MedievalExperience />;
+  }
+
+  if (config.id === 'campfire') {
+    return <CampfireExperience />;
+  }
+
+  return (
+    <div className="fixed inset-0 w-full h-full overflow-hidden">
+      <MediaPlayer 
+        key={configKey}
+        assets={config.assets}
+        style={config.style}
+        audioData={audioData}
+        effectsEnabled={!isWannabe && effectsEnabled}
+        effectsIntensity={effectsIntensity}
+        onVideoTimeUpdate={isWannabe ? setVideoTime : undefined}
+        preserveFrame={isWannabe}
+        embeddedAudio={isWannabe ? { volume: currentVolume, onEnabled: () => setUserInteracted(true) } : undefined}
+      />
+
+      {isWannabe && <WannabeLyricsOverlay time={videoTime} />}
+
+      {/* High-performance WebGL effects layer - ABOVE VIDEO */}
+      {!isWannabe && <WebGLEffects
+        style={config.style}
+        audioData={audioData}
+        isEnabled={effectsEnabled}
+        intensity={effectsIntensity}
+      />}
+      
+      {!isWannabe && <StartingSoonText
+        style={config.style}
+        audioData={audioData}
+      />}
+
+      <VolumeController 
+        volume={currentVolume}
+        onVolumeChange={setVolume}
+      />
+
+      {!isWannabe && <WatermarkOverlay audioData={audioData} />}
+
+      {!isWannabe && <EffectsController
+        isEnabled={effectsEnabled}
+        intensity={effectsIntensity}
+        onToggle={setEffectsEnabled}
+        onIntensityChange={setEffectsIntensity}
+      />}
+
+      <PerformanceMonitor 
+        position="top-right"
+        isVisible={false}
+      />
+
+      <InteractionPrompt show={!userInteracted && !!config} />
+
+      <LiveMessenger />
+    </div>
+  );
+}
