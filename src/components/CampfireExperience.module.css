@@ -592,7 +592,8 @@
 
 @media (prefers-reduced-motion: reduce) {
   .stars,.airplane,.fallingLeaf,.shootingStar,.constellation { animation: none; }
-  .screamerFlash { animation-duration: .01ms; animation-iteration-count: 1; }
+  .screamerFlash { animation: none; opacity: 0; }
+  .haunting { transition: none; }
   .lyricText,.translationText { animation: none; }
   .lyricWord { transform: none !important; transition: none; }
 }

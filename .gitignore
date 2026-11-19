@@ -12,6 +12,7 @@
 
 # testing
 /coverage
+/scripts/assets/wannabe/previews/*.mp4
 
 # next.js
 /.next/

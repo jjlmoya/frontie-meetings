@@ -8,7 +8,7 @@ Fuentes y materiales de producción. La página final se servirá con `?config=w
 
 ## Stems y sincronización
 
-Demucs `htdemucs` separó el MP3 en voz, batería, bajo y acompañamiento. Los cuatro WAV duran 173,035 s y están en `stems/htdemucs/wanna-be/`. `timing/animation-cues.json` recoge la intensidad de voz, batería y bajo a 50 Hz.
+Demucs `htdemucs` se usó para analizar voz, batería y bajo. La salida empleada por la web y el montaje está resumida en `timing/animation-cues.json`, con datos a 50 Hz.
 
 `timing/full-lyrics.mjs` contiene la letra aportada por el usuario con las entradas ajustadas sobre el stem de voz. `timing/full-lyrics.vtt` suma los 2 s de portada silenciosa a esas marcas. En `/?config=wannabe`, el MP4 arranca en silencio y en bucle. El primer clic activa el audio del MP4. Los subtítulos usan el tiempo del mismo vídeo y se dibujan en una única capa web.
 

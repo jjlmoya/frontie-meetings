@@ -284,7 +284,7 @@ export function CampfireExperience() {
   const pulse = Math.max(guitar, drums * 0.72);
   const previousPulse = Math.max(cueAt(cues, 'guitar', time - 0.08), cueAt(cues, 'drums', time - 0.08) * 0.72);
   const lyricBeat = Math.min(1, Math.max(0, pulse * 0.9 + (pulse - previousPulse)));
-  const motionScale = prefersReducedMotion ? 0.35 : 1;
+  const motionScale = prefersReducedMotion ? 0 : 1;
   const scenePulse = pulse * motionScale;
   const chorusMotion = Math.max(sectionEnvelope(time, 65.36, 80.46), sectionEnvelope(time, 126.38, 141.8));
   const bridgeMotion = sectionEnvelope(time, 152.72, 173.18);
