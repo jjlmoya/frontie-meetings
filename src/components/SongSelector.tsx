@@ -32,18 +32,12 @@ export function SongSelector() {
 
       <section className={styles.hero}>
         <h1 className={styles.heading} data-text="Choose a song">Choose a song</h1>
-        <div className={styles.threads} aria-hidden="true">
-          <span />
-          <span />
-          <span />
-          <span />
-        </div>
         <Image
-          className={styles.overseer}
-          src="/assets/covers-art/frontie-malevolent.webp"
+          className={styles.heroArtwork}
+          src="/assets/covers-art/frontie-creepypasta.webp"
           alt=""
-          width={1254}
-          height={1254}
+          fill
+          sizes="(max-width: 720px) 100vw, min(100vw, 1380px)"
           priority
           aria-hidden="true"
         />
@@ -64,7 +58,7 @@ export function SongSelector() {
             <div className={styles.art}>
               <Image
                 className={styles.coverImage}
-                src={`/assets/covers-art/${song.id}.webp`}
+                src={`/assets/covers-art/${song.id === 'medieval' ? 'frontie-creepypasta' : song.id}.webp`}
                 alt=""
                 fill
                 sizes="(max-width: 720px) 94vw, (max-width: 1200px) 46vw, 44vw"
