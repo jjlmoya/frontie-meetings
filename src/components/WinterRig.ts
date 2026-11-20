@@ -4,14 +4,32 @@ const RADIANS = Math.PI / 180;
 
 export type RigPart = 'head' | 'hair' | 'whiskerLeft' | 'whiskerRight' | 'body' | 'pawLeft' | 'pawRight';
 
+export function winterEase(from: number, to: number, time: number) {
+  const position = Math.max(0, Math.min(1, (time - from) / (to - from)));
+  return position * position * (3 - 2 * position);
+}
+
 export function freezeAt(time: number) {
-  const position = Math.max(0, Math.min(1, (time - 13) / 178));
-  return .09 + position * position * (3 - 2 * position) * .89;
+  return .09 + winterEase(13, 191, time) * .89;
+}
+
+export function bridgeQuiet(time: number) {
+  return winterEase(134.5, 137, time) * (1 - winterEase(154.4, 156.8, time));
+}
+
+export function finalGust(time: number) {
+  return winterEase(155.65, 157.35, time) * (1 - winterEase(158.1, 162.9, time));
+}
+
+export function frozenStare(time: number) {
+  return winterEase(206.46, 207.55, time);
 }
 
 export function winterRigAt(time: number, moving: boolean) {
   const pulse = Math.sin(time * 1.39 + .8 + Math.sin(time * .43) * 1.35);
-  const force = moving ? Math.max(0, pulse) ** 5 : 0;
+  const force = moving
+    ? Math.max(Math.max(0, pulse) ** 5, finalGust(time) * .92) * (1 - bridgeQuiet(time) * .94) * (1 - frozenStare(time))
+    : 0;
   const strength = force * (.45 + freezeAt(time) * .55);
   const shake = (speed: number, phase: number) => strength * Math.sin(time * speed + phase);
   return {

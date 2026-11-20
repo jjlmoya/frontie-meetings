@@ -5,7 +5,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import type { CSSProperties } from 'react';
 import { WINTER_LYRICS } from '@/data/winterLyrics';
 import { paintWinter, prepareFrost, winterLight } from './WinterAtmosphere';
-import { MOUTH, winterRigAt } from './WinterRig';
+import { MOUTH, frozenStare, winterEase, winterRigAt } from './WinterRig';
 import styles from './WinterExperience.module.css';
 
 type CueFile = { duration: number; sampleRateHz: number; tracks: Record<string, number[]> };
@@ -75,6 +75,7 @@ export function WinterExperience() {
     let lastWeather = 0;
     let previousTime = -1;
     let wasRunning = false;
+    let wrapped = false;
     let reduced = motion.matches;
     let resized = true;
     let aperture = 0;
@@ -134,20 +135,35 @@ export function WinterExperience() {
       aperture += (openness - aperture) * (1 - Math.exp(-elapsed * jawSpeed / 1000));
       breath = moving ? Math.max(aperture * .84, breath * Math.exp(-elapsed / 235)) : 0;
       kick = moving ? Math.max(cues?.tracks.drums?.[sample] ?? 0, kick * Math.exp(-elapsed / 212)) : 0;
+      const length = audio?.duration && Number.isFinite(audio.duration) ? audio.duration : DURATION;
+      if (running && previousTime > length - 2 && time < 1) wrapped = true;
+      if (time > 4) wrapped = false;
       previousTime = time;
 
-      const { storm, freeze } = winterLight(time, kick);
+      const { storm, freeze, quiet, gust } = winterLight(time, kick);
       const rig = winterRigAt(time, moving);
       const shiver = rig.strength;
       const tremor = shiver * Math.sin(time * 44 + Math.sin(time * 9));
       const blinkClock = time + Math.sin(time * .39) * .74;
       const blinkPhase = ((blinkClock + 1.65) % 6.4) / .24;
-      const blink = moving && blinkPhase < 1 ? Math.sin(blinkPhase * Math.PI) : 0;
-      const squint = moving ? Math.max(blink, shiver * .42 + kick * .13) : 0;
+      const stare = frozenStare(time);
+      const blink = moving && blinkPhase < 1
+        ? Math.sin(blinkPhase * Math.PI) * (1 - stare) * (1 - quiet * .85)
+        : 0;
+      const squint = moving ? Math.max(blink, (shiver * .42 + kick * .13) * (1 - stare)) : 0;
+      const windWink = reduced ? 0 : gust * winterEase(156.5, 157.35, time)
+        * (1 - winterEase(157.85, 159.13, time));
+      const closing = winterEase(length - 8.4, length - .75, time);
+      const opening = wrapped ? 1 - winterEase(.06, 3.35, time) : 0;
+      scene.style.setProperty('--whiteout', String(reduced ? 0 : Math.max(closing, opening)));
+      scene.style.setProperty('--still-air', String(quiet));
+      scene.style.setProperty('--gust', String(gust));
       const shape = motion.matches ? Math.round(aperture * 3) / 3 : aperture;
       scene.style.setProperty('--drift', `${moving ? Math.sin(time * .083) * 1.1 : 0}%`);
       scene.style.setProperty('--storm', String(storm));
-      scene.style.setProperty('--sky-drift', `${moving ? Math.sin(time * .051 + .4) * 1.65 : 0}%`);
+      const skyTime = reduced ? 0 : time;
+      scene.style.setProperty('--upper-wind', `${Math.sin(skyTime * .073 + .5) * 9}%`);
+      scene.style.setProperty('--ridge-wind', `${Math.sin(skyTime * .12 - .7) * 12}%`);
       scene.style.setProperty('--freeze', String(freeze));
       scene.style.setProperty('--jaw', String(shape));
       let nextPose: MouthPose = 'rest';
@@ -170,7 +186,8 @@ export function WinterExperience() {
       scene.style.setProperty('--mouth-width', String(.72 + bright * .49 + shape * .19));
       scene.style.setProperty('--tremor', `${tremor * 1.55}px`);
       scene.style.setProperty('--jaw-jitter', `${tremor * 2.15}px`);
-      scene.style.setProperty('--lid-depth', `${squint * 7.2}%`);
+      scene.style.setProperty('--left-lid', `${Math.max(squint, windWink, stare * .31) * 7.2}%`);
+      scene.style.setProperty('--right-lid', `${Math.max(squint, windWink * .13, stare * .20) * 7.2}%`);
       scene.style.setProperty('--brow-tremor', `${tremor * .7}px`);
       face.style.setProperty('--head-x', `${rig.headX}px`);
       face.style.setProperty('--head-y', `${rig.headY}px`);
@@ -182,7 +199,7 @@ export function WinterExperience() {
       face.style.setProperty('--paw-left', `${rig.pawLeft}px`);
       face.style.setProperty('--paw-right', `${rig.pawRight}px`);
       if (now - lastWeather >= 30 || jumped || !running) {
-        paintWinter(ctx, frost, time, storm, freeze, breath, mouthX, mouthY, characterWidth, reduced, moving);
+        paintWinter(ctx, frost, time, storm, freeze, breath * (1 - quiet * .7), mouthX, mouthY, characterWidth, reduced, moving);
         lastWeather = now;
         if (running) setTime(time);
       }
@@ -239,8 +256,10 @@ export function WinterExperience() {
         onTimeUpdate={(event) => setTime(event.currentTarget.currentTime)}
       />}
 
-      <Image className={styles.landscape} src="/assets/winter/layers/winter-landscape.webp" alt="" fill priority sizes="100vw" />
-      <Image className={styles.sky} src={`${LAYERS}/winter-landscape.webp`} alt="" fill sizes="100vw" aria-hidden="true" />
+      <div className={styles.landscapeStage} aria-hidden="true">
+        <Image className={styles.landscape} src={`${LAYERS}/winter-landscape.webp`} alt="" fill priority sizes="100vw" />
+        <div className={styles.sky} />
+      </div>
       <div className={styles.worldShade} aria-hidden="true" />
       <div className={styles.iceVeil} aria-hidden="true" />
       <div className={styles.groundMist} aria-hidden="true" />
@@ -253,7 +272,8 @@ export function WinterExperience() {
           <RigLayer part="hair" className={styles.rigHair} />
           <RigLayer part="whiskers-left" className={styles.whiskersLeft} />
           <RigLayer part="whiskers-right" className={styles.whiskersRight} />
-          <Image className={styles.eyes} src={`${LAYERS}/frontie-eyelids.webp`} alt="" fill unoptimized aria-hidden="true" />
+          <Image className={`${styles.eye} ${styles.leftEye}`} src={`${LAYERS}/frontie-eyelids.webp`} alt="" fill unoptimized aria-hidden="true" />
+          <Image className={`${styles.eye} ${styles.rightEye}`} src={`${LAYERS}/frontie-eyelids.webp`} alt="" fill unoptimized aria-hidden="true" />
           <Image className={styles.mouth} src={`${LAYERS}/frontie-mouth-open.webp`} alt="" fill unoptimized priority aria-hidden="true" />
           {MOUTH_POSES.map((pose) => (
             <div key={pose} className={styles.mouthPose} data-pose={pose} aria-hidden="true">
@@ -264,6 +284,7 @@ export function WinterExperience() {
       </div>
       <canvas ref={weatherRef} className={styles.weather} aria-hidden="true" />
       <div className={styles.paperGrain} aria-hidden="true" />
+      <div className={styles.whiteout} aria-hidden="true" />
 
       <header className={styles.header}>
         <span>FRONT-LINE</span>
@@ -276,18 +297,21 @@ export function WinterExperience() {
 
       <div className={styles.subtitles} aria-live="off">
         {activeLyric && (
-          <p
-            className={styles.lyric}
-            key={activeLyric.start}
-            data-refrain={activeLyric.text === 'When the world stands still'}
-            style={{ '--sung-progress': `${wordProgress * 100}%` } as CSSProperties}
-          >
-            {activeLyric.text.split(/(\s+)/).map((part, index) => (
-              index % 2 === 0
-                ? <span key={index} data-sung={activeWord === index / 2}>{part}</span>
-                : part
-            ))}
-          </p>
+          <div className={styles.lyricPair} key={activeLyric.start}>
+            <p
+              className={styles.lyric}
+              lang="en"
+              data-refrain={activeLyric.text === 'When the world stands still'}
+              style={{ '--sung-progress': `${wordProgress * 100}%` } as CSSProperties}
+            >
+              {activeLyric.text.split(/(\s+)/).map((part, index) => (
+                index % 2 === 0
+                  ? <span key={index} data-sung={activeWord === index / 2}>{part}</span>
+                  : part
+              ))}
+            </p>
+            <p className={styles.lyricTranslation} lang="es">{activeLyric.es}</p>
+          </div>
         )}
       </div>
       <footer className={styles.player}>

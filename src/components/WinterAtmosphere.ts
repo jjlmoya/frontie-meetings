@@ -1,4 +1,4 @@
-import { freezeAt, rigPoint, winterRigAt, type RigPart } from './WinterRig';
+import { bridgeQuiet, finalGust, freezeAt, rigPoint, winterEase as fade, winterRigAt, type RigPart } from './WinterRig';
 
 const fraction = (value: number) => value - Math.floor(value);
 const noise = (seed: number) => fraction(Math.sin(seed * 127.1 + 311.7) * 43758.5453);
@@ -17,10 +17,12 @@ const cracks = [
   [[.43,.301],[.51,.267],[.64,.255],[.78,.257]],
 ];
 const clamp = (value: number) => Math.max(0, Math.min(1, value));
-const fade = (from: number, to: number, time: number) => {
-  const amount = clamp((time - from) / (to - from));
-  return amount * amount * (3 - 2 * amount);
-};
+const rimePaths = [
+  ['pawLeft', -.138, .309, -.093, .225, .17],
+  ['pawRight', .137, .309, .19, .219, .24],
+  ['whiskerLeft', -.34, -.022, -.133, -.057, .32],
+  ['whiskerRight', .368, -.018, .15, -.053, .40],
+] as const;
 
 const snowSources: readonly [RigPart, number, number][] = [
   ['hair', -.10, -.415], ['hair', .24, -.318],
@@ -40,6 +42,7 @@ function shedSnow(ctx: CanvasRenderingContext2D, time: number, x: number, y: num
     if (pose.force < .56 || freeze < .12) continue;
     const previous = winterRigAt(birth - .02, true);
     const age = time - birth;
+    const hardIce = fade(154.8, 160.7, birth);
     for (let part = 0; part < snowSources.length; part++) {
       const seed = release * 29 + part * 13;
       if (noise(seed) > pose.force * (.45 + freeze * .26)) continue;
@@ -58,7 +61,27 @@ function shedSnow(ctx: CanvasRenderingContext2D, time: number, x: number, y: num
       const drift = age * ((noise(seed + 3) - .64) * scale * .23 + momentum) + Math.sin(age * 8 + seed) * age * 4;
       const alpha = Math.min(1, age * 23) * Math.max(0, 1 - bounceAge * 2.6) * (.37 + noise(seed + 4) * .48);
       if (alpha <= 0) continue;
-      const radius = Math.max(.7, scale * (.0016 + noise(seed + 5) ** 2 * .009));
+      const irregular = noise(seed + 5);
+      const radius = Math.max(.7, scale * (.0016 + irregular ** 2 * (.009 + hardIce * .007)));
+      if (hardIce * irregular > .53 && radius > 2.4) {
+        ctx.save();
+        ctx.translate(x + releaseX + offset + drift, fall);
+        ctx.rotate(seed + age * 5);
+        ctx.beginPath();
+        ctx.moveTo(-radius, -radius * .28);
+        ctx.lineTo(radius * .19, -radius * .92);
+        ctx.lineTo(radius, -radius * .05);
+        ctx.lineTo(radius * .42, radius * .74);
+        ctx.lineTo(-radius * .65, radius * .49);
+        ctx.closePath();
+        ctx.fillStyle = `rgba(174,221,250,${alpha})`;
+        ctx.fill();
+        ctx.lineWidth = .55;
+        ctx.strokeStyle = `rgba(238,249,255,${alpha})`;
+        ctx.stroke();
+        ctx.restore();
+        continue;
+      }
       ctx.fillStyle = `rgba(229,246,255,${alpha})`;
       ctx.beginPath();
       ctx.ellipse(x + releaseX + offset + drift, fall, radius, radius * .68, seed + age * 5, 0, Math.PI * 2);
@@ -80,7 +103,10 @@ export function winterLight(time: number, kick: number) {
   const second = fade(99, 108, time) * (1 - fade(131, 137, time));
   const final = fade(151, 163, time) * (1 - fade(187, 196, time));
   const wind = Math.max(first * .57, second * .72, final);
-  return { storm: .13 + wind * .66 + kick * .23, freeze: freezeAt(time) };
+  const quiet = bridgeQuiet(time);
+  const gust = finalGust(time);
+  const storm = Math.min(1, (.13 + wind * .66 + kick * .23) * (1 - quiet * .88) + gust * .6);
+  return { storm, freeze: freezeAt(time), quiet, gust };
 }
 
 function crystal(ctx: CanvasRenderingContext2D, length: number, depth: number, seed: number) {
@@ -139,14 +165,18 @@ export function paintWinter(
 ) {
   const { width, height } = frost;
   ctx.clearRect(0, 0, width, height);
+  const quiet = bridgeQuiet(time);
+  const gust = finalGust(time);
   if (!still) {
-    for (let i = 0; i < 152; i++) {
+    const gustTravel = fade(155.65, 163.2, time) * width * .48;
+    const flakes = 170;
+    for (let i = 0; i < flakes; i++) {
       const depth = .18 + noise(i + 200) ** 2;
-      const wind = time * (25 + 87 * depth) + Math.sin(time * .6 + i) * 22 * depth;
+      const wind = time * (25 + 87 * depth) + Math.sin(time * .6 + i) * 22 * depth + gustTravel * depth;
       const x = fraction(noise(i) - wind / width) * width;
       const y = fraction(noise(i + 400) + time * (9 + 34 * depth) / height) * height;
-      const length = depth * (2 + 11 * storm);
-      ctx.strokeStyle = `rgba(225,242,255,${depth * (.22 + storm * .27)})`;
+      const length = depth * (2 + 11 * storm + 15 * gust);
+      ctx.strokeStyle = `rgba(225,242,255,${depth * (.22 + storm * .27 + gust * .19) * (1 - quiet * (.73 + noise(i + 500) * .23))})`;
       ctx.lineWidth = .55 + depth * 1.45;
       ctx.beginPath();
       ctx.moveTo(x, y);
@@ -194,6 +224,28 @@ export function paintWinter(
       ctx.stroke();
     }
     ctx.restore();
+  }
+
+  // Build a jagged crust along each part from the tip inward.
+  for (const [index, [part, fromX, fromY, toX, toY, onset]] of rimePaths.entries()) {
+    const cover = fade(onset, .95, freeze);
+    if (cover === 0) continue;
+    for (let chip = 0; chip < 32 * cover; chip++) {
+      const seed = index * 97 + chip * 3;
+      const advance = chip / 32;
+      const [x, y] = rigPoint(part,
+        fromX + (toX - fromX) * advance + (noise(seed) - .5) * .023,
+        fromY + (toY - fromY) * advance + (noise(seed + 1) - .5) * .023,
+        characterWidth, pose);
+      const size = characterWidth * (.0018 + noise(seed + 2) * .0065);
+      ctx.beginPath();
+      ctx.moveTo(mouthX + x - size, mouthY + y);
+      ctx.lineTo(mouthX + x + size * .4, mouthY + y - size * .9);
+      ctx.lineTo(mouthX + x + size, mouthY + y + size * .35);
+      ctx.closePath();
+      ctx.fillStyle = `rgba(199,231,250,${cover * (.25 + noise(seed + 3) * .45)})`;
+      ctx.fill();
+    }
   }
 
   // Ice gathers along the existing whiskers, brows, and shoulder frost.
