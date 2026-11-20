@@ -13,6 +13,7 @@
 # testing
 /coverage
 /scripts/assets/wannabe/previews/*.mp4
+/scripts/assets/winter/stems/
 
 # next.js
 /.next/

@@ -2,6 +2,22 @@ import type { MeetingConfig } from '@/types';
 
 export const MEETINGS_CONFIG: readonly MeetingConfig[] = [
   {
+    id: 'winter',
+    name: 'When the World Stands Still',
+    type: 'creative',
+    schedule: [],
+    assets: {
+      audio: '/assets/winter/audio/when-the-world-stands-still.mp3',
+    },
+    style: {
+      fontFamily: 'Georgia, Times New Roman, serif',
+      fallbackFont: 'Georgia, serif',
+      primaryColor: '#b8d7ff',
+      backgroundColor: '#090e19',
+      textAnimation: 'funky-chaos',
+    },
+  },
+  {
     id: 'jazz',
     name: 'While We Wait',
     type: 'creative',
@@ -12,7 +28,7 @@ export const MEETINGS_CONFIG: readonly MeetingConfig[] = [
     style: {
       fontFamily: 'Didot, Bodoni MT, Georgia, serif',
       fallbackFont: 'Georgia, serif',
-      primaryColor: '#e5bd78',
+      primaryColor: '#F5A623',
       backgroundColor: '#111522',
       textAnimation: 'funky-chaos',
     },
@@ -28,7 +44,7 @@ export const MEETINGS_CONFIG: readonly MeetingConfig[] = [
     style: {
       fontFamily: 'var(--font-righteous)',
       fallbackFont: 'Georgia, serif',
-      primaryColor: '#F3CF7A',
+      primaryColor: '#9B6DFF',
       backgroundColor: '#241314',
       textAnimation: 'funky-chaos',
     },
@@ -44,7 +60,7 @@ export const MEETINGS_CONFIG: readonly MeetingConfig[] = [
     style: {
       fontFamily: 'Georgia, serif',
       fallbackFont: 'Georgia, serif',
-      primaryColor: '#f8d99a',
+      primaryColor: '#FF5630',
       backgroundColor: '#08101e',
       textAnimation: 'funky-chaos',
     },
@@ -61,7 +77,7 @@ export const MEETINGS_CONFIG: readonly MeetingConfig[] = [
     style: {
       fontFamily: 'Georgia, serif',
       fallbackFont: 'Georgia, serif',
-      primaryColor: '#f5d28d',
+      primaryColor: '#F72585',
       backgroundColor: '#100a1a',
       textAnimation: 'funky-chaos',
     },
@@ -84,7 +100,7 @@ export const MEETINGS_CONFIG: readonly MeetingConfig[] = [
     style: {
       fontFamily: 'var(--font-bungee)',
       fallbackFont: 'Impact, sans-serif',
-      primaryColor: '#00FFFF',
+      primaryColor: '#00C2D1',
       backgroundColor: '#004080',
       textAnimation: 'wave-beach',
     },
@@ -101,7 +117,7 @@ export const MEETINGS_CONFIG: readonly MeetingConfig[] = [
     style: {
       fontFamily: 'var(--font-bungee)',
       fallbackFont: 'Impact, sans-serif',
-      primaryColor: '#cccccc',
+      primaryColor: '#3457FF',
       backgroundColor: '#004080',
       textAnimation: 'metal-destruction',
     },
@@ -118,7 +134,7 @@ export const MEETINGS_CONFIG: readonly MeetingConfig[] = [
     style: {
       fontFamily: 'var(--font-bungee)',
       fallbackFont: 'Impact, sans-serif',
-      primaryColor: '#3f1f01ff',
+      primaryColor: '#C4772E',
       backgroundColor: '#dfb017ff',
       textAnimation: 'wave-beach',
     },
@@ -135,7 +151,7 @@ export const MEETINGS_CONFIG: readonly MeetingConfig[] = [
     style: {
       fontFamily: 'var(--font-bungee)',
       fallbackFont: 'Impact, sans-serif',
-      primaryColor: '#3f1f01ff',
+      primaryColor: '#E83E72',
       backgroundColor: '#dfb017ff',
       textAnimation: 'funky-glitch',
     },
@@ -152,7 +168,7 @@ export const MEETINGS_CONFIG: readonly MeetingConfig[] = [
     style: {
       fontFamily: 'var(--font-bungee)',
       fallbackFont: 'Impact, sans-serif',
-      primaryColor: '#264404ff',
+      primaryColor: '#B5DE24',
       backgroundColor: '#0cff18ff',
       textAnimation: 'funky-glitch',
     },
@@ -169,7 +185,7 @@ export const MEETINGS_CONFIG: readonly MeetingConfig[] = [
     style: {
       fontFamily: 'var(--font-bungee)',
       fallbackFont: 'Impact, sans-serif',
-      primaryColor: '#fdffeeff',
+      primaryColor: '#00A884',
       backgroundColor: '#00ff80ff',
       textAnimation: 'wave-beach',
     },
@@ -186,7 +202,7 @@ export const MEETINGS_CONFIG: readonly MeetingConfig[] = [
     style: {
       fontFamily: 'var(--font-bungee)',
       fallbackFont: 'Impact, sans-serif',
-      primaryColor: '#FF8C00',
+      primaryColor: '#168CDB',
       backgroundColor: '#8B4513',
       textAnimation: 'wave-beach',
     },
@@ -203,7 +219,7 @@ export const MEETINGS_CONFIG: readonly MeetingConfig[] = [
     style: {
       fontFamily: 'var(--font-monoton)',
       fallbackFont: 'Courier New, monospace',
-      primaryColor: '#FFD700',
+      primaryColor: '#F4D03F',
       backgroundColor: '#FF4500',
       textAnimation: 'funky-glitch',
     },
@@ -220,7 +236,7 @@ export const MEETINGS_CONFIG: readonly MeetingConfig[] = [
     style: {
       fontFamily: 'var(--font-dancing)',
       fallbackFont: 'Brush Script MT, cursive',
-      primaryColor: '#FF1493',
+      primaryColor: '#9B5DE5',
       backgroundColor: '#9932CC',
       textAnimation: 'groovie-psychedelic',
     },
@@ -252,7 +268,7 @@ export const MEETINGS_CONFIG: readonly MeetingConfig[] = [
     style: {
       fontFamily: 'var(--font-black-ops)',
       fallbackFont: 'Impact, sans-serif',
-      primaryColor: '#FF0000',
+      primaryColor: '#D7263D',
       backgroundColor: '#000000',
       textAnimation: 'metal-destruction',
     },
@@ -269,7 +285,7 @@ export const MEETINGS_CONFIG: readonly MeetingConfig[] = [
     style: {
       fontFamily: 'var(--font-righteous)',
       fallbackFont: 'Arial Black, sans-serif',
-      primaryColor: '#FF6B35',
+      primaryColor: '#FF006E',
       backgroundColor: '#1A1A2E',
       textAnimation: 'reggaeton-bounce',
     },
@@ -286,7 +302,7 @@ export const MEETINGS_CONFIG: readonly MeetingConfig[] = [
     style: {
       fontFamily: 'var(--font-bungee)',
       fallbackFont: 'Impact, sans-serif',
-      primaryColor: '#D42426',
+      primaryColor: '#168A58',
       backgroundColor: '#165B33',
       textAnimation: 'wave-beach',
     },
@@ -303,8 +319,8 @@ export const MEETINGS_CONFIG: readonly MeetingConfig[] = [
     style: {
       fontFamily: 'var(--font-bungee)',
       fallbackFont: 'Impact, sans-serif',
-      primaryColor: '#D42426',
-      backgroundColor: '#165B33',
+      primaryColor: '#79E6FF',
+      backgroundColor: '#10243A',
       textAnimation: 'wave-beach',
     },
   },

@@ -15,12 +15,13 @@ import { useAudioAnalyzer } from '@/hooks/useAudioAnalyzer';
 import { MedievalExperience } from '@/components/MedievalExperience';
 import { CampfireExperience } from '@/components/CampfireExperience';
 import { JazzExperience } from '@/components/JazzExperience';
+import { WinterExperience } from '@/components/WinterExperience';
 import { WannabeLyricsOverlay } from '@/components/WannabeLyricsOverlay';
 import { SongSelector } from '@/components/SongSelector';
 
 export default function FantasiaPage() {
   const { config, loading, error } = useMeetingConfig();
-  const sharedAudioUrl = config?.id === 'jazz' ? '' : config?.assets.audio || '';
+  const sharedAudioUrl = config?.id === 'jazz' || config?.id === 'winter' ? '' : config?.assets.audio || '';
   const { audioData, setVolume, currentVolume, play } = useAudioAnalyzer(sharedAudioUrl, 0.05);
   const [configKey, setConfigKey] = useState(0);
   const [userInteracted, setUserInteracted] = useState(false);
@@ -32,7 +33,7 @@ export default function FantasiaPage() {
   // Detectar cualquier interacción del usuario y usar el hook correctamente
   useEffect(() => {
     const handleInteraction = async () => {
-      if (!userInteracted && config && play && config.id !== 'medieval' && config.id !== 'campfire' && config.id !== 'jazz' && !isWannabe) {
+      if (!userInteracted && config && play && config.id !== 'medieval' && config.id !== 'campfire' && config.id !== 'jazz' && config.id !== 'winter' && !isWannabe) {
         setUserInteracted(true);
         
         // Usar el hook de audio que tiene el analizador
@@ -90,6 +91,10 @@ export default function FantasiaPage() {
 
   if (config.id === 'jazz') {
     return <JazzExperience />;
+  }
+
+  if (config.id === 'winter') {
+    return <WinterExperience />;
   }
 
   return (

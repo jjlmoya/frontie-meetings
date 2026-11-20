@@ -48,7 +48,7 @@ export function SongSelector() {
       <section className={styles.grid} aria-label="Songs">
         {MEETINGS_CONFIG.map((song, index) => (
           <Link
-            className={`${styles.card} ${song.id === 'wannabe' ? styles.wannabeCard : ''} ${song.id === 'jazz' ? styles.jazzCard : ''}`}
+            className={`${styles.card} ${song.id === 'wannabe' ? styles.wannabeCard : ''} ${song.id === 'jazz' ? styles.jazzCard : ''} ${song.id === 'winter' ? styles.winterCard : ''}`}
             href={`/?config=${encodeURIComponent(song.id)}`}
             key={song.id}
             style={{
@@ -66,8 +66,12 @@ export function SongSelector() {
                 sizes="(max-width: 720px) 94vw, (max-width: 1200px) 46vw, 44vw"
                 priority={index < 4}
               />
-              <span className={styles.artShade} />
-              <span className={styles.songName}>{song.name.trim()}</span>
+              {song.id !== 'winter' && (
+                <>
+                  <span className={styles.artShade} />
+                  <span className={styles.songName}>{song.name.trim()}</span>
+                </>
+              )}
             </div>
           </Link>
         ))}
