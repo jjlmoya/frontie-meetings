@@ -292,17 +292,38 @@ export function WinterExperience() {
       </div>
       <footer className={styles.player}>
         <button type="button" onClick={togglePlayback} disabled={audioAvailable !== true} aria-label={playing ? 'Pause song' : 'Play song'}>
-          {playing ? 'PAUSE' : 'PLAY'}
+          {playing ? 'Pause' : 'Play'}
         </button>
         <span className={styles.clock}>{formatTime(time)}</span>
-        <input aria-label="Seek in song" type="range" min="0" max={duration} step=".01" value={Math.min(time, duration)} disabled={audioAvailable !== true} onChange={(event) => {
-          const next = Number(event.target.value);
-          if (audioRef.current) audioRef.current.currentTime = next;
-          setTime(next);
-        }} style={{ '--progress': `${progress}%` } as CSSProperties} />
+        <div className={styles.iceTimeline} style={{ '--progress': `${progress}%` } as CSSProperties}>
+          <div className={styles.crackTrack} aria-hidden="true">
+            <span className={styles.crackShape} />
+            <span className={`${styles.crackShape} ${styles.crackProgress}`} />
+            <span className={styles.faceMarker}>
+              <span className={styles.faceCrop}>
+                <Image src={`${LAYERS}/winter-frozen-expression.webp`} alt="" width={646} height={364} unoptimized />
+              </span>
+            </span>
+          </div>
+          <input
+            aria-label="Seek in song"
+            aria-valuetext={`${formatTime(time)} of ${formatTime(duration)}`}
+            type="range"
+            min="0"
+            max={duration}
+            step=".01"
+            value={Math.min(time, duration)}
+            disabled={audioAvailable !== true}
+            onChange={(event) => {
+              const next = Number(event.target.value);
+              if (audioRef.current) audioRef.current.currentTime = next;
+              setTime(next);
+            }}
+          />
+        </div>
         <span className={styles.clock}>{formatTime(duration)}</span>
         <label className={styles.volume}>
-          <span>VOL</span>
+          <span>Vol</span>
           <input aria-label="Volume" type="range" min="0" max="1" step="0.01" value={volume} disabled={audioAvailable !== true} onChange={(event) => setVolume(Number(event.target.value))} />
         </label>
         {audioAvailable === false && <span className={styles.audioError}>AUDIO UNAVAILABLE</span>}
