@@ -17,6 +17,12 @@ import styles from './AnimeExperience.module.css';
 const ASSETS = '/assets/anime/';
 const cueTrack = cues.tracks;
 
+// A continuous coil around the beam. The audio position clips the beam and coil together.
+const beamSpiral = 'M0 16' + Array.from({ length: 20 }, (_, i) => {
+  const x = i * 60;
+  return ` C${x + 11},1 ${x + 36},1 ${x + 30},16 S${x + 49},31 ${x + 60},16`;
+}).join('');
+
 const timeLabel = (value: number) => `${Math.floor(value / 60)}:${String(Math.floor(value % 60)).padStart(2, '0')}`;
 const shotFor = (time: number) => Math.max(0, animeShots.findLastIndex(([start]) => time >= start));
 const lineFor = (time: number) => animeSubtitles.findIndex(([start, end]) => time >= start && time < end);
@@ -193,7 +199,7 @@ export function AnimeExperience() {
   return (
     <main className={styles.page} aria-label={ANIME_TITLE}>
       <div className={styles.stage} onClick={(event) => {
-        if (!started.current && !(event.target as HTMLElement).closest('button, a, input')) void play();
+        if (!started.current && !(event.target as Element).closest('button, a, input, label')) void play();
       }}>
         <audio ref={audioRef} src={ANIME_AUDIO} loop preload="metadata"
           onLoadedMetadata={(event) => {
@@ -234,28 +240,36 @@ export function AnimeExperience() {
         <AnimeKaraokeLyrics key={lyricIndex} line={lyricIndex} syllable={syllable} />
 
         <div className={styles.player} aria-label="Frontie’s stream control deck">
-          <button type="button" onClick={() => {
+          <button type="button" className={styles.transport} aria-label={playing ? 'Pause' : 'Play'} onClick={() => {
             if (audioRef.current?.paused) void play();
             else audioRef.current?.pause();
-          }} data-playing={playing}>{playing ? 'Pause' : 'Play'}</button>
-          <span className={styles.deckClock}>{timeLabel(time)}</span>
-          <label className={styles.deckRail} style={{ '--led-level': `${Math.min(time / duration, 1) * 100}%` } as CSSProperties}>
+          }} data-playing={playing}>
+            <span className={styles.arcadeKey} aria-hidden="true"><span /></span>
+          </button>
+          <label className={styles.deckRail} data-playing={playing} style={{ '--beam-level': `${Math.min(time / duration, 1) * 100}%` } as CSSProperties}>
             <input aria-label="Song position" type="range" min={0} max={duration} step={0.01}
+              aria-valuetext={`${timeLabel(time)} / ${timeLabel(duration)}`}
               value={Math.min(time, duration)} onChange={(event) => {
                 const next = event.currentTarget.valueAsNumber;
                 if (audioRef.current) audioRef.current.currentTime = next;
                 syncClock(next);
               }}
             />
-            <span className={styles.ledBar} aria-hidden="true"><span /></span>
+            <span className={styles.beamTrack} aria-hidden="true">
+              <svg className={styles.beamFill} viewBox="0 0 1200 32" preserveAspectRatio="none">
+                <path className={styles.beamCore} d="M0 16 H1200" />
+                <path className={styles.beamSpiral} d={beamSpiral} />
+                <path className={styles.beamFilament} d={beamSpiral} />
+              </svg>
+              <span className={styles.beamTip} />
+            </span>
           </label>
-          <span className={styles.deckClock}>{timeLabel(duration)}</span>
-          <label className={styles.deckVolume} style={{ '--led-level': `${volume * 100}%` } as CSSProperties}>
-            <span aria-hidden="true">VOL</span>
+          <label className={styles.deckVolume} style={{ '--dial': `${volume * 270 - 135}deg`, '--level': `${volume * 270}deg` } as CSSProperties}>
             <input aria-label="Volume" type="range" min={0} max={1} step={0.01}
+              aria-valuetext={`${Math.round(volume * 100)}%`}
               value={volume} onChange={(event) => setVolume(event.currentTarget.valueAsNumber)}
             />
-            <span className={styles.ledBar} aria-hidden="true"><span /></span>
+            <span className={styles.volumeDial} aria-hidden="true"><span /></span>
           </label>
         </div>
         {error && <div className={styles.error} role="alert">{error}</div>}
