@@ -3,17 +3,17 @@
 import Image from 'next/image';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import type { CSSProperties, PointerEvent as ReactPointerEvent } from 'react';
+import lyricData from '../../public/assets/campfire/lyrics.json';
 import styles from './CampfireExperience.module.css';
 
-type LyricLine = { start: number; end: number; text: string; translation?: string; event?: 'maria' | 'xavi'; appearanceAt?: number; appearanceEnd?: number };
-type LyricsFile = { lines: LyricLine[] };
+type LyricLine = { start: number; end: number; text: string; translation: string; event?: string; appearanceAt?: number; appearanceEnd?: number };
 type CueFile = { duration: number; sampleRateHz: number; tracks: Record<string, number[]> };
 type MouthState = { open: boolean; changedAt: number; belowThresholdSince: number | null; smoothedVocal: number; peakSinceOpen: number; lastUpdateTime: number | null; lastCueIndex: number | null };
 
 const AUDIO = '/assets/campfire/audio/Escalofríos%20en%20Producci%C3%B3n.mp3';
 const ART = '/assets/campfire/layers/';
-const LYRICS = '/assets/campfire/lyrics.json';
 const CUES = '/assets/campfire/animation-cues.json';
+const lyrics: readonly LyricLine[] = lyricData.lines;
 
 function formatTime(value: number) {
   const seconds = Math.max(0, Math.floor(value));
@@ -100,7 +100,6 @@ export function CampfireExperience() {
   const [isPlaying, setIsPlaying] = useState(false);
   const [mouthOpen, setMouthOpen] = useState(false);
   const [prefersReducedMotion, setPrefersReducedMotion] = useState(false);
-  const [lyrics, setLyrics] = useState<LyricLine[]>([]);
   const [cues, setCues] = useState<CueFile | null>(null);
   const [loadError, setLoadError] = useState(false);
   useEffect(() => {
@@ -113,21 +112,21 @@ export function CampfireExperience() {
 
   useEffect(() => {
     let alive = true;
-    Promise.all([
-      fetch(LYRICS).then((response) => response.ok ? response.json() as Promise<LyricsFile> : Promise.reject()),
-      fetch(CUES).then((response) => response.ok ? response.json() as Promise<CueFile> : Promise.reject()),
-    ]).then(([lyricData, cueData]) => {
+    fetch(CUES).then(async (response) => {
+      if (!response.ok) throw new Error('Failed to load Campfire animation cues');
+      const cueData: CueFile = await response.json();
       if (!alive) return;
-      setLyrics(lyricData.lines);
       setCues(cueData);
       setDuration(cueData.duration);
-    }).catch(() => setLoadError(true));
+    }).catch(() => {
+      if (alive) setLoadError(true);
+    });
     return () => { alive = false; };
   }, []);
 
   const activeLine = useMemo(
     () => lyrics.find((line) => time >= line.start && time < line.end),
-    [lyrics, time],
+    [time],
   );
 
   const play = useCallback(async () => {
@@ -277,7 +276,7 @@ export function CampfireExperience() {
     };
     frame = window.requestAnimationFrame(update);
     return () => window.cancelAnimationFrame(frame);
-  }, [cues, isPlaying, lyrics]);
+  }, [cues, isPlaying]);
 
   const guitar = cueAt(cues, 'guitar', time);
   const drums = cueAt(cues, 'drums', time);
