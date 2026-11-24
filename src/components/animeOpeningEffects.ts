@@ -1,3 +1,5 @@
+import { drawRailLook } from './animeRailLook';
+import { drawOrigamiPortrait } from './animeOrigamiPortrait';
 import { drawMentorPrism } from './animeMentorPrism';
 import { drawTitanBreach } from './animeTitanBreach';
 import { drawTailCopter } from './animeTailCopter';
@@ -146,9 +148,11 @@ type Frame = {
   titanGate?: HTMLImageElement;
   frontLineLogo?: HTMLImageElement;
   mentorWink?: HTMLImageElement;
+  origamiFaces?: HTMLImageElement;
+  railLook?: HTMLImageElement;
 };
 
-export function drawAnimeOpeningEffects(ctx: CanvasRenderingContext2D, { effect, image, time, local, remaining, progress, energy, camera, art, kiraPlate, monitorOpen, lateBeatPlate, cutActionPlate, katanaArt, prankLayers, copterRoofs, copterCat, titanScouts, titanGate, frontLineLogo, mentorWink }: Frame) {
+export function drawAnimeOpeningEffects(ctx: CanvasRenderingContext2D, { effect, image, time, local, remaining, progress, energy, camera, art, kiraPlate, monitorOpen, lateBeatPlate, cutActionPlate, katanaArt, prankLayers, copterRoofs, copterCat, titanScouts, titanGate, frontLineLogo, mentorWink, origamiFaces, railLook }: Frame) {
   const width = ctx.canvas.width;
   const height = ctx.canvas.height;
   ctx.clearRect(0, 0, width, height);
@@ -175,6 +179,12 @@ export function drawAnimeOpeningEffects(ctx: CanvasRenderingContext2D, { effect,
 
   if (image === 'titan-breach') {
     drawTitanBreach(ctx, local, energy, art, titanScouts, titanGate);
+    ctx.restore();
+    return;
+  }
+
+  if (image === 'cast-origami') {
+    drawOrigamiPortrait(ctx, local, camera, origamiFaces);
     ctx.restore();
     return;
   }
@@ -221,6 +231,8 @@ export function drawAnimeOpeningEffects(ctx: CanvasRenderingContext2D, { effect,
     }
     ctx.restore();
   }
+
+  if (image === 'rail') drawRailLook(ctx, local, camera, railLook);
 
   if (effect === 'rain' || effect === 'still') {
     ctx.strokeStyle = effect === 'rain' ? '#8cd6ff' : '#8a9cb9';

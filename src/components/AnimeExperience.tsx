@@ -12,6 +12,8 @@ import { AnimeWebcam, paintAnimeWebcam } from './AnimeWebcam';
 import { deathNoteWebcamFrame, webcamViseme } from '@/data/animeWebcam';
 import type { FrontieViseme } from '@/data/animeWebcam';
 import { kiraCleanPlate } from './animeCharacterActing';
+import { railLookPlate } from './animeRailLook';
+import { origamiExpressions } from './animeOrigamiPortrait';
 import { mentorWinkPlate } from './animeMentorPrism';
 import { drawStreamerOffering } from './animeSpiritBomb';
 import { scoutSheet, titanGatePlate } from './animeTitanBreach';
@@ -124,6 +126,8 @@ export function AnimeExperience() {
     const titanScouts = new window.Image();
     const titanGate = new window.Image();
     const mentorWink = new window.Image();
+    const origamiFaces = new window.Image();
+    const railLook = new window.Image();
     const frontLineLogo = new window.Image();
     const prankLayers = { roof: new window.Image(), frontie: new window.Image(), partner: new window.Image(), team: new window.Image() };
     const cutPlates = {
@@ -253,6 +257,8 @@ export function AnimeExperience() {
           titanScouts,
           titanGate,
           mentorWink,
+          origamiFaces,
+          railLook,
           frontLineLogo,
         });
         if (offering && (image === 'spirit-bomb' || hadOffering)) {
@@ -306,6 +312,10 @@ export function AnimeExperience() {
     titanScouts.onload = redraw;
     titanScouts.src = `${ASSETS}${scoutSheet}`;
 
+    railLook.onload = redraw;
+    railLook.src = `${ASSETS}${railLookPlate}`;
+    origamiFaces.onload = redraw;
+    origamiFaces.src = `${ASSETS}${origamiExpressions}`;
     mentorWink.onload = redraw;
     mentorWink.src = `${ASSETS}${mentorWinkPlate}`;
     frontLineLogo.onload = redraw;
@@ -345,6 +355,8 @@ export function AnimeExperience() {
       titanScouts.onload = null;
       titanGate.onload = null;
       mentorWink.onload = null;
+      origamiFaces.onload = null;
+      railLook.onload = null;
       frontLineLogo.onload = null;
       for (const layer of Object.values(prankLayers)) layer.onload = null;
       for (const plate of Object.values(beatPlates)) plate.onload = null;
