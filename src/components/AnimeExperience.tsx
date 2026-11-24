@@ -187,7 +187,7 @@ export function AnimeExperience() {
         const locked = effect === 'manga' || effect === 'kira' || image === 'red-power';
         const quiet = effect === 'still';
         const flying = effect === 'nimbus';
-        const distance = locked ? 0 : quiet ? 0.4 : flying ? 3.8 : effect === 'run' ? 8 : 3;
+        const distance = locked || image === 'rasengan' ? 0 : quiet ? 0.4 : flying ? 3.8 : effect === 'run' ? 8 : 3;
         const lift = locked ? 0 : quiet ? 0.12 : flying ? -0.7 : effect === 'slash' ? -2.6 : -1.35;
         const impact = effect === 'slash' ? Math.max(0, 0.1 - local * 0.22) : 0;
         const spring = effect === 'gear' ? Math.sin(local * 16) * Math.exp(-local * 2.6) : 0;
@@ -214,7 +214,7 @@ export function AnimeExperience() {
           : image === 'team-prank' ? 1.035 + local / 5.02 * .048 + prankKick * .031
           : image === 'team-prank-reaction' ? 1.06 + progress * .025
           : image === 'spirit-bomb' ? 1.075 - progress * .035
-          : image === 'rasengan' ? 1.07 + progress * .085 + Math.min(1, rasenganDrive) * .21
+          : image === 'rasengan' ? 1.035 + progress * .049 + Math.min(1, rasenganDrive) * .11
           : image === 'three-crescents' ? 1.045 + progress * .04 + swordKick * .037
           : image === 'key-strike' ? 1.075 + progress * .06 + tapping * .016
           : image === 'paw' ? 1.09 + progress * .09 + keyKick * .054

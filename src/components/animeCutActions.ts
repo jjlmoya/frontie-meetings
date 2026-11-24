@@ -1,3 +1,5 @@
+import { drawRasengan } from './animeRasengan';
+
 type Context = CanvasRenderingContext2D;
 type Camera = { x: number; y: number; scale: number };
 type Point = readonly [number, number];
@@ -6,7 +8,7 @@ export const katanaSprite = 'actions/moonlit-katana.webp';
 
 export const cutActionPlates = {
   'dawn-eye': 'nika-shadow.webp',
-  rasengan: 'rasengan-current.webp',
+  rasengan: 'rasengan-cels.webp',
   'three-crescents': 'katana-plate.webp',
   'transit-open': 'gate-closed.webp',
   'key-strike': 'claw-plate.webp',
@@ -55,107 +57,6 @@ function drawSunShadow(ctx: Context, time: number, silhouette?: HTMLImageElement
   ctx.rotate(Math.sin(time * 6) * .067);
   const width = 63 + 16 * entry;
   ctx.drawImage(silhouette, -width / 2, -width * .43, width, width * .85);
-  ctx.restore();
-}
-
-function drawRasengan(ctx: Context, local: number, band: number, texture?: HTMLImageElement) {
-  const gather = smooth(local / 1.55);
-  const release = smooth((local - 1.87) / .38);
-  const radius = 17 + 86 * gather + 95 * release ** 2;
-  const x = 478 + release * 102;
-  const y = 208 + release * 51;
-  ctx.save();
-  // Three separate paths start at the fingertips of the three shadow clones.
-  const feeds = [[392, 108, -1], [554, 94, 1], [634, 199, 1]] as const;
-  for (const [handX, handY, side] of feeds) {
-    const progress = smooth(local * 2.2) * (1 - release);
-    if (progress <= 0) continue;
-    const bend = Math.sin(local * 14 + handX) * 10;
-    const farX = x + side * radius * .61;
-    const farY = y - radius * .7;
-    const stream = ctx.createLinearGradient(handX, handY, farX, farY);
-    stream.addColorStop(0, '#8df7ff6b');
-    stream.addColorStop(.58, '#32bffc');
-    stream.addColorStop(1, '#e9ffff');
-    ctx.globalCompositeOperation = 'screen';
-    ctx.strokeStyle = stream;
-    ctx.lineWidth = (1.5 + gather * 5) * progress;
-    ctx.globalAlpha = (.54 + band * .35) * progress;
-    ctx.beginPath();
-    ctx.moveTo(handX, handY);
-    ctx.bezierCurveTo(mix(handX, x, .43), handY - 26 + bend, farX + side * 37, farY - 26, farX, farY);
-    ctx.stroke();
-  }
-  const shine = ctx.createRadialGradient(x, y, radius * .13, x, y, radius * 2.2);
-  shine.addColorStop(0, '#9afaff8f');
-  shine.addColorStop(.4, '#4bcdf9a8');
-  shine.addColorStop(.7, '#2387ff38');
-  shine.addColorStop(1, '#1465ff00');
-  ctx.globalCompositeOperation = 'screen';
-  ctx.globalAlpha = .55 + band * .33;
-  ctx.fillStyle = shine;
-  ctx.fillRect(x - radius * 2.3, y - radius * 2.3, radius * 4.6, radius * 4.6);
-  ctx.globalCompositeOperation = 'source-over';
-
-  ctx.save();
-  ctx.beginPath();
-  ctx.arc(x, y, radius, 0, turn);
-  ctx.clip();
-  const body = ctx.createRadialGradient(x - radius * .18, y - radius * .23, radius * .06, x, y, radius);
-  body.addColorStop(0, '#e4ffff');
-  body.addColorStop(.23, '#b5f8ff');
-  body.addColorStop(.61, '#38c6fa');
-  body.addColorStop(.86, '#167ac9');
-  body.addColorStop(1, '#79f8ff');
-  ctx.fillStyle = body;
-  ctx.globalAlpha = .99;
-  ctx.fillRect(x - radius, y - radius, radius * 2, radius * 2);
-
-  if (ready(texture)) {
-    ctx.save();
-    ctx.translate(x, y);
-    ctx.rotate(-local * 6.1);
-    ctx.globalAlpha = .82;
-    ctx.drawImage(texture, -radius * 1.08, -radius * 1.08, radius * 2.16, radius * 2.16);
-    ctx.globalCompositeOperation = 'screen';
-    ctx.rotate(local * 11.7);
-    ctx.globalAlpha = .48;
-    ctx.drawImage(texture, -radius * .94, -radius * .94, radius * 1.88, radius * 1.88);
-    ctx.restore();
-  }
-
-  // Each latitude is a rotating stream on the surface of the sphere.
-  for (let i = 0; i < 12; i++) {
-    const seed = ((i * 73) % 29) / 29;
-    const spin = local * (4.9 + gather * 7) + i * 2.414;
-    const r = radius * (.23 + seed * .77);
-    const squash = .09 + ((i * 3) % 11) / 15;
-    ctx.strokeStyle = ['#e6ffff', '#acfcff', '#41d4ff', '#157eed', '#efffff'][i % 5];
-    ctx.globalAlpha = .32 + seed * .34;
-    ctx.lineWidth = (1.2 + seed * 3.6) * (1 + release * .91);
-    ctx.beginPath();
-    ctx.ellipse(x + Math.cos(spin * 1.3) * r * .12, y + Math.sin(spin * .8) * r * .16,
-      r, r * squash, spin * .36 + i * .80, spin, spin + 1.78 + seed * 2.6);
-    ctx.stroke();
-  }
-  ctx.restore();
-
-  for (let i = 0; i < 10; i++) {
-    const angle = i * 2.399;
-    const phase = (local * (1.1 + i % 4 * .21) + i * .398) % 1;
-    const reach = radius + (1 - phase) ** 2 * (42 + i * 13);
-    ctx.translate(x, y);
-    ctx.rotate(angle + phase * .86);
-    ctx.strokeStyle = i % 3 === 0 ? '#e4ffff' : '#62deff';
-    ctx.globalAlpha = Math.sin(phase * Math.PI) * (.33 + gather * .48);
-    ctx.lineWidth = 1 + gather * 3;
-    ctx.beginPath();
-    ctx.moveTo(reach + 50, -37);
-    ctx.quadraticCurveTo(reach + 14, -2, reach, 5);
-    ctx.stroke();
-    ctx.rotate(-(angle + phase * .86));
-    ctx.translate(-x, -y);
-  }
   ctx.restore();
 }
 
