@@ -3,6 +3,7 @@ import { preload } from 'react-dom';
 import type { CSSProperties, RefObject } from 'react';
 import { animeWebcamFrame, deathNoteWebcamFrame } from '@/data/animeWebcam';
 import type { FrontieViseme } from '@/data/animeWebcam';
+import { spiritBombGesture, spiritBombPaws } from './animeSpiritBomb';
 import styles from './AnimeWebcam.module.css';
 
 const ASSETS = '/assets/anime/streamer/';
@@ -59,9 +60,12 @@ function SingingMouth({ viseme }: { viseme: FrontieViseme }) {
 
 export function paintAnimeWebcam(
   element: HTMLDivElement, time: number, vocal: number, band: number, reduced: boolean,
-  gag: ReturnType<typeof deathNoteWebcamFrame>,
+  gag: ReturnType<typeof deathNoteWebcamFrame>, offeringTime?: number,
 ) {
   const frame = animeWebcamFrame(time, vocal, band, reduced);
+  const offering = !reduced && offeringTime !== undefined;
+  element.dataset.offering = String(offering);
+  if (offering) element.style.setProperty('--cam-offering', spiritBombGesture(offeringTime).toFixed(3));
   element.dataset.deathNote = gag?.phase ?? '';
   if (gag) {
     element.style.setProperty('--dn-clutch', gag.clutch.toFixed(3));
@@ -241,6 +245,9 @@ export function AnimeWebcam({ cameraRef, viseme }: {
         <Image src={`${ASSETS}otaku-frontie-upright.webp`} alt="" fill unoptimized sizes="22vw" className={styles.microphone} />
         <div className={styles.paws} aria-hidden="true">
           <Image src={`${ASSETS}otaku-paws.webp`} alt="" fill unoptimized sizes="22vw" />
+        </div>
+        <div className={styles.offeringPaws} aria-hidden="true">
+          <Image src={`${ASSETS}${spiritBombPaws}`} alt="" fill sizes="22vw" unoptimized />
         </div>
         <svg className={styles.effects} viewBox="0 0 1000 1000" aria-hidden="true">
           <g className={styles.hypeMarks} fill="none" stroke="var(--cam-color)" strokeWidth="15" strokeLinecap="round">

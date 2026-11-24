@@ -1,3 +1,6 @@
+import { drawMentorPrism } from './animeMentorPrism';
+import { drawTitanBreach } from './animeTitanBreach';
+import { drawTailCopter } from './animeTailCopter';
 import { drawTeamPrank } from './animeTeamPrank';
 import type { PrankLayers } from './animeTeamPrank';
 import { drawSpiritBomb } from './animeSpiritBomb';
@@ -137,9 +140,15 @@ type Frame = {
   cutActionPlate?: HTMLImageElement;
   katanaArt?: HTMLImageElement;
   prankLayers?: PrankLayers;
+  copterRoofs?: HTMLImageElement;
+  copterCat?: HTMLImageElement;
+  titanScouts?: HTMLImageElement;
+  titanGate?: HTMLImageElement;
+  frontLineLogo?: HTMLImageElement;
+  mentorWink?: HTMLImageElement;
 };
 
-export function drawAnimeOpeningEffects(ctx: CanvasRenderingContext2D, { effect, image, time, local, remaining, progress, energy, camera, art, kiraPlate, monitorOpen, lateBeatPlate, cutActionPlate, katanaArt, prankLayers }: Frame) {
+export function drawAnimeOpeningEffects(ctx: CanvasRenderingContext2D, { effect, image, time, local, remaining, progress, energy, camera, art, kiraPlate, monitorOpen, lateBeatPlate, cutActionPlate, katanaArt, prankLayers, copterRoofs, copterCat, titanScouts, titanGate, frontLineLogo, mentorWink }: Frame) {
   const width = ctx.canvas.width;
   const height = ctx.canvas.height;
   ctx.clearRect(0, 0, width, height);
@@ -152,8 +161,26 @@ export function drawAnimeOpeningEffects(ctx: CanvasRenderingContext2D, { effect,
     return;
   }
 
-  if (image === 'team-prank') {
-    drawTeamPrank(ctx, local, camera, prankLayers);
+  if (image === 'team-prank' || image === 'team-prank-reaction') {
+    drawTeamPrank(ctx, local, camera, prankLayers, image === 'team-prank-reaction');
+    ctx.restore();
+    return;
+  }
+
+  if (image === 'tail-copter') {
+    drawTailCopter(ctx, local, energy, copterRoofs, copterCat);
+    ctx.restore();
+    return;
+  }
+
+  if (image === 'titan-breach') {
+    drawTitanBreach(ctx, local, energy, art, titanScouts, titanGate);
+    ctx.restore();
+    return;
+  }
+
+  if (image === 'cast-mentor') {
+    drawMentorPrism(ctx, local, energy, camera, frontLineLogo, mentorWink, art);
     ctx.restore();
     return;
   }

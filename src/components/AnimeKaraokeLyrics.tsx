@@ -5,7 +5,7 @@ import styles from './AnimeExperience.module.css';
 
 const colors = ['#ffdd60', '#5ef2ff', '#ff7eb2', '#9bf998', '#c4a2ff'];
 
-export function AnimeKaraokeLyrics({ line, syllable }: { line: number; syllable: number }) {
+export function AnimeKaraokeLyrics({ line, syllable, position }: { line: number; syllable: number; position?: 'top' }) {
   const lyric = animeSubtitles[line];
   if (!lyric) return null;
 
@@ -14,7 +14,7 @@ export function AnimeKaraokeLyrics({ line, syllable }: { line: number; syllable:
   const color = colors[(syllable + colors.length) % colors.length];
 
   return (
-    <div className={styles.subtitles} style={{ '--karaoke-color': color } as CSSProperties}>
+    <div className={styles.subtitles} data-position={position} style={{ '--karaoke-color': color } as CSSProperties}>
       <p lang="ja" className={styles.japanese} aria-label={japanese}>
         {groups.map(({ text, moras, first }) => {
           const active = syllable >= first && syllable < first + moras.length;

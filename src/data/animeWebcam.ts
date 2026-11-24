@@ -17,7 +17,7 @@ const sceneReactions: Record<string, readonly [Reaction, number, number]> = {
   'spirit-bomb': ['unhinged', 5.18, 1],
   'team-dawn': ['ecstatic', 4.6, 0.94],
   'team-prank': ['ecstatic', 5.02, 0.72],
-  'golden-door': ['spent', 9.5, 0.49],
+  'titan-breach': ['stunned', 3.63, 0.76],
 };
 
 const events = animeShots.flatMap(([at, image]) => {

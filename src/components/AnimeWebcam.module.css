@@ -277,3 +277,15 @@
 @media (prefers-reduced-motion: reduce) {
   .webcam .deathNote, .webcam .clutchPaw, .webcam .clutchExpression { display: none; }
 }
+
+.offeringPaws {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  display: none;
+  transform: translateY(calc((1 - var(--cam-offering, 0)) * 82%));
+}
+
+.webcam[data-offering='true'] .offeringPaws { display: block; }
+.webcam[data-offering='true'] .paws { visibility: hidden; }
+.webcam[data-offering='true'] .pupils { transform: translate(-5px, -7px); }

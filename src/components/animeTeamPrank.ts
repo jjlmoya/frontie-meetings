@@ -56,23 +56,18 @@ function groundShadow(ctx: Context, x: number, y: number, width: number, height:
   ctx.restore();
 }
 
-function drawTeam(ctx: Context, sheet: HTMLImageElement, local: number, close: boolean) {
-  const cast = close ? [
+function drawTeam(ctx: Context, sheet: HTMLImageElement, local: number) {
+  const cast = [
     [127, 564, 494, .29, 12.6],
     [346, 568, 458, .37, 13.7],
     [568, 579, 503, .45, 12.0],
     [808, 568, 470, .54, 11.3],
-  ] : [
-    [621, 355, 175, .29, 12.6],
-    [710, 355, 168, .37, 13.7],
-    [800, 355, 178, .45, 12.0],
-    [894, 355, 166, .54, 11.3],
   ];
   for (const [i, [x, floor, height, delay, frequency]] of cast.entries()) {
     const elapsed = local - impact - delay;
     const laugh = ease(elapsed / .15);
     const wave = Math.sin(elapsed * frequency + i * .73);
-    const lift = laugh * Math.abs(wave) * (4 + i % 3 * 1.4) * (close ? 1.9 : 1);
+    const lift = laugh * Math.abs(wave) * (4 + i % 3 * 1.4) * 1.9;
     const reaction = laugh * (.035 + wave * .034) * (i % 2 === 0 ? -1 : 1);
     const grin = Math.sin(local * 3 + i) * .009;
     sprite(ctx, sheet, teamBox, i, x + wave * laugh * 2.2, floor - lift, height, reaction + grin);
@@ -129,7 +124,7 @@ function drawSurprise(ctx: Context, x: number, y: number, phase: number) {
   ctx.restore();
 }
 
-export function drawTeamPrank(ctx: Context, local: number, camera?: Camera, layers?: PrankLayers) {
+export function drawTeamPrank(ctx: Context, local: number, camera?: Camera, layers?: PrankLayers, reaction = false) {
   if (!warmed(layers)) return;
   ctx.save();
   if (camera) {
@@ -142,23 +137,11 @@ export function drawTeamPrank(ctx: Context, local: number, camera?: Camera, laye
   ctx.drawImage(layers.roof, 0, 0, 960, 540);
   ctx.filter = 'none';
 
-  // Cut to the team's reaction on the 0:22 drum fill.
-  const close = local >= 4;
-  drawTeam(ctx, layers.team, local, close);
-  if (close) {
+  if (reaction) {
+    drawTeam(ctx, layers.team, local + 4);
     ctx.restore();
     return;
   }
-
-  // Restore the low railing and the floor in front of the team.
-  const roof = layers.roof;
-  const sx = roof.naturalWidth / 960;
-  const sy = roof.naturalHeight / 540;
-  ctx.filter = 'saturate(1.07) contrast(1.04)';
-  for (const [top, height] of [[275, 13], [328, 212]]) {
-    ctx.drawImage(roof, 563 * sx, top * sy, 397 * sx, height * sy, 563, top, 397, height);
-  }
-  ctx.filter = 'none';
 
   const age = local - impact;
   const flight = clamp(age / .91);

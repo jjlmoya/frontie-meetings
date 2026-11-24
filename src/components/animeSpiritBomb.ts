@@ -158,3 +158,87 @@ export function drawSpiritBomb(ctx: Context, local: number, progress: number, en
   }
   ctx.restore();
 }
+
+export const spiritBombPaws = 'otaku-spirit-paws.webp';
+
+export function spiritBombGesture(local: number) {
+  const raise = limit((local - .12) / .57);
+  return 1 - (1 - raise) ** 3;
+}
+
+export function drawStreamerOffering(
+  ctx: Context, local: number, progress: number, energy: number,
+  camera: Camera,
+) {
+  const charge = limit((local - .58) / .46) * limit((1 - progress) / .065);
+  if (charge <= 0) return;
+  const grown = progress ** 1.55;
+  const lift = spiritBombGesture(local);
+  const bottom = 540 * .87;
+  // Match the webcam's fixed placement and the raised sprite's two palm centers.
+  const camWidth = 960 * .214;
+  const camLeft = 960 * .75;
+  const rise = (1 - lift) * camWidth * .82;
+  const palmHeight = bottom - camWidth * .79 + rise;
+  const palms = [camLeft + camWidth * .15, camLeft + camWidth * .85];
+  const targetX = 480 + camera.x * 9.6;
+  const targetY = 270 + camera.y * 5.4 + (228 - 80 * grown - 270) * camera.scale;
+
+  ctx.save();
+  ctx.scale(ctx.canvas.width / 960, ctx.canvas.height / 540);
+  ctx.lineCap = 'round';
+  ctx.globalCompositeOperation = 'screen';
+
+  for (const [side, x] of palms.entries()) {
+    const y = palmHeight;
+    const pull = (step: number, wave = 0) => {
+      const u = 1 - step;
+      const arc = Math.sin(step * Math.PI) * wave;
+      const fromX = x + (side ? 16 : -23);
+      const fromY = y - 151 - side * 36;
+      const toX = targetX + 151 + side * 38;
+      const toY = targetY + 86 - side * 17;
+      return [
+        u ** 3 * x + 3 * u ** 2 * step * fromX + 3 * u * step ** 2 * toX + step ** 3 * targetX,
+        u ** 3 * y + 3 * u ** 2 * step * fromY + 3 * u * step ** 2 * toY + step ** 3 * targetY + arc,
+      ] as const;
+    };
+
+    for (let i = 0; i < 6; i++) {
+      const seed = rhythm(i + 2 + side * 9);
+      const phase = (local * (1.28 + seed * .52) + i / 6 + side * .17) % 1;
+      const tail = .075 + seed * .18;
+      const head = pull(phase, Math.sin(local * 9 + i) * 12);
+      const glow = Math.sin(phase * Math.PI) ** .5 * charge * (.61 + energy * .39);
+      const trail = (width: number, color: string, opacity: number) => {
+        ctx.beginPath();
+        for (let k = 0; k <= 8; k++) {
+          const point = pull(Math.max(0, phase - tail + tail * k / 8), Math.sin(local * 9 + i) * 12);
+          if (k === 0) ctx.moveTo(...point);
+          else ctx.lineTo(...point);
+        }
+        ctx.lineWidth = width;
+        ctx.strokeStyle = color;
+        ctx.globalAlpha = glow * opacity;
+        ctx.stroke();
+      };
+      trail(8 + seed * 7, '#168ce7', .37);
+      trail(2.05 + seed * 1.7, '#9af5ff', .85);
+      ctx.globalAlpha = glow;
+      ctx.fillStyle = '#f0ffff';
+      ctx.beginPath();
+      ctx.arc(...head, 1.4 + seed * 2, 0, turn);
+      ctx.fill();
+    }
+
+    const light = ctx.createRadialGradient(x, y, 1, x, y, 25 + energy * 11);
+    light.addColorStop(0, '#f3ffff');
+    light.addColorStop(.17, '#86f5ffda');
+    light.addColorStop(.57, '#2ca9ff50');
+    light.addColorStop(1, '#2277ff00');
+    ctx.globalAlpha = charge * (.64 + energy * .3);
+    ctx.fillStyle = light;
+    ctx.fillRect(x - 36, y - 36, 72, 72);
+  }
+  ctx.restore();
+}
