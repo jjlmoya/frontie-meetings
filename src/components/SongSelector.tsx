@@ -48,7 +48,7 @@ export function SongSelector() {
       <section className={styles.grid} aria-label="Songs">
         {MEETINGS_CONFIG.map((song, index) => (
           <Link
-            className={`${styles.card} ${song.id === 'wannabe' ? styles.wannabeCard : ''} ${song.id === 'jazz' ? styles.jazzCard : ''} ${song.id === 'winter' ? styles.winterCard : ''}`}
+            className={`${styles.card} ${song.id === 'wannabe' ? styles.wannabeCard : ''} ${song.id === 'jazz' ? styles.jazzCard : ''} ${song.id === 'winter' ? styles.winterCard : ''} ${song.id === 'anime' ? styles.animeCard : ''}`}
             href={`/?config=${encodeURIComponent(song.id)}`}
             key={song.id}
             style={{
@@ -60,7 +60,9 @@ export function SongSelector() {
             <div className={styles.art}>
               <Image
                 className={styles.coverImage}
-                src={song.id === 'jazz' ? '/assets/jazz/layers/jazz-banner.webp' : `/assets/covers-art/${song.id}.webp`}
+                src={song.id === 'jazz'
+                  ? '/assets/jazz/layers/jazz-banner.webp'
+                  : `/assets/covers-art/${song.id === 'anime' ? 'anime-kamehameha' : song.id}.webp`}
                 alt=""
                 fill
                 sizes="(max-width: 720px) 94vw, (max-width: 1200px) 46vw, 44vw"
@@ -69,7 +71,7 @@ export function SongSelector() {
               {song.id !== 'winter' && (
                 <>
                   <span className={styles.artShade} />
-                  <span className={styles.songName}>{song.name.trim()}</span>
+                  <span className={styles.songName} lang={song.id === 'anime' ? 'ja' : undefined}>{song.name.trim()}</span>
                 </>
               )}
             </div>

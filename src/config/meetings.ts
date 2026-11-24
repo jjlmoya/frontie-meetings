@@ -1,6 +1,21 @@
 import type { MeetingConfig } from '@/types';
+import { ANIME_AUDIO, ANIME_TITLE } from '@/data/animeOpening';
 
 export const MEETINGS_CONFIG: readonly MeetingConfig[] = [
+  {
+    id: 'anime',
+    name: ANIME_TITLE,
+    type: 'creative',
+    schedule: [],
+    assets: { audio: ANIME_AUDIO },
+    style: {
+      fontFamily: 'system-ui, sans-serif',
+      fallbackFont: 'sans-serif',
+      primaryColor: '#ff4f88',
+      backgroundColor: '#0b1019',
+      textAnimation: 'funky-chaos',
+    },
+  },
   {
     id: 'winter',
     name: 'When the World Stands Still',

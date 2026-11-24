@@ -218,6 +218,19 @@
 .winterCard .coverImage,
 .winterCard:hover .coverImage { filter: none; transform: none; }
 
+.animeCard .art::before { content: none; }
+.animeCard .art::after { border-left-color: #58dcff; }
+.animeCard .coverImage,
+.animeCard:hover .coverImage { filter: none; }
+.animeCard .artShade {
+  background: linear-gradient(0deg, #070c27d9, #0a103e36 43%, transparent 61%);
+}
+.animeCard .songName {
+  color: #f4fdff;
+  font-weight: 900;
+  text-shadow: 0 2px 3px #071330, 0 0 15px #15628a;
+}
+
 .wannabeCard .coverImage { object-position: center 48%; }
 .jazzCard .coverImage { filter: saturate(.82) contrast(1.12) brightness(.9); }
 .jazzCard:hover .coverImage { filter: saturate(.94) contrast(1.1) brightness(.98); }

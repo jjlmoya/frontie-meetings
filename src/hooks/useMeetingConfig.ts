@@ -34,7 +34,7 @@ export const useMeetingConfig = () => {
         if (isMounted) {
           setConfig(currentConfig);
           
-          if (currentConfig && currentConfig.id !== 'medieval' && currentConfig.id !== 'campfire') {
+          if (currentConfig && currentConfig.id !== 'medieval' && currentConfig.id !== 'campfire' && currentConfig.id !== 'anime') {
             await meetingService.preloadCurrentAssets(currentConfig);
           }
         }
@@ -73,7 +73,7 @@ export const useMeetingConfig = () => {
       const currentConfig = await meetingService.getCurrentMeetingConfig(queryConfig || undefined);
       setConfig(currentConfig);
       
-      if (currentConfig && currentConfig.id !== 'medieval' && currentConfig.id !== 'campfire') {
+      if (currentConfig && currentConfig.id !== 'medieval' && currentConfig.id !== 'campfire' && currentConfig.id !== 'anime') {
         await meetingService.preloadCurrentAssets(currentConfig);
       }
     } catch (err) {
