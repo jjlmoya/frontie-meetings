@@ -9,12 +9,19 @@ import cues from '@/data/animeAnimationCues.json';
 import { animeKaraoke } from '@/data/animeKaraoke';
 import { AnimeKaraokeLyrics } from './AnimeKaraokeLyrics';
 import { AnimeWebcam, paintAnimeWebcam } from './AnimeWebcam';
-import { webcamViseme } from '@/data/animeWebcam';
+import { deathNoteWebcamFrame, webcamViseme } from '@/data/animeWebcam';
 import type { FrontieViseme } from '@/data/animeWebcam';
+import { kiraCleanPlate } from './animeCharacterActing';
+import { teamPrankKick, teamPrankLayers } from './animeTeamPrank';
+import { clawPressure, cutActionPlates, hasCutActionPlate, katanaRecoil, katanaSprite } from './animeCutActions';
+import { hasLateBeatPlate, isLateBeatShot, keyImpact, lateBeatPlates, perceptionOnset } from './animeLateBeats';
+import { closedMonitorShot } from './animeOpeningEyes';
 import { drawAnimeOpeningEffects } from './animeOpeningEffects';
 import styles from './AnimeExperience.module.css';
 
 const ASSETS = '/assets/anime/';
+const shotSource = (image: string) => image === 'monitor'
+  ? `${ASSETS}${closedMonitorShot}` : `${ASSETS}shots/${image}.webp`;
 const cueTrack = cues.tracks;
 
 // A continuous coil around the beam. The audio position clips the beam and coil together.
@@ -34,6 +41,8 @@ function cueFor(track: number[], time: number) {
 export function AnimeExperience() {
   const audioRef = useRef<HTMLAudioElement>(null);
   const backdrop = useRef<HTMLDivElement>(null);
+  const shotArt = useRef<HTMLImageElement>(null);
+  const redrawEffects = useRef<(() => void) | null>(null);
   const canvas = useRef<HTMLCanvasElement>(null);
   const camera = useRef<HTMLDivElement>(null);
   const started = useRef(false);
@@ -82,7 +91,7 @@ export function AnimeExperience() {
       warmed.add(image);
       const preload = new window.Image();
       preload.onerror = () => warmed.delete(image);
-      preload.src = `${ASSETS}shots/${image}.webp`;
+      preload.src = shotSource(image);
     }
   }, [shotIndex]);
 
@@ -100,6 +109,23 @@ export function AnimeExperience() {
     let lastMouth: FrontieViseme = 'rest';
     let lastLine = -1;
     let lastSyllable = -1;
+    const cleanPlate = new window.Image();
+    const monitorOpen = new window.Image();
+    const katana = new window.Image();
+    const prankLayers = { roof: new window.Image(), frontie: new window.Image(), partner: new window.Image(), team: new window.Image() };
+    const cutPlates = {
+      'dawn-eye': new window.Image(),
+      rasengan: new window.Image(),
+      'three-crescents': new window.Image(),
+      'transit-open': new window.Image(),
+      'key-strike': new window.Image(),
+    };
+    const beatPlates = {
+      breaker: new window.Image(),
+      tired: new window.Image(),
+      paw: new window.Image(),
+      'distant-orb': new window.Image(),
+    };
 
     const renderFrame = () => {
       const current = audio.currentTime;
@@ -126,7 +152,8 @@ export function AnimeExperience() {
       }
 
       const reduced = motion.matches;
-      const allowed = !audio.paused && !reduced && activeLine >= 0;
+      const deathNote = deathNoteWebcamFrame(current, reduced);
+      const allowed = !audio.paused && !reduced && !deathNote && activeLine >= 0;
       // Hold short dips so the mouth doesn't chatter between adjacent syllables.
       const nextMouth = allowed ? webcamViseme(activeLine, activeSyllable, vocal, lastMouth) : 'rest';
       if (nextMouth !== lastMouth && (!allowed || seek || current - lastMouthChange >= 0.036)) {
@@ -135,9 +162,10 @@ export function AnimeExperience() {
         lastMouthChange = current;
       }
 
-      if (camera.current) paintAnimeWebcam(camera.current, current, audio.paused ? 0 : vocal, audio.paused ? 0 : energy, reduced);
+      if (camera.current) paintAnimeWebcam(camera.current, current, audio.paused ? 0 : vocal, audio.paused ? 0 : energy, reduced, deathNote);
 
-      if (!reduced && (Math.abs(current - lastDrawnTime) >= 0.019 || seek)) {
+      const drawInterval = image === 'three-crescents' || image === 'team-prank' ? .012 : .019;
+      if (!reduced && (Math.abs(current - lastDrawnTime) >= drawInterval || seek)) {
         const cameraProgress = activeShot === animeShots.length - 1 ? 1 - progress : progress;
         const locked = effect === 'manga' || effect === 'kira' || image === 'red-power';
         const quiet = effect === 'still';
@@ -146,13 +174,47 @@ export function AnimeExperience() {
         const lift = locked ? 0 : quiet ? 0.12 : flying ? -0.7 : effect === 'slash' ? -2.6 : -1.35;
         const impact = effect === 'slash' ? Math.max(0, 0.1 - local * 0.22) : 0;
         const spring = effect === 'gear' ? Math.sin(local * 16) * Math.exp(-local * 2.6) : 0;
-        const zoom = locked ? 1 : effect === 'gear' ? 1.055 + cameraProgress * 0.05
+        const moonRelease = image === 'sailor-moon' ? Math.max(0, local - 1.23) : 0;
+        const moonKick = moonRelease > 0 ? Math.sin(moonRelease * 46) * Math.exp(-moonRelease * 12) : 0;
+        const landingBeat = local - .12;
+        const landingKick = image === 'combat-land' && landingBeat > 0
+          ? Math.sin(landingBeat * 49) * Math.exp(-landingBeat * 10) : 0;
+        const writingFocus = image === 'kira' ? Math.max(0, Math.min(1, (local - .16) / .62)) : 0;
+        const strikeAge = local - keyImpact;
+        const keyKick = image === 'paw' && strikeAge > 0
+          ? Math.cos(strikeAge * 51) * Math.exp(-strikeAge * 14) : 0;
+        const perceptionAge = local - perceptionOnset;
+        const perceptionKick = image === 'crest-ignites' && perceptionAge > 0
+          ? Math.cos(perceptionAge * 34) * Math.exp(-perceptionAge * 4.5) : 0;
+        const swordKick = image === 'three-crescents' ? katanaRecoil(local) : 0;
+        const prankKick = image === 'team-prank' ? teamPrankKick(local) : 0;
+        const tapping = image === 'key-strike' ? clawPressure(local) : 0;
+        const rasenganDrive = image === 'rasengan' ? Math.max(0, (local - 1.76) / .48) : 0;
+        const zoom = image === 'kira' ? 1 + writingFocus * .22
+          : image === 'sailor-moon' ? 1.18 - progress * .1 + moonKick * .026
+          : image === 'combat-land' ? 1.04 + progress * .032 + landingKick * .02
+          : image === 'rain-blade' ? 1.06 + progress * .044
+          : image === 'team-prank' ? 1.035 + progress * .048 + prankKick * .031
+          : image === 'spirit-bomb' ? 1.075 - progress * .035
+          : image === 'rasengan' ? 1.07 + progress * .085 + Math.min(1, rasenganDrive) * .21
+          : image === 'three-crescents' ? 1.045 + progress * .04 + swordKick * .037
+          : image === 'key-strike' ? 1.075 + progress * .06 + tapping * .016
+          : image === 'paw' ? 1.09 + progress * .09 + keyKick * .054
+          : image === 'crest-ignites' ? 1.1 + progress * .10 + perceptionKick * .063
+          : locked ? 1 : effect === 'gear' ? 1.055 + cameraProgress * 0.05
           : flying ? 1.045 + cameraProgress * 0.038 : quiet ? 1.01 + cameraProgress * 0.02 : 1.10 + cameraProgress * 0.13;
-        const direction = effect === 'run' || effect === 'train' || flying || activeShot % 2 === 0 ? 1 : -1;
-        stage.style.setProperty('--camera-x', `${(cameraProgress - 0.5) * distance * direction}%`);
+        // Preserve the camera directions of cuts after merged shots.
+        const panIndex = activeShot + Number(start >= 7.85) + Number(start >= 23.02) + Number(start >= 37) + Number(start >= 46.68) + Number(start >= 85.64);
+        const direction = effect === 'run' || effect === 'train' || flying || panIndex % 2 === 0 ? 1 : -1;
         const bank = flying ? 0.8 + Math.sin(local * 3.5) * 1.05 : 0;
-        stage.style.setProperty('--camera-y', `${Math.sin(cameraProgress * Math.PI) * lift - spring * 2 + bank}%`);
-        stage.style.setProperty('--camera-scale', String(zoom + impact + spring * 0.042));
+        const pictureMotion = {
+          x: (cameraProgress - 0.5) * distance * direction + moonKick * .75 + writingFocus * 3.5 + keyKick * 1.3 + perceptionKick * 2.2 - swordKick * 1.35 - prankKick * .7 - (image === 'team-prank' ? Math.max(0, progress - .61) * 10 : 0),
+          y: Math.sin(cameraProgress * Math.PI) * lift - spring * 2 + bank - moonKick * .55 + landingKick * 1.4 - writingFocus * 3.9 + keyKick * 3.2 - perceptionKick * 2.05 + tapping * .85 + swordKick * 1.25 + prankKick * 1.3,
+          scale: zoom + (image === 'rain-blade' || image === 'three-crescents' ? 0 : impact) + spring * 0.042,
+        };
+        stage.style.setProperty('--camera-x', `${pictureMotion.x}%`);
+        stage.style.setProperty('--camera-y', `${pictureMotion.y}%`);
+        stage.style.setProperty('--camera-scale', String(pictureMotion.scale));
         const remaining = duration - current;
         const outro = Math.max(0, 1 - remaining / 0.74);
         const intro = Math.max(0, 1 - current / 0.52);
@@ -163,13 +225,49 @@ export function AnimeExperience() {
         stage.style.setProperty('--loop-led', String(audio.paused ? 0 : Math.min(1, bridge * 1.6)));
         stage.style.setProperty('--loop-led-x', `${intro ? 51.4 : 50 + easedTravel * 1.4}%`);
         stage.style.setProperty('--loop-led-y', `${intro ? 57 : 88.5 - easedTravel * 31.5}%`);
-        drawAnimeOpeningEffects(ctx, { effect, image, time: current, local, remaining: end - current, progress, energy });
+        drawAnimeOpeningEffects(ctx, {
+          effect, image, time: current, local, remaining: end - current, progress, energy, camera: pictureMotion,
+          art: shotArt.current?.dataset.shot === image ? shotArt.current : undefined,
+          kiraPlate: cleanPlate,
+          monitorOpen,
+          lateBeatPlate: hasLateBeatPlate(image) ? beatPlates[image] : undefined,
+          cutActionPlate: hasCutActionPlate(image) ? cutPlates[image] : undefined,
+          katanaArt: katana,
+          prankLayers,
+        });
         lastDrawnTime = current;
       } else if (reduced) {
         ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
         lastDrawnTime = current;
       }
     };
+
+    const redraw = () => {
+      lastDrawnTime = -1;
+      renderFrame();
+    };
+    redrawEffects.current = redraw;
+    cleanPlate.onload = redraw;
+    cleanPlate.src = `${ASSETS}${kiraCleanPlate}`;
+    monitorOpen.onload = redraw;
+    monitorOpen.src = `${ASSETS}shots/monitor.webp`;
+
+    for (const name of ['breaker', 'tired', 'paw', 'distant-orb'] as const) {
+      beatPlates[name].onload = redraw;
+      beatPlates[name].src = `${ASSETS}actions/${lateBeatPlates[name]}`;
+    }
+
+    katana.onload = redraw;
+    katana.src = `${ASSETS}${katanaSprite}`;
+    for (const name of ['dawn-eye', 'rasengan', 'three-crescents', 'transit-open', 'key-strike'] as const) {
+      cutPlates[name].onload = redraw;
+      cutPlates[name].src = `${ASSETS}actions/${cutActionPlates[name]}`;
+    }
+
+    for (const name of ['roof', 'frontie', 'partner', 'team'] as const) {
+      prankLayers[name].onload = redraw;
+      prankLayers[name].src = `${ASSETS}actions/${teamPrankLayers[name]}`;
+    }
 
     const tick = () => {
       renderFrame();
@@ -197,6 +295,13 @@ export function AnimeExperience() {
     else renderFrame();
 
     return () => {
+      cleanPlate.onload = null;
+      monitorOpen.onload = null;
+      katana.onload = null;
+      for (const layer of Object.values(prankLayers)) layer.onload = null;
+      for (const plate of Object.values(beatPlates)) plate.onload = null;
+      for (const plate of Object.values(cutPlates)) plate.onload = null;
+      redrawEffects.current = null;
       cancelAnimationFrame(frame);
       audio.removeEventListener('play', startFrames);
       audio.removeEventListener('pause', stopFrames);
@@ -228,10 +333,13 @@ export function AnimeExperience() {
               backgroundPosition: `50% ${lastPaintedShot[3] ?? 50}%`,
             }}
           />}
-          <Image key={shot[1]} alt="" fill sizes="100vw" priority={shotIndex === 0} unoptimized
-            className={styles.shot} src={`${ASSETS}shots/${shot[1]}.webp`}
+          <Image key={shot[1]} ref={shotArt} data-shot={shot[1]} alt="" fill sizes="100vw" priority={shotIndex === 0} unoptimized
+            className={styles.shot} src={shotSource(shot[1])}
             style={{ objectPosition: `50% ${shot[3] ?? 50}%` }}
-            onLoad={() => setLastPaintedShot(shot)}
+            onLoad={() => {
+              setLastPaintedShot(shot);
+              if (shot[1] === 'kira' || isLateBeatShot(shot[1]) || hasCutActionPlate(shot[1])) redrawEffects.current?.();
+            }}
           />
           <canvas ref={canvas} className={styles.effects} width={1280} height={720} aria-hidden="true" />
           <div className={styles.grade} aria-hidden="true" />
@@ -240,7 +348,7 @@ export function AnimeExperience() {
 
         <Link href="/" className={styles.home} aria-label="Back to song selector">FRONT-LINE</Link>
 
-        <AnimeWebcam cameraRef={camera} corner={shot[2] === 'kira' ? 'top-left' : undefined} viseme={mouth} />
+        <AnimeWebcam cameraRef={camera} viseme={mouth} />
 
         {titleVisible && <div className={styles.title}>
           <h1 lang="ja">{ANIME_TITLE}</h1>

@@ -1,6 +1,7 @@
 import Image from 'next/image';
+import { preload } from 'react-dom';
 import type { CSSProperties, RefObject } from 'react';
-import { animeWebcamFrame } from '@/data/animeWebcam';
+import { animeWebcamFrame, deathNoteWebcamFrame } from '@/data/animeWebcam';
 import type { FrontieViseme } from '@/data/animeWebcam';
 import styles from './AnimeWebcam.module.css';
 
@@ -56,17 +57,30 @@ function SingingMouth({ viseme }: { viseme: FrontieViseme }) {
   );
 }
 
-export function paintAnimeWebcam(element: HTMLDivElement, time: number, vocal: number, band: number, reduced: boolean) {
+export function paintAnimeWebcam(
+  element: HTMLDivElement, time: number, vocal: number, band: number, reduced: boolean,
+  gag: ReturnType<typeof deathNoteWebcamFrame>,
+) {
   const frame = animeWebcamFrame(time, vocal, band, reduced);
+  element.dataset.deathNote = gag?.phase ?? '';
+  if (gag) {
+    element.style.setProperty('--dn-clutch', gag.clutch.toFixed(3));
+    element.style.setProperty('--dn-red', gag.red.toFixed(3));
+    element.style.setProperty('--dn-ecg', gag.ecg.toFixed(3));
+    element.style.setProperty('--dn-letter', gag.letter.toFixed(3));
+    element.style.setProperty('--dn-fist', gag.punch.toFixed(3));
+    element.style.setProperty('--dn-fracture', gag.fracture.toFixed(3));
+    element.style.setProperty('--dn-hit', gag.hit.toFixed(3));
+  }
   element.dataset.reaction = frame.mood;
-  element.dataset.blink = String(frame.blink);
+  element.dataset.blink = String(gag ? gag.phase === 'fall' || gag.phase === 'down' : frame.blink);
   element.dataset.reflection = frame.reflection;
-  element.style.setProperty('--cam-vocal', vocal.toFixed(3));
-  element.style.setProperty('--cam-x', `${frame.x.toFixed(2)}%`);
-  element.style.setProperty('--cam-y', `${frame.y.toFixed(2)}%`);
-  element.style.setProperty('--cam-tilt', `${frame.rotate.toFixed(2)}deg`);
-  element.style.setProperty('--cam-zoom', frame.scale.toFixed(3));
-  element.style.setProperty('--cam-squish', frame.squish.toFixed(3));
+  element.style.setProperty('--cam-vocal', (gag ? 0 : vocal).toFixed(3));
+  element.style.setProperty('--cam-x', `${(gag?.x ?? frame.x).toFixed(2)}%`);
+  element.style.setProperty('--cam-y', `${(gag?.y ?? frame.y).toFixed(2)}%`);
+  element.style.setProperty('--cam-tilt', `${(gag?.tilt ?? frame.rotate).toFixed(2)}deg`);
+  element.style.setProperty('--cam-zoom', (gag ? 1 : frame.scale).toFixed(3));
+  element.style.setProperty('--cam-squish', (gag ? 1 : frame.squish).toFixed(3));
   element.style.setProperty('--cam-glow', frame.glow.toFixed(3));
   element.style.setProperty('--cam-heat', frame.heat.toFixed(3));
   element.style.setProperty('--cam-paws', frame.paws.toFixed(3));
@@ -105,13 +119,56 @@ function ElasticEye({ x, y, side }: { x: number; y: number; side: 'left' | 'righ
   );
 }
 
-export function AnimeWebcam({ cameraRef, corner, viseme }: {
+function DeathNoteReaction() {
+  const insignia = `${ASSETS}death-note-l.webp`;
+  preload(insignia, { as: 'image' });
+  return (
+    <div className={styles.deathNote} aria-hidden="true">
+      <svg className={styles.flatline} viewBox="0 0 1000 1000">
+        <path d="M73 704 H214 L250 666 L281 738 L319 612 L361 704 H927" />
+      </svg>
+      <div className={styles.letterPanel}>
+        <svg viewBox="0 0 1000 1000">
+          <defs>
+            {/* Insignia from the L: Change the World logo, archived on Wikimedia Commons. */}
+            <image id="frontie-detective-l" href={insignia}
+              x="146" y="207" width="708" height="586" />
+            <clipPath id="frontie-detective-left">
+              <path d="M0 0 H693 L573 302 L593 333 L494 557 L508 594 L326 1000 H0Z" />
+            </clipPath>
+            <clipPath id="frontie-detective-right">
+              <path d="M693 0 H1000 V1000 H326 L508 594 L494 557 L593 333 L573 302Z" />
+            </clipPath>
+          </defs>
+          <g className={styles.letterIntact}>
+            <path d="M0 0 H1000 V1000 H0Z" fill="#fff" />
+            <use href="#frontie-detective-l" />
+          </g>
+          <g className={styles.letterLeft} clipPath="url(#frontie-detective-left)">
+            <path d="M0 0 H1000 V1000 H0Z" fill="#fff" />
+            <use href="#frontie-detective-l" />
+          </g>
+          <g className={styles.letterRight} clipPath="url(#frontie-detective-right)">
+            <path d="M0 0 H1000 V1000 H0Z" fill="#fff" />
+            <use href="#frontie-detective-l" />
+          </g>
+          <path className={styles.fractureLine} d="M693 18 L573 302 L593 333 L494 557 L508 594 L326 980"
+            fill="none" stroke="#ffedbc" strokeWidth="13" strokeLinejoin="round" />
+        </svg>
+      </div>
+      <div className={styles.knockoutFist}>
+        <Image src={`${ASSETS}otaku-paws.webp`} alt="" fill sizes="22vw" unoptimized />
+      </div>
+    </div>
+  );
+}
+
+export function AnimeWebcam({ cameraRef, viseme }: {
   cameraRef: RefObject<HTMLDivElement | null>;
-  corner?: 'top-left';
   viseme: FrontieViseme;
 }) {
   return (
-    <div ref={cameraRef} className={styles.webcam} data-corner={corner} role="img"
+    <div ref={cameraRef} className={styles.webcam} role="img"
       aria-label="Frontie singing karaoke into his webcam">
       <div className={styles.feed}>
         <Image src={`${ASSETS}otaku-room.webp`} alt="" fill unoptimized sizes="22vw" className={styles.room} />
@@ -171,8 +228,15 @@ export function AnimeWebcam({ cameraRef, corner, viseme }: {
                 <path d="M257 390 H636 V532 H257Z M447 390 H794 V532 H447Z" fill="url(#frontie-monitor-reflection)" />
               </g>
             </g>
+            <g className={styles.clutchExpression}>
+              <path d="M459 572 Q477 550 501 561 Q520 578 498 603 Q467 605 459 572Z" fill="#180f17" stroke="#3d2428" strokeWidth="4" />
+              <path d="M469 568 Q486 559 502 568 L497 576 L473 576Z" fill="#fce4a9" />
+            </g>
             <SingingMouth viseme={viseme} />
           </svg>
+          <div className={styles.clutchPaw} aria-hidden="true">
+            <Image src={`${ASSETS}otaku-paws.webp`} alt="" fill sizes="22vw" unoptimized />
+          </div>
         </div>
         <Image src={`${ASSETS}otaku-frontie-upright.webp`} alt="" fill unoptimized sizes="22vw" className={styles.microphone} />
         <div className={styles.paws} aria-hidden="true">
@@ -200,6 +264,7 @@ export function AnimeWebcam({ cameraRef, corner, viseme }: {
         <ElasticEye x={551} y={448} side="right" />
         <ElasticEye x={410} y={451} side="left" />
       </svg>
+      <DeathNoteReaction />
       <div className={styles.screen} aria-hidden="true" />
       <span className={styles.live} aria-hidden="true">LIVE</span>
       <div className={styles.meter} aria-hidden="true"><span /><span /><span /><span /></div>

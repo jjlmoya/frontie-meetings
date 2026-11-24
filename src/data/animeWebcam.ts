@@ -14,9 +14,9 @@ const sceneReactions: Record<string, readonly [Reaction, number, number]> = {
   'worry-profile': ['bracing', 4.1, 0.68],
   'crest-ignites': ['eager', 4.4, 0.8],
   'distant-orb': ['unhinged', 2.57, 1],
-  'energy-push': ['unhinged', 5.18, 1],
+  'spirit-bomb': ['unhinged', 5.18, 1],
   'team-dawn': ['ecstatic', 4.6, 0.94],
-  'bridge-light': ['eager', 0.8, 0.48],
+  'team-prank': ['ecstatic', 5.02, 0.72],
   'golden-door': ['spent', 9.5, 0.49],
 };
 
@@ -106,5 +106,45 @@ export function animeWebcamFrame(time: number, vocal: number, band: number, redu
     hit: reduced ? 0 : hit,
     cameraKick: reduced ? 0 : Math.cos(hitAge * 36) * hit,
     eyeStretch: reduced ? 0 : eyeStretch,
+  };
+}
+
+export const KIRA_FINAL_STROKE = 52.74;
+const letterStrike = 54.04;
+const singingReturns = 54.44;
+
+export function deathNoteWebcamFrame(time: number, reduced: boolean) {
+  if (reduced || time < KIRA_FINAL_STROKE || time >= singingReturns) return null;
+
+  const smooth = (value: number) => {
+    const p = clamp(value);
+    return p * p * (3 - 2 * p);
+  };
+
+  // The final pen stroke, knockout and letter strike stay tied to the master clock.
+  const elapsed = time - KIRA_FINAL_STROKE;
+  const recoil = Math.sin(elapsed * 31) * Math.exp(-elapsed * 9);
+  const drop = smooth((elapsed - .18) / .36);
+  const rise = smooth((time - 53.76) / .59);
+  const down = drop * (1 - rise);
+  const strikeAge = time - letterStrike;
+  const anticipation = smooth((strikeAge + .28) / .28);
+  const hit = strikeAge < 0 ? 0 : Math.exp(-strikeAge * 16);
+  const fist = strikeAge < 0 ? anticipation : 1 - smooth(strikeAge / .32);
+  const phase = elapsed < .19 ? 'shock' : elapsed < .55 ? 'fall' :
+    time < 53.36 ? 'down' : strikeAge < 0 ? 'letter' : 'return';
+
+  return {
+    phase,
+    x: recoil * 3 - down * 15 + hit * 5,
+    y: recoil * -2 + down * 87 - hit * 1.5,
+    tilt: recoil * 5 + down * 39 - hit * 13,
+    clutch: smooth(elapsed / .075) * (1 - smooth((elapsed - .27) / .21)),
+    red: Math.exp(-elapsed * 9.4) * .72,
+    ecg: smooth((elapsed - .16) / .12) * (1 - smooth((time - 53.37) / .15)),
+    letter: smooth((time - 53.36) / .14) * (1 - smooth(strikeAge / .32)),
+    punch: fist,
+    fracture: smooth(strikeAge / .30),
+    hit,
   };
 }

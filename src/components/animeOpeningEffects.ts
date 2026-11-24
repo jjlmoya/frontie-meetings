@@ -1,3 +1,11 @@
+import { drawTeamPrank } from './animeTeamPrank';
+import type { PrankLayers } from './animeTeamPrank';
+import { drawSpiritBomb } from './animeSpiritBomb';
+import { drawAnimeCutAction } from './animeCutActions';
+import { drawAnimeLateBeat } from './animeLateBeats';
+import { drawOpeningEyes } from './animeOpeningEyes';
+import { drawKiraWriting } from './animeCharacterActing';
+import { drawAnimeDrawnAction } from './animeDrawnActions';
 import type { AnimeEffect } from '@/data/animeOpening';
 
 const TAU = Math.PI * 2;
@@ -47,46 +55,6 @@ function drawGearColorBurst(ctx: CanvasRenderingContext2D, local: number) {
     ctx.ellipse(0, 0, radius, radius * 0.8, -0.35, 0, TAU);
     ctx.stroke();
   }
-  ctx.restore();
-}
-
-function drawSailorRibbons(ctx: CanvasRenderingContext2D, local: number, progress: number) {
-  const flutter = Math.sin(local * 9) * 31;
-  const sweep = 250 * progress - 125;
-  const satin = ctx.createLinearGradient(90, 283, 590, 677);
-  satin.addColorStop(0, '#94235f');
-  satin.addColorStop(0.32, '#ef4e97');
-  satin.addColorStop(0.49, '#fff0f2');
-  satin.addColorStop(0.61, '#ff9bc5');
-  satin.addColorStop(0.82, '#d64191');
-  satin.addColorStop(1, '#68255e');
-  ctx.save();
-  ctx.globalAlpha = Math.min(1, progress * 7, (1 - progress) * 8);
-  ctx.translate(sweep, flutter);
-  ctx.beginPath();
-  ctx.moveTo(-190, 506);
-  ctx.bezierCurveTo(50, 548, 340, 602, 468, 488);
-  ctx.bezierCurveTo(555, 411, 756, 339, 906, 454);
-  ctx.bezierCurveTo(1138, 637, 1412, 343, 1440, 222);
-  ctx.bezierCurveTo(1425, 484, 1170, 690, 899, 517);
-  ctx.bezierCurveTo(749, 420, 621, 449, 498, 551);
-  ctx.bezierCurveTo(306, 694, 9, 637, -190, 566);
-  ctx.closePath();
-  ctx.fillStyle = satin;
-  ctx.fill();
-  ctx.lineWidth = 4;
-  ctx.strokeStyle = '#ffd1e1';
-  ctx.stroke();
-
-  ctx.globalAlpha *= 0.64;
-  ctx.beginPath();
-  ctx.moveTo(639, 46);
-  ctx.bezierCurveTo(833, -28, 1201, 75, 1081, 185);
-  ctx.bezierCurveTo(1003, 258, 795, 189, 825, 249);
-  ctx.bezierCurveTo(746, 175, 1005, 201, 1038, 149);
-  ctx.bezierCurveTo(1074, 72, 834, 12, 639, 46);
-  ctx.fill();
-  ctx.stroke();
   ctx.restore();
 }
 
@@ -153,91 +121,6 @@ function drawCardHandoff(ctx: CanvasRenderingContext2D, elapsed: number) {
   ctx.restore();
 }
 
-function drawInkHandoff(ctx: CanvasRenderingContext2D, elapsed: number) {
-  const reveal = elapsed >= 0;
-  const phase = reveal ? elapsed / 0.44 : 1 + elapsed / 0.27;
-  if (phase < 0 || (reveal && phase >= 1)) return;
-
-  const eased = phase * phase * (3 - 2 * phase);
-  const opening = reveal ? eased : 0;
-  const penX = 480;
-  const penY = 491;
-  const centerX = penX - opening * 455;
-  const centerY = penY + opening * 45;
-  const radius = 9 + 1170 * (reveal ? 1 - opening : eased);
-  ctx.save();
-  ctx.fillStyle = '#160d20';
-
-  // The edge starts as a splash at the nib, then takes on the rounded curls of Kintoun.
-  ctx.beginPath();
-  for (let i = 0; i <= 120; i++) {
-    const angle = i / 120 * TAU;
-    const lobes = Math.sin(angle * 8 + 0.9) * (0.068 + opening * 0.045) + Math.cos(angle * 13 - 0.64) * 0.028;
-    const fray = Math.sin(angle * 29) * 0.013 * (reveal ? 1 - opening : 1);
-    const edge = radius * (1 + lobes + fray);
-    const x = centerX + Math.cos(angle) * edge;
-    const y = centerY + Math.sin(angle) * edge * 0.82;
-    if (i === 0) ctx.moveTo(x, y);
-    else ctx.lineTo(x, y);
-  }
-  ctx.closePath();
-  ctx.fill();
-
-  if (reveal) {
-    ctx.save();
-    ctx.clip();
-    const gold = Math.min(1, phase * 3.4);
-    const shade = ctx.createRadialGradient(centerX, centerY + radius * 0.24, radius * 0.12,
-      centerX + radius * 0.17, centerY - radius * 0.14, radius * 1.06);
-    shade.addColorStop(0, '#543020');
-    shade.addColorStop(0.48, '#b85b27');
-    shade.addColorStop(0.81, '#f0a43c');
-    shade.addColorStop(1, '#ffeab0');
-    ctx.globalAlpha = gold;
-    ctx.fillStyle = shade;
-    ctx.fillRect(0, 0, 1280, 720);
-
-    for (let i = 0; i < 21; i++) {
-      const angle = i / 21 * TAU;
-      const swell = random(i + 181);
-      const x = centerX + Math.cos(angle) * radius * (0.65 + swell * 0.33);
-      const y = centerY + Math.sin(angle) * radius * (0.52 + swell * 0.26);
-      const size = radius * (0.09 + swell * 0.17);
-      const curl = ctx.createRadialGradient(x - size * 0.25, y - size * 0.4, 0, x, y, size);
-      curl.addColorStop(0, '#fff3cbeb');
-      curl.addColorStop(0.55, '#ffcf61b8');
-      curl.addColorStop(1, '#e3802500');
-      ctx.globalAlpha = gold * (0.33 + swell * 0.48);
-      ctx.fillStyle = curl;
-      ctx.fillRect(x - size, y - size, size * 2, size * 2);
-    }
-
-    for (let i = 0; i < 260; i++) {
-      ctx.globalAlpha = gold * (0.13 + random(i + 89) * 0.27);
-      ctx.fillStyle = i % 3 ? '#ffd77e' : '#7a361f';
-      const x = centerX + (random(i + 121) * 2 - 1) * radius;
-      const y = centerY + (random(i + 551) * 2 - 1) * radius * 0.82;
-      const size = 0.7 + random(i + 719) * 1.8;
-      ctx.fillRect(x, y, size * 1.7, size);
-    }
-    ctx.restore();
-  }
-
-  for (let i = 0; i < 18; i++) {
-    const angle = random(i + 25) * TAU;
-    const distance = (reveal ? opening : eased) * (145 + random(i + 63) * 688);
-    const x = penX + Math.cos(angle) * distance + (reveal ? opening * 470 : 0);
-    const y = penY + Math.sin(angle) * distance * .72;
-    const size = (3 + random(i + 49) * 19) * (reveal ? 1 - phase : 1 - eased * .45);
-    ctx.fillStyle = reveal ? (i % 3 ? '#ffc350' : '#ffedaa') : '#220e23';
-    ctx.globalAlpha = reveal ? Math.sin(phase * Math.PI) * .85 : Math.min(1, phase * 3);
-    ctx.beginPath();
-    ctx.ellipse(x, y, size * 1.6, size * .7, angle, 0, TAU);
-    ctx.fill();
-  }
-  ctx.restore();
-}
-
 type Frame = {
   effect: AnimeEffect;
   image: string;
@@ -246,43 +129,67 @@ type Frame = {
   remaining: number;
   progress: number;
   energy: number;
+  camera?: { x: number; y: number; scale: number };
+  art?: HTMLImageElement;
+  kiraPlate?: HTMLImageElement;
+  monitorOpen?: HTMLImageElement;
+  lateBeatPlate?: HTMLImageElement;
+  cutActionPlate?: HTMLImageElement;
+  katanaArt?: HTMLImageElement;
+  prankLayers?: PrankLayers;
 };
 
-export function drawAnimeOpeningEffects(ctx: CanvasRenderingContext2D, { effect, image, time, local, remaining, progress, energy }: Frame) {
+export function drawAnimeOpeningEffects(ctx: CanvasRenderingContext2D, { effect, image, time, local, remaining, progress, energy, camera, art, kiraPlate, monitorOpen, lateBeatPlate, cutActionPlate, katanaArt, prankLayers }: Frame) {
   const width = ctx.canvas.width;
   const height = ctx.canvas.height;
   ctx.clearRect(0, 0, width, height);
   ctx.save();
   ctx.scale(width / 1280, height / 720);
 
+  if (image === 'sailor-moon' || image === 'rain-blade' || image === 'combat-land' || image === 'cable-touch') {
+    drawAnimeDrawnAction(ctx, image, local, energy, camera, art);
+    ctx.restore();
+    return;
+  }
+
+  if (image === 'team-prank') {
+    drawTeamPrank(ctx, local, camera, prankLayers);
+    ctx.restore();
+    return;
+  }
+
+  if (image === 'spirit-bomb') {
+    drawSpiritBomb(ctx, local, progress, energy, camera);
+    ctx.restore();
+    return;
+  }
+
+  if (drawAnimeCutAction(ctx, image, local, energy, camera, art, cutActionPlate, katanaArt)) {
+    ctx.restore();
+    return;
+  }
+
+  if (drawAnimeLateBeat(ctx, image, local, energy, camera, art, lateBeatPlate)) {
+    ctx.restore();
+    return;
+  }
+
+  if (image === 'monitor' && monitorOpen) drawOpeningEyes(ctx, monitorOpen, local, camera);
+  if (image === 'kira') drawKiraWriting(ctx, local, art, kiraPlate, camera);
+
   if (effect === 'shoujo') {
-    const moon = image === 'sailor-moon' || image === 'sailor-prism';
-    if (moon) {
-      const charging = image === 'sailor-prism';
-      const ribbonProgress = charging ? progress * 0.42 : 0.42 + progress * 0.58;
-      drawSailorRibbons(ctx, charging ? local : local + 0.7, ribbonProgress);
-    }
     ctx.save();
     ctx.globalCompositeOperation = 'screen';
-    ctx.lineCap = 'round';
     for (let i = 0; i < 34; i++) {
       const seed = random(i + 80);
       const phase = (random(i) + local * (0.24 + seed * 0.25)) % 1;
       const x = (random(i + 170) * 1410 + local * (52 + seed * 166)) % 1410 - 65;
-      const y = moon ? 710 - phase * 660 : phase * 735 - 22;
+      const y = phase * 735 - 22;
       const size = (1.4 + seed * 6.5) * (1 + energy * 0.5);
       ctx.globalAlpha = Math.sin(Math.PI * phase) * (0.32 + seed * 0.43);
-      ctx.fillStyle = i % 3 === 0 ? '#fff9e4' : moon ? '#ffa7ed' : '#ff97b1';
+      ctx.fillStyle = i % 3 === 0 ? '#fff9e4' : '#ff97b1';
       ctx.beginPath();
-      if (moon) {
-        ctx.moveTo(x - size, y);
-        ctx.quadraticCurveTo(x, y - 1, x, y - size * 1.5);
-        ctx.quadraticCurveTo(x + 1, y, x + size, y);
-        ctx.quadraticCurveTo(x, y + 1, x, y + size * 1.5);
-        ctx.quadraticCurveTo(x - 1, y, x - size, y);
-      } else {
-        ctx.ellipse(x, y, size, size * 0.5, local * (1.6 + seed) + i, 0, TAU);
-      }
+      ctx.ellipse(x, y, size, size * 0.5, local * (1.6 + seed) + i, 0, TAU);
       ctx.fill();
     }
     ctx.restore();
@@ -363,9 +270,15 @@ export function drawAnimeOpeningEffects(ctx: CanvasRenderingContext2D, { effect,
   }
 
   if (effect === 'kira') {
-    const stop = 0.64;
-    const surge = Math.max(0, 1 - Math.abs(progress - stop) * 13);
+    // The last stroke lands at 52.74, just before the cut to Nimbus.
+    const stop = 2.11;
+    const surge = Math.max(0, 1 - Math.abs(local - stop) * 16);
     ctx.save();
+    if (camera) {
+      ctx.translate(640 + camera.x * 12.8, 360 + camera.y * 7.2);
+      ctx.scale(camera.scale, camera.scale);
+      ctx.translate(-640, -360);
+    }
     const monitor = ctx.createLinearGradient(810, 0, 1240, 0);
     monitor.addColorStop(0, '#130d0d00');
     monitor.addColorStop(0.12, '#15120f');
@@ -374,7 +287,7 @@ export function drawAnimeOpeningEffects(ctx: CanvasRenderingContext2D, { effect,
     ctx.fillStyle = monitor;
     ctx.fillRect(810, 220, 430, 110);
     ctx.globalAlpha = 0.55 + surge * 0.2;
-    ctx.strokeStyle = progress < stop ? '#a5f4ad' : '#fa6470';
+    ctx.strokeStyle = local < stop ? '#a5f4ad' : '#fa6470';
     ctx.shadowColor = ctx.strokeStyle;
     ctx.shadowBlur = 11;
     ctx.lineWidth = 2.2;
@@ -385,7 +298,7 @@ export function drawAnimeOpeningEffects(ctx: CanvasRenderingContext2D, { effect,
       const point = (x - local * 124 + 528) % 176;
       const pulse = point > 32 && point < 44 ? Math.min(point - 32, 44 - point) * 6.2
         : point >= 44 && point < 54 ? -Math.min(point - 44, 54 - point) * 1.8 : 0;
-      const y = 284 - (progress < stop ? pulse : 0);
+      const y = 284 - (local < stop ? pulse : 0);
       if (x === 0) ctx.moveTo(855, y);
       else ctx.lineTo(855 + x, y);
     }
@@ -402,30 +315,10 @@ export function drawAnimeOpeningEffects(ctx: CanvasRenderingContext2D, { effect,
     ctx.restore();
   }
 
-  if (effect === 'nimbus') {
-    ctx.save();
-    ctx.lineCap = 'round';
-    for (let i = 0; i < 31; i++) {
-      const depth = random(i + 86);
-      const phase = (random(i) + local * (0.37 + depth * 0.46)) % 1;
-      const x = 1450 - phase * 1630;
-      const y = 70 + random(i + 53) * 570 + (1 - phase) * 77;
-      const length = 36 + depth * 135;
-      ctx.globalAlpha = Math.sin(Math.PI * phase) * (0.15 + depth * 0.3);
-      ctx.strokeStyle = i % 5 === 0 ? '#ffe8a4' : '#d9f7ff';
-      ctx.lineWidth = 0.9 + depth * 1.7;
-      ctx.beginPath();
-      ctx.moveTo(x, y);
-      ctx.quadraticCurveTo(x - length * 0.55, y + 7, x - length, y + 32 * depth);
-      ctx.stroke();
-    }
-    ctx.restore();
-  }
-
   if (effect === 'orb' || effect === 'cables') {
     const radius = (88 + progress * 115) * (1 + energy * 0.26);
-    const cx = image === 'energy-push' ? 608 : effect === 'orb' ? 670 : 570;
-    const cy = image === 'energy-push' ? 80 : effect === 'orb' ? 189 : 335;
+    const cx = effect === 'orb' ? 670 : 570;
+    const cy = effect === 'orb' ? 189 : 335;
     const color = effect === 'orb' ? '#66dfff' : '#ed70ce';
     for (let i = 0; i < 48; i++) {
       const phase = (random(i) + local * (0.3 + random(i + 4) * 0.45)) % 1;
@@ -598,12 +491,6 @@ export function drawAnimeOpeningEffects(ctx: CanvasRenderingContext2D, { effect,
   }
 
   ctx.restore();
-  if (effect === 'kira' || effect === 'nimbus') {
-    ctx.save();
-    ctx.scale(width / 1280, height / 720);
-    drawInkHandoff(ctx, effect === 'kira' ? -remaining : local);
-    ctx.restore();
-  }
   if (image === 'cardcaptor-sakura' || image === 'sunrise-city') {
     ctx.save();
     ctx.scale(width / 1280, height / 720);
