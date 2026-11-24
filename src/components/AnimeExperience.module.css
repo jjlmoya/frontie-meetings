@@ -186,11 +186,17 @@
   100% { transform: translateY(-.07em) rotate(-2deg) scale(1.12); }
 }
 
-.subtitles p:last-child {
+.translation {
   color: #e5f7ff;
   font-size: clamp(9px, 1.57cqw, 25px);
   margin-top: .25em;
   font-weight: 700;
+}
+
+.spanish {
+  color: #ffe4b5;
+  font-size: clamp(9px, 1.42cqw, 23px);
+  margin-top: .14em;
 }
 
 .player {

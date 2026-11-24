@@ -9,12 +9,13 @@ export function AnimeKaraokeLyrics({ line, syllable }: { line: number; syllable:
   const lyric = animeSubtitles[line];
   if (!lyric) return null;
 
+  const [, , japanese, english, spanish] = lyric;
   const groups = animeKaraoke[line].groups;
   const color = colors[(syllable + colors.length) % colors.length];
 
   return (
     <div className={styles.subtitles} style={{ '--karaoke-color': color } as CSSProperties}>
-      <p lang="ja" className={styles.japanese} aria-label={lyric[2]}>
+      <p lang="ja" className={styles.japanese} aria-label={japanese}>
         {groups.map(({ text, moras, first }) => {
           const active = syllable >= first && syllable < first + moras.length;
           const progress = Math.max(0, Math.min(1, (syllable - first + 1) / moras.length));
@@ -34,7 +35,8 @@ export function AnimeKaraokeLyrics({ line, syllable }: { line: number; syllable:
           );
         })}
       </p>
-      <p lang="en">{lyric[3]}</p>
+      <p lang="en" className={styles.translation}>{english}</p>
+      <p lang="es" className={`${styles.translation} ${styles.spanish}`}>{spanish}</p>
     </div>
   );
 }

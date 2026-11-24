@@ -2,41 +2,42 @@ export const ANIME_TITLE = 'フロンティ、夜を駆けろ！';
 export const ANIME_AUDIO = '/assets/anime/audio/tone-deaf-take-2.mp3';
 export const ANIME_DURATION = 114.4;
 
-type Subtitle = readonly [start: number, end: number, japanese: string, english: string];
+type Lyric = readonly [japanese: string, english: string, spanish: string];
+type Subtitle = readonly [start: number, end: number, ...Lyric];
 
-const chorus: readonly (readonly [string, string])[] = [
-  ['駆けろ、駆けろ、フロンティ！', 'Run, run, Frontie!'],
-  ['火花散らして　夜を裂け', 'Send sparks flying and tear through the night.'],
-  ['つなげ、つなげ、フロントライン！', 'Link it up, link it up, Front-Line!'],
-  ['肩を並べて　壁を越えろ', 'Over the wall, shoulder to shoulder.'],
-  ['君の一歩が　朝を呼ぶ', 'One step from you brings the dawn.'],
-  ['眠った街に　光が走る', 'Light races through the sleeping city.'],
-  ['駆けろ、駆けろ、フロンティ！', 'Run, run, Frontie!'],
+const chorus: readonly Lyric[] = [
+  ['駆けろ、駆けろ、フロンティ！', 'Run, run, Frontie!', '¡Corre, corre, Frontie!'],
+  ['火花散らして　夜を裂け', 'Send sparks flying and tear through the night.', 'Haz saltar chispas y rasga la noche.'],
+  ['つなげ、つなげ、フロントライン！', 'Link it up, link it up, Front-Line!', '¡Conecta, conecta, Front-Line!'],
+  ['肩を並べて　壁を越えろ', 'Over the wall, shoulder to shoulder.', 'Salta el muro, hombro con hombro.'],
+  ['君の一歩が　朝を呼ぶ', 'One step from you brings the dawn.', 'Un paso tuyo trae el amanecer.'],
+  ['眠った街に　光が走る', 'Light races through the sleeping city.', 'La luz recorre la ciudad dormida.'],
+  ['駆けろ、駆けろ、フロンティ！', 'Run, run, Frontie!', '¡Corre, corre, Frontie!'],
 ];
 
-function timeChorus(timing: readonly (readonly [number, number])[], ending: readonly [string, string]): Subtitle[] {
+function timeChorus(timing: readonly (readonly [number, number])[], ending: Lyric): Subtitle[] {
   return timing.map(([start, end], i) => [start, end, ...(chorus[i] ?? ending)]);
 }
 
 export const animeSubtitles: readonly Subtitle[] = [
-  [0.23, 3.09, '午前零時　赤いモニター', 'Midnight. The monitor glows red.'],
-  [3.1, 5.29, '眠れないのは　僕らだけ？', 'Are we the only ones still awake?'],
-  [5.35, 7.89, '画面の向こう　返事は来ない', 'No reply from the other side of the screen.'],
-  [7.89, 11.28, '途切れた線を　つなぎ直す', 'We reconnect the broken line.'],
-  [11.34, 13.7, 'モックが返す　仮の答え', 'The mock sends back a stand-in reply.'],
-  [13.7, 16.11, '止まったテストが　また走る', 'The stalled tests run again.'],
-  [16.19, 18.88, 'どのチームも　自分で進めるよう', 'So every team can move forward on its own,'],
-  [18.88, 22.98, '見えないところで　橋を架ける', 'we build the bridge behind the scenes.'],
-  ...timeChorus([[23.04,26.5],[26.5,29.11],[29.12,31.83],[31.83,34.39],[34.45,37.09],[37.09,39.77],[39.82,42.15],[42.15,44.83]], ['この先は　君の番だ！', 'Now it’s your turn!']),
-  [45.03, 49.23, '共通ライブラリに　足した一行', 'One line added to a shared library.'],
-  [49.23, 54.96, 'いくつもの画面が　光り出す', 'Screens everywhere light up.'],
-  [55.03, 59.33, 'ひとつずつ　画面をエム・エフ・イーへ', 'We migrate screens to M-F-E, one by one.'],
-  [59.33, 65.34, 'リリースの夜も　灯りは消さない', 'We keep the lights on through release night.'],
-  [65.48, 67.84, 'もうダメだって　うつむいたら', 'Just as I hang my head in defeat,'],
-  [67.84, 70.38, 'キーボードに　黒い肉球', 'a black paw lands on the keys.'],
-  [70.48, 75.43, '「もう一回！」って　君が鳴く', '“One more try!” you meow.'],
-  [75.43, 80.91, '虹色の毛先が　光り出す', 'Your rainbow crest lights up.'],
-  ...timeChorus([[80.92,83.42],[83.42,86.13],[86.15,88.69],[88.69,91.34],[91.42,93.86],[93.86,96.35],[96.37,99.13],[99.13,102.35]], ['ここからが　始まりだ！', 'This is where it all begins!']),
+  [0.23, 3.09, '午前零時　赤いモニター', 'Midnight. The monitor glows red.', 'Medianoche. El monitor brilla en rojo.'],
+  [3.1, 5.29, '眠れないのは　僕らだけ？', 'Are we the only ones still awake?', '¿Somos los únicos que seguimos despiertos?'],
+  [5.35, 7.89, '画面の向こう　返事は来ない', 'No reply from the other side of the screen.', 'Al otro lado de la pantalla no hay respuesta.'],
+  [7.89, 11.28, '途切れた線を　つなぎ直す', 'We reconnect the broken line.', 'Volvemos a conectar la línea cortada.'],
+  [11.34, 13.7, 'モックが返す　仮の答え', 'The mock sends back a stand-in reply.', 'El mock devuelve una respuesta provisional.'],
+  [13.7, 16.11, '止まったテストが　また走る', 'The stalled tests run again.', 'Las pruebas que se habían parado vuelven a correr.'],
+  [16.19, 18.88, 'どのチームも　自分で進めるよう', 'So every team can move forward on its own,', 'Para que cada equipo pueda avanzar por su cuenta,'],
+  [18.88, 22.98, '見えないところで　橋を架ける', 'we build the bridge behind the scenes.', 'tendemos un puente entre bastidores.'],
+  ...timeChorus([[23.04,26.5],[26.5,29.11],[29.12,31.83],[31.83,34.39],[34.45,37.09],[37.09,39.77],[39.82,42.15],[42.15,44.83]], ['この先は　君の番だ！', 'Now it’s your turn!', '¡Ahora te toca a ti!']),
+  [45.03, 49.23, '共通ライブラリに　足した一行', 'One line added to a shared library.', 'Una línea más en una librería compartida.'],
+  [49.23, 54.96, 'いくつもの画面が　光り出す', 'Screens everywhere light up.', 'Se encienden pantallas por todas partes.'],
+  [55.03, 59.33, 'ひとつずつ　画面をエム・エフ・イーへ', 'We migrate screens to M-F-E, one by one.', 'Migramos las pantallas a MFE, una a una.'],
+  [59.33, 65.34, 'リリースの夜も　灯りは消さない', 'We keep the lights on through release night.', 'La noche del despliegue seguimos con las luces encendidas.'],
+  [65.48, 67.84, 'もうダメだって　うつむいたら', 'Just as I hang my head in defeat,', 'Justo cuando agacho la cabeza y me doy por vencido,'],
+  [67.84, 70.38, 'キーボードに　黒い肉球', 'a black paw lands on the keys.', 'una pata negra cae sobre el teclado.'],
+  [70.48, 75.43, '「もう一回！」って　君が鳴く', '“One more try!” you meow.', '«¡Una vez más!», maúllas.'],
+  [75.43, 80.91, '虹色の毛先が　光り出す', 'Your rainbow crest lights up.', 'Se ilumina tu cresta arcoíris.'],
+  ...timeChorus([[80.92,83.42],[83.42,86.13],[86.15,88.69],[88.69,91.34],[91.42,93.86],[93.86,96.35],[96.37,99.13],[99.13,102.35]], ['ここからが　始まりだ！', 'This is where it all begins!', '¡Aquí empieza todo!']),
 ];
 
 export type AnimeEffect = 'monitor' | 'rain' | 'run' | 'cables' | 'spark' | 'origami' | 'train' | 'gate' | 'splash' | 'slash' | 'still' | 'manga' | 'orb' | 'release' | 'sun' | 'gear' | 'kira' | 'nimbus' | 'shoujo';
