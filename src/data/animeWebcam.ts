@@ -8,7 +8,7 @@ type Reaction = 'focus' | 'eager' | 'stunned' | 'ecstatic' | 'sinister' | 'fligh
 const sceneReactions: Record<string, readonly [Reaction, number, number]> = {
   splash: ['eager', 2.2, 0.48],
   'nani-mo-nakatta': ['stunned', 2.42, 0.78],
-  'gear-five': ['ecstatic', 2.7, 0.94],
+  'gear-five-manga': ['ecstatic', 2.7, 0.94],
   kira: ['sinister', 2.41, 0.59],
   nimbus: ['flight', 2.95, 0.9],
   'worry-profile': ['bracing', 4.1, 0.68],
@@ -22,7 +22,7 @@ const sceneReactions: Record<string, readonly [Reaction, number, number]> = {
 
 const events = animeShots.flatMap(([at, image]) => {
   const reaction = sceneReactions[image];
-  return reaction ? [{ at, mood: reaction[0], duration: reaction[1], strength: reaction[2] }] : [];
+  return reaction ? [{ at, image, mood: reaction[0], duration: reaction[1], strength: reaction[2] }] : [];
 });
 
 const vowelFamilies: readonly (readonly [FrontieViseme, string])[] = [
@@ -69,24 +69,42 @@ export function animeWebcamFrame(time: number, vocal: number, band: number, redu
   const flying = mood === 'flight';
   const bracing = mood === 'bracing';
   const spent = mood === 'spent';
-  const spring = event ? Math.sin(elapsed * 22) * Math.exp(-elapsed * (stunned ? 3.9 : 2.7)) : 0;
+  const frozen = mood === 'stunned' && elapsed < 1.38;
+  const spring = event && !frozen ? Math.sin(elapsed * 22) * Math.exp(-elapsed * (stunned ? 3.9 : 2.7)) : 0;
   const bounce = Math.sin(time * (frenzy ? 17 : 9)) * (hype + band * 0.7);
   const raise = mood === 'ecstatic' || frenzy ? clamp(Math.sin(Math.PI * phase) * 1.35) : 0;
-  const blink = blinks.some((begin) => time >= begin && time < begin + (spent ? 0.24 : frenzy ? 0.078 : 0.123));
+  const blink = !frozen && blinks.some((begin) => time >= begin && time < begin + (spent ? 0.24 : frenzy ? 0.078 : 0.123));
   const bank = flying ? Math.sin(phase * Math.PI * 2) * 4.3 : 0;
   const slump = spent ? 2.5 + phase * 2 : bracing ? 2.2 + Math.sin(Math.PI * phase) * 1.8 : 0;
+  const isGear = event?.image === 'gear-five-manga';
+  const lean = isGear ? clamp((elapsed - 0.22) / 0.47) * clamp((1.1 - elapsed) / 0.35) : 0;
+  const hitAge = isGear ? elapsed - 0.67 : -1;
+  const hit = hitAge >= 0 ? Math.exp(-hitAge * 10) : 0;
+  const eyeAge = isGear ? elapsed - 0.89 : -1;
+  const eyeStretch = eyeAge < 0 ? 0 : eyeAge < 0.23
+    ? 1.05 * (1 - (1 - eyeAge / 0.23) ** 3)
+    : eyeAge < 0.89 ? 1 + 0.07 * Math.cos((eyeAge - 0.23) * 13)
+      : Math.max(0, 1 - (eyeAge - 0.89) / 0.4) ** 1.4;
+  const reflection = isGear ? 'moon' : mood === 'sinister' ? 'red' : flying ? 'gold' : frenzy ? 'ki' : 'none';
+  const lens = reflection === 'none' ? 0 : clamp(Math.sin(Math.PI * phase) * 1.32 + hit * 0.32);
 
   return {
     mood,
     blink: reduced ? false : blink,
     heat: reduced ? 0 : hype,
-    x: reduced ? 0 : Math.sin(time * 4.9) * hype * 1.9 + spring * 3.2 + bank,
-    y: reduced ? 0 : (stunned ? -accent * 1.6 : bounce * -1.9) - vocal * 0.8 + slump,
-    rotate: reduced ? 0 : Math.sin(time * 6.7) * hype * (frenzy ? 3.2 : 1.2) + spring * 4.8 + bank * 0.73,
-    scale: reduced ? 1 : 1 + accent * (stunned ? 0.13 : 0.16) + hype * 0.028 + spring * (frenzy ? 0.07 : 0.042),
-    squish: reduced ? 1 : 1 + (bounce * 0.011 - spring * 0.038),
+    x: reduced || frozen ? 0 : Math.sin(time * 4.9) * hype * (frenzy ? 3.1 : 1.9) + spring * 3.2 + bank + lean * 12,
+    y: reduced || frozen ? 0 : (stunned ? -accent * 1.6 : bounce * -1.9) - vocal * 0.8 + slump + lean * 12,
+    rotate: reduced || frozen ? 0 : Math.sin(time * 6.7) * hype * (frenzy ? 5.1 : 1.2) + spring * 4.8 + bank * 0.73 + lean * 23,
+    scale: reduced ? 1 : frozen ? 1.08 : 1 + accent * (stunned ? 0.13 : 0.16) + hype * 0.028 + spring * (frenzy ? 0.07 : 0.042) + lean * 0.07,
+    squish: reduced || frozen ? 1 : 1 + (bounce * 0.011 - spring * 0.038),
     glow: reduced ? 0 : clamp(hype * 0.47 + accent * 0.23 + band * 0.14),
     paws: reduced ? 0 : raise,
-    goggleX: reduced ? 0 : stunned ? Math.sin(time * 12) * 2.8 : Math.sin(time * 3.25) * (2.5 + hype * 5),
+    goggleX: reduced || frozen ? 0 : stunned ? Math.sin(time * 12) * 2.8 : Math.sin(time * 3.25) * (2.5 + hype * 5),
+    reflection,
+    lens: reduced ? lens * 0.35 : lens,
+    lensSweep: reduced ? 0 : (phase * 2 - 1) * (flying ? 145 : 58),
+    hit: reduced ? 0 : hit,
+    cameraKick: reduced ? 0 : Math.cos(hitAge * 36) * hit,
+    eyeStretch: reduced ? 0 : eyeStretch,
   };
 }

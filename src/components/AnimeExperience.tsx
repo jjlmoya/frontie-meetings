@@ -139,7 +139,7 @@ export function AnimeExperience() {
 
       if (!reduced && (Math.abs(current - lastDrawnTime) >= 0.019 || seek)) {
         const cameraProgress = activeShot === animeShots.length - 1 ? 1 - progress : progress;
-        const locked = effect === 'manga' || effect === 'kira';
+        const locked = effect === 'manga' || effect === 'kira' || image === 'red-power';
         const quiet = effect === 'still';
         const flying = effect === 'nimbus';
         const distance = locked ? 0 : quiet ? 0.4 : flying ? 3.8 : effect === 'run' ? 8 : 3;
@@ -153,9 +153,17 @@ export function AnimeExperience() {
         const bank = flying ? 0.8 + Math.sin(local * 3.5) * 1.05 : 0;
         stage.style.setProperty('--camera-y', `${Math.sin(cameraProgress * Math.PI) * lift - spring * 2 + bank}%`);
         stage.style.setProperty('--camera-scale', String(zoom + impact + spring * 0.042));
-        const veil = audio.paused ? 0 : Math.max(0, 1 - current / 0.26, 1 - (duration - current) / 0.38) * 0.82;
-        stage.style.setProperty('--loop-veil', String(veil));
-        drawAnimeOpeningEffects(ctx, { effect, image, time: current, local, progress, energy });
+        const remaining = duration - current;
+        const outro = Math.max(0, 1 - remaining / 0.74);
+        const intro = Math.max(0, 1 - current / 0.52);
+        const bridge = Math.max(outro, intro);
+        const ledTravel = Math.min(1, Math.max(0, (outro - 0.56) / 0.4));
+        const easedTravel = ledTravel * ledTravel * (3 - 2 * ledTravel);
+        stage.style.setProperty('--loop-veil', String(audio.paused ? 0 : bridge * 0.96));
+        stage.style.setProperty('--loop-led', String(audio.paused ? 0 : Math.min(1, bridge * 1.6)));
+        stage.style.setProperty('--loop-led-x', `${intro ? 51.4 : 50 + easedTravel * 1.4}%`);
+        stage.style.setProperty('--loop-led-y', `${intro ? 57 : 88.5 - easedTravel * 31.5}%`);
+        drawAnimeOpeningEffects(ctx, { effect, image, time: current, local, remaining: end - current, progress, energy });
         lastDrawnTime = current;
       } else if (reduced) {
         ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
@@ -177,6 +185,7 @@ export function AnimeExperience() {
       cancelAnimationFrame(frame);
       renderFrame();
       stage.style.setProperty('--loop-veil', '0');
+      stage.style.setProperty('--loop-led', '0');
       setMouth('rest');
     };
 
@@ -226,6 +235,7 @@ export function AnimeExperience() {
           />
           <canvas ref={canvas} className={styles.effects} width={1280} height={720} aria-hidden="true" />
           <div className={styles.grade} aria-hidden="true" />
+          <span className={styles.loopLed} aria-hidden="true" />
         </div>
 
         <Link href="/" className={styles.home} aria-label="Back to song selector">FRONT-LINE</Link>
@@ -263,6 +273,7 @@ export function AnimeExperience() {
               </svg>
               <span className={styles.beamTip} />
             </span>
+            <span className={styles.deckTime} aria-hidden="true">{timeLabel(time)}</span>
           </label>
           <label className={styles.deckVolume} style={{ '--dial': `${volume * 270 - 135}deg`, '--level': `${volume * 270}deg` } as CSSProperties}>
             <input aria-label="Volume" type="range" min={0} max={1} step={0.01}

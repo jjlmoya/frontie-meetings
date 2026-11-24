@@ -3,16 +3,252 @@ import type { AnimeEffect } from '@/data/animeOpening';
 const TAU = Math.PI * 2;
 const random = (index: number) => ((Math.sin(index * 78.233 + 24.19) * 43758.5453) % 1 + 1) % 1;
 
+function drawGearColorBurst(ctx: CanvasRenderingContext2D, local: number) {
+  if (local >= 0.72) return;
+  const x = 421;
+  const y = 225;
+  const phase = local / 0.72;
+  const force = 1 - phase;
+  const palette = ['#ff54aa', '#ffbc61', '#fff191', '#83fae2', '#4adcff', '#a27bff'];
+  ctx.save();
+  ctx.translate(x, y);
+  const core = ctx.createRadialGradient(0, 0, 0, 0, 0, 290 + phase * 420);
+  core.addColorStop(0, '#fff5db');
+  core.addColorStop(0.18, '#ffca98');
+  core.addColorStop(0.57, '#ff66a884');
+  core.addColorStop(1, '#9d5aff00');
+  ctx.globalCompositeOperation = 'screen';
+  ctx.globalAlpha = force ** 2 * 0.88;
+  ctx.fillStyle = core;
+  ctx.fillRect(-x, -y, 1280, 720);
+
+  for (let i = 0; i < 37; i++) {
+    const angle = (i + random(i + 138)) / 37 * TAU;
+    const reach = 200 + random(i + 39) * 690;
+    const inner = 27 + phase * reach;
+    const outer = inner + (45 + random(i + 65) * 240) * force;
+    const edge = (0.013 + random(i + 175) * 0.052) * force;
+    ctx.fillStyle = palette[i % palette.length];
+    ctx.globalAlpha = force * (0.45 + random(i + 47) * 0.46);
+    ctx.beginPath();
+    ctx.moveTo(Math.cos(angle) * inner, Math.sin(angle) * inner);
+    ctx.lineTo(Math.cos(angle - edge) * outer, Math.sin(angle - edge) * outer);
+    ctx.lineTo(Math.cos(angle + edge) * outer, Math.sin(angle + edge) * outer);
+    ctx.closePath();
+    ctx.fill();
+  }
+
+  for (let i = 0; i < palette.length; i++) {
+    const radius = 38 + phase * 710 + i * (10 + phase * 14);
+    ctx.globalAlpha = force * (0.61 - i * 0.061);
+    ctx.lineWidth = 2 + force * 8;
+    ctx.strokeStyle = palette[i];
+    ctx.beginPath();
+    ctx.ellipse(0, 0, radius, radius * 0.8, -0.35, 0, TAU);
+    ctx.stroke();
+  }
+  ctx.restore();
+}
+
+function drawSailorRibbons(ctx: CanvasRenderingContext2D, local: number, progress: number) {
+  const flutter = Math.sin(local * 9) * 31;
+  const sweep = 250 * progress - 125;
+  const satin = ctx.createLinearGradient(90, 283, 590, 677);
+  satin.addColorStop(0, '#94235f');
+  satin.addColorStop(0.32, '#ef4e97');
+  satin.addColorStop(0.49, '#fff0f2');
+  satin.addColorStop(0.61, '#ff9bc5');
+  satin.addColorStop(0.82, '#d64191');
+  satin.addColorStop(1, '#68255e');
+  ctx.save();
+  ctx.globalAlpha = Math.min(1, progress * 7, (1 - progress) * 8);
+  ctx.translate(sweep, flutter);
+  ctx.beginPath();
+  ctx.moveTo(-190, 506);
+  ctx.bezierCurveTo(50, 548, 340, 602, 468, 488);
+  ctx.bezierCurveTo(555, 411, 756, 339, 906, 454);
+  ctx.bezierCurveTo(1138, 637, 1412, 343, 1440, 222);
+  ctx.bezierCurveTo(1425, 484, 1170, 690, 899, 517);
+  ctx.bezierCurveTo(749, 420, 621, 449, 498, 551);
+  ctx.bezierCurveTo(306, 694, 9, 637, -190, 566);
+  ctx.closePath();
+  ctx.fillStyle = satin;
+  ctx.fill();
+  ctx.lineWidth = 4;
+  ctx.strokeStyle = '#ffd1e1';
+  ctx.stroke();
+
+  ctx.globalAlpha *= 0.64;
+  ctx.beginPath();
+  ctx.moveTo(639, 46);
+  ctx.bezierCurveTo(833, -28, 1201, 75, 1081, 185);
+  ctx.bezierCurveTo(1003, 258, 795, 189, 825, 249);
+  ctx.bezierCurveTo(746, 175, 1005, 201, 1038, 149);
+  ctx.bezierCurveTo(1074, 72, 834, 12, 639, 46);
+  ctx.fill();
+  ctx.stroke();
+  ctx.restore();
+}
+
+function drawCardHandoff(ctx: CanvasRenderingContext2D, elapsed: number) {
+  const fromCard = elapsed < 0;
+  const phase = fromCard ? 1 + elapsed / 1.15 : elapsed / 0.38;
+  if (phase < 0 || phase >= 1) return;
+  const travel = fromCard ? phase * phase : 1 + phase;
+  const x = 1060 - 420 * Math.min(1, travel);
+  const y = 138 + 215 * Math.min(1, travel);
+  const size = 0.53 + 5.5 * travel ** 2;
+  const visibility = fromCard ? Math.min(1, phase * 10) : Math.max(0, 1 - phase * 1.2);
+
+  ctx.save();
+  const glow = ctx.createRadialGradient(x, y, 0, x, y, 110 * size + 55);
+  glow.addColorStop(0, '#fff6c4ed');
+  glow.addColorStop(0.38, '#ffce67c4');
+  glow.addColorStop(1, '#ffae3700');
+  ctx.globalCompositeOperation = 'screen';
+  ctx.globalAlpha = visibility * 0.9;
+  ctx.fillStyle = glow;
+  ctx.fillRect(0, 0, 1280, 720);
+  ctx.globalCompositeOperation = 'source-over';
+
+  ctx.translate(x, y);
+  ctx.rotate(-0.34 + travel * 0.62);
+  ctx.scale(size * (0.77 + Math.cos(travel * 5.4) ** 2 * 0.23), size);
+  ctx.globalAlpha = visibility;
+  const enamel = ctx.createLinearGradient(-62, -97, 62, 97);
+  enamel.addColorStop(0, '#de6660');
+  enamel.addColorStop(0.46, '#a7374d');
+  enamel.addColorStop(1, '#4f203b');
+  ctx.shadowBlur = 22;
+  ctx.shadowColor = '#ffbc54';
+  ctx.fillStyle = enamel;
+  ctx.strokeStyle = '#fff1bd';
+  ctx.lineWidth = 3;
+  ctx.beginPath();
+  ctx.roundRect(-61, -94, 122, 188, 10);
+  ctx.fill();
+  ctx.stroke();
+
+  ctx.shadowBlur = 0;
+  ctx.strokeStyle = '#efba70';
+  ctx.lineWidth = 1.6;
+  ctx.beginPath();
+  ctx.roundRect(-53, -86, 106, 172, 7);
+  ctx.ellipse(0, 0, 40, 64, 0, 0, TAU);
+  ctx.stroke();
+  ctx.strokeStyle = '#f8d08c';
+  ctx.fillStyle = '#fff0ab';
+  ctx.beginPath();
+  for (let i = 0; i <= 16; i++) {
+    const angle = i / 16 * TAU - Math.PI / 2;
+    const reach = i % 2 === 0 ? 1 : 0.24;
+    const sx = Math.cos(angle) * 29 * reach;
+    const sy = Math.sin(angle) * 48 * reach;
+    if (i === 0) ctx.moveTo(sx, sy);
+    else ctx.lineTo(sx, sy);
+  }
+  ctx.closePath();
+  ctx.fill();
+  ctx.stroke();
+  ctx.restore();
+}
+
+function drawInkHandoff(ctx: CanvasRenderingContext2D, elapsed: number) {
+  const reveal = elapsed >= 0;
+  const phase = reveal ? elapsed / 0.44 : 1 + elapsed / 0.27;
+  if (phase < 0 || (reveal && phase >= 1)) return;
+
+  const eased = phase * phase * (3 - 2 * phase);
+  const opening = reveal ? eased : 0;
+  const penX = 480;
+  const penY = 491;
+  const centerX = penX - opening * 455;
+  const centerY = penY + opening * 45;
+  const radius = 9 + 1170 * (reveal ? 1 - opening : eased);
+  ctx.save();
+  ctx.fillStyle = '#160d20';
+
+  // The edge starts as a splash at the nib, then takes on the rounded curls of Kintoun.
+  ctx.beginPath();
+  for (let i = 0; i <= 120; i++) {
+    const angle = i / 120 * TAU;
+    const lobes = Math.sin(angle * 8 + 0.9) * (0.068 + opening * 0.045) + Math.cos(angle * 13 - 0.64) * 0.028;
+    const fray = Math.sin(angle * 29) * 0.013 * (reveal ? 1 - opening : 1);
+    const edge = radius * (1 + lobes + fray);
+    const x = centerX + Math.cos(angle) * edge;
+    const y = centerY + Math.sin(angle) * edge * 0.82;
+    if (i === 0) ctx.moveTo(x, y);
+    else ctx.lineTo(x, y);
+  }
+  ctx.closePath();
+  ctx.fill();
+
+  if (reveal) {
+    ctx.save();
+    ctx.clip();
+    const gold = Math.min(1, phase * 3.4);
+    const shade = ctx.createRadialGradient(centerX, centerY + radius * 0.24, radius * 0.12,
+      centerX + radius * 0.17, centerY - radius * 0.14, radius * 1.06);
+    shade.addColorStop(0, '#543020');
+    shade.addColorStop(0.48, '#b85b27');
+    shade.addColorStop(0.81, '#f0a43c');
+    shade.addColorStop(1, '#ffeab0');
+    ctx.globalAlpha = gold;
+    ctx.fillStyle = shade;
+    ctx.fillRect(0, 0, 1280, 720);
+
+    for (let i = 0; i < 21; i++) {
+      const angle = i / 21 * TAU;
+      const swell = random(i + 181);
+      const x = centerX + Math.cos(angle) * radius * (0.65 + swell * 0.33);
+      const y = centerY + Math.sin(angle) * radius * (0.52 + swell * 0.26);
+      const size = radius * (0.09 + swell * 0.17);
+      const curl = ctx.createRadialGradient(x - size * 0.25, y - size * 0.4, 0, x, y, size);
+      curl.addColorStop(0, '#fff3cbeb');
+      curl.addColorStop(0.55, '#ffcf61b8');
+      curl.addColorStop(1, '#e3802500');
+      ctx.globalAlpha = gold * (0.33 + swell * 0.48);
+      ctx.fillStyle = curl;
+      ctx.fillRect(x - size, y - size, size * 2, size * 2);
+    }
+
+    for (let i = 0; i < 260; i++) {
+      ctx.globalAlpha = gold * (0.13 + random(i + 89) * 0.27);
+      ctx.fillStyle = i % 3 ? '#ffd77e' : '#7a361f';
+      const x = centerX + (random(i + 121) * 2 - 1) * radius;
+      const y = centerY + (random(i + 551) * 2 - 1) * radius * 0.82;
+      const size = 0.7 + random(i + 719) * 1.8;
+      ctx.fillRect(x, y, size * 1.7, size);
+    }
+    ctx.restore();
+  }
+
+  for (let i = 0; i < 18; i++) {
+    const angle = random(i + 25) * TAU;
+    const distance = (reveal ? opening : eased) * (145 + random(i + 63) * 688);
+    const x = penX + Math.cos(angle) * distance + (reveal ? opening * 470 : 0);
+    const y = penY + Math.sin(angle) * distance * .72;
+    const size = (3 + random(i + 49) * 19) * (reveal ? 1 - phase : 1 - eased * .45);
+    ctx.fillStyle = reveal ? (i % 3 ? '#ffc350' : '#ffedaa') : '#220e23';
+    ctx.globalAlpha = reveal ? Math.sin(phase * Math.PI) * .85 : Math.min(1, phase * 3);
+    ctx.beginPath();
+    ctx.ellipse(x, y, size * 1.6, size * .7, angle, 0, TAU);
+    ctx.fill();
+  }
+  ctx.restore();
+}
+
 type Frame = {
   effect: AnimeEffect;
   image: string;
   time: number;
   local: number;
+  remaining: number;
   progress: number;
   energy: number;
 };
 
-export function drawAnimeOpeningEffects(ctx: CanvasRenderingContext2D, { effect, image, time, local, progress, energy }: Frame) {
+export function drawAnimeOpeningEffects(ctx: CanvasRenderingContext2D, { effect, image, time, local, remaining, progress, energy }: Frame) {
   const width = ctx.canvas.width;
   const height = ctx.canvas.height;
   ctx.clearRect(0, 0, width, height);
@@ -20,7 +256,12 @@ export function drawAnimeOpeningEffects(ctx: CanvasRenderingContext2D, { effect,
   ctx.scale(width / 1280, height / 720);
 
   if (effect === 'shoujo') {
-    const moon = image === 'sailor-moon';
+    const moon = image === 'sailor-moon' || image === 'sailor-prism';
+    if (moon) {
+      const charging = image === 'sailor-prism';
+      const ribbonProgress = charging ? progress * 0.42 : 0.42 + progress * 0.58;
+      drawSailorRibbons(ctx, charging ? local : local + 0.7, ribbonProgress);
+    }
     ctx.save();
     ctx.globalCompositeOperation = 'screen';
     ctx.lineCap = 'round';
@@ -306,6 +547,7 @@ export function drawAnimeOpeningEffects(ctx: CanvasRenderingContext2D, { effect,
   }
 
   if (effect === 'gear') {
+    drawGearColorBurst(ctx, local);
     ctx.save();
     const spring = 1 + Math.sin(local * 15) * Math.exp(-local * 2.5) * 0.14;
     ctx.lineCap = 'round';
@@ -356,4 +598,16 @@ export function drawAnimeOpeningEffects(ctx: CanvasRenderingContext2D, { effect,
   }
 
   ctx.restore();
+  if (effect === 'kira' || effect === 'nimbus') {
+    ctx.save();
+    ctx.scale(width / 1280, height / 720);
+    drawInkHandoff(ctx, effect === 'kira' ? -remaining : local);
+    ctx.restore();
+  }
+  if (image === 'cardcaptor-sakura' || image === 'sunrise-city') {
+    ctx.save();
+    ctx.scale(width / 1280, height / 720);
+    drawCardHandoff(ctx, image === 'cardcaptor-sakura' ? -remaining : local);
+    ctx.restore();
+  }
 }

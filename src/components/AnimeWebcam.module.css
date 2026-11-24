@@ -31,11 +31,49 @@
 
 .room { object-fit: cover; }
 
+.feed {
+  position: absolute;
+  inset: 0;
+  transform: translateX(calc(var(--cam-kick, 0) * -2.8%))
+    rotate(calc(var(--cam-kick, 0) * 4deg)) scale(calc(1 + var(--cam-impact, 0) * .075));
+}
+
+.webcam[data-eye-break='true'] { overflow: visible; }
+.webcam[data-eye-break='true'] .feed { clip-path: inset(0 round 3%); }
+
+.eyeBreakout {
+  position: absolute;
+  z-index: 1;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+  visibility: hidden;
+  pointer-events: none;
+}
+
+.webcam[data-eye-break='true'] .eyeBreakout { visibility: visible; }
+.webcam[data-eye-break='true'] .pupils, .webcam[data-eye-break='true'] .eyeSpark { visibility: hidden; }
+
+.eyeDepth {
+  transform: translate(calc(var(--eye-stretch, 0) * var(--eye-x)), calc(var(--eye-stretch, 0) * var(--eye-y)))
+    scale(calc(.45 + var(--eye-stretch, 0) * var(--eye-growth)));
+}
+
+.webcam[data-reflection='red'] { --cam-reflection: #ff334d; }
+.webcam[data-reflection='gold'] { --cam-reflection: #ffcc5f; }
+.webcam[data-reflection='moon'] { --cam-reflection: #f1e6ff; }
+.webcam[data-reflection='ki'] { --cam-reflection: #72ffea; }
+
+.lensReflection { opacity: var(--cam-lens, 0); }
+.lensSweep { transform: translateX(var(--cam-lens-sweep, 0)); }
+.impact { opacity: var(--cam-impact, 0); }
+
 .roomLight {
   position: absolute;
   inset: 0;
   pointer-events: none;
-  background: radial-gradient(ellipse at 38% 30%, var(--cam-color), transparent 67%);
+  background: radial-gradient(ellipse at 38% 30%, var(--cam-reflection, var(--cam-color)), transparent 67%);
   opacity: calc(var(--cam-glow, .15) * .36);
   mix-blend-mode: screen;
 }
@@ -43,6 +81,9 @@
 .actor {
   position: absolute;
   inset: 0;
+}
+
+.actor, .eyeBreakout {
   transform-origin: 50% 71%;
   transform:
     translate(var(--cam-x, 0), var(--cam-y, 0))
@@ -50,9 +91,16 @@
     scale(var(--cam-zoom, 1), calc(var(--cam-zoom, 1) * var(--cam-squish, 1)));
 }
 
-.portrait {
+.portrait, .microphone {
   object-fit: contain;
   object-position: center bottom;
+}
+
+.portrait { clip-path: polygon(0 0, 100% 0, 100% 73%, 74% 73%, 74% 100%, 0 100%); }
+.microphone {
+  clip-path: polygon(74% 73%, 100% 73%, 100% 100%, 74% 100%);
+  transform-origin: 83% 96%;
+  transform: rotate(calc(var(--cam-kick, 0) * 9deg));
 }
 
 .face, .paws, .effects {
@@ -145,8 +193,8 @@
 .meter span:nth-child(4) { height: calc(10% + var(--cam-vocal, 0) * 32%); }
 
 @media (prefers-reduced-motion: reduce) {
-  .actor, .pupils { transform: none; }
-  .hypeMarks, .paws, .effects { display: none; }
+  .actor, .pupils, .feed, .microphone { transform: none; }
+  .hypeMarks, .paws, .effects, .eyeBreakout { display: none; }
 }
 
 .leftPupil, .rightPupil { transform-box: fill-box; transform-origin: center; }

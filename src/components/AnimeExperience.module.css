@@ -57,6 +57,20 @@
   opacity: var(--loop-veil, 0);
 }
 
+.loopLed {
+  position: absolute;
+  z-index: 4;
+  left: var(--loop-led-x, 50%);
+  top: var(--loop-led-y, 57%);
+  width: .72cqw;
+  aspect-ratio: 1;
+  transform: translate(-50%, -50%);
+  border-radius: 50%;
+  background: #fff1d6;
+  box-shadow: 0 0 .35cqw .12cqw #ff3333, 0 0 1.1cqw .36cqw #f40046c9;
+  opacity: var(--loop-led, 0);
+}
+
 .home {
   position: absolute;
   top: 4%;
@@ -260,9 +274,20 @@
 
 .beamTrack {
   position: relative;
+  top: -4px;
   pointer-events: none;
   display: block;
   height: 11px;
+}
+
+.deckTime {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  color: #ebd9f5;
+  font: 600 9px/1 ui-monospace, SFMono-Regular, Consolas, monospace;
+  font-variant-numeric: tabular-nums;
+  pointer-events: none;
 }
 
 .beamTrack::before {
@@ -375,6 +400,6 @@
 @media (prefers-reduced-motion: reduce) {
   .shot { transform: none; }
   .deckRail[data-playing='true'] .beamFilament { animation: none; }
-  .effects, .picture::after { display: none; }
+  .effects, .picture::after, .loopLed { display: none; }
   .karaokeMora, .karaokeWord[data-active='true'] .karaokeBase { animation: none; transform: none; }
 }
