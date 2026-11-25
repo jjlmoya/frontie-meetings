@@ -98,7 +98,7 @@ export const animeShots: readonly Shot[] = [
   [88.65, 'rain-blade', 'slash', 48],
   [90.16, 'combat-land', 'splash', 39],
   [91.37, 'light-launch', 'release', 45],
-  [93.84, 'team-dawn', 'sun', 48],
+  [93.84, 'team-dawn-frontline', 'sun', 48],
   [96.34, 'cardcaptor-sakura', 'shoujo'],
   [98.0, 'sunrise-city', 'sun'],
   [99.1, 'gold-roof', 'sun', 48],
