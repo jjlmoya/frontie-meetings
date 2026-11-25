@@ -15,7 +15,7 @@ const sceneReactions: Record<string, readonly [Reaction, number, number]> = {
   'crest-ignites': ['eager', 4.4, 0.8],
   'distant-orb': ['unhinged', 2.57, 1],
   'spirit-bomb': ['unhinged', 5.18, 1],
-  'team-dawn-frontline': ['ecstatic', 4.6, 0.94],
+  'team-dawn-cel': ['ecstatic', 4.6, 0.94],
   'team-prank': ['ecstatic', 5.02, 0.72],
   'titan-breach': ['stunned', 3.63, 0.76],
 };
